@@ -1,0 +1,36 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.uv-cache/
+.coverage
+htmlcov/
+
+# JavaScript
+node_modules/
+.pnpm-store/
+apps/web/dist/
+
+# Runtime data and generated artifacts
+.data/
+data/
+evaluation/reports/*.json
+evaluation/reports/*.csv
+synthetic/output/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+
+# Logs and temporary files
+*.log
+*.tmp
+tmp/

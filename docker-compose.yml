@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VERICLOSE_BUILD_COMMIT: local-compose
+    image: vericlose:dev
+    ports:
+      - "8000:8000"
+    environment:
+      VERICLOSE_ENVIRONMENT: judge-local
+      VERICLOSE_DEMO_MODE: "true"
+    volumes:
+      - vericlose-data:/app/data
+
+volumes:
+  vericlose-data:

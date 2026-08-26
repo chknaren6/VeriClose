@@ -1,0 +1,69 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+from apps.api.app.composition import AppContainer, build_container
+from apps.api.app.routes.health import router as health_router
+from apps.api.app.settings import AppSettings
+
+
+def create_app(settings: AppSettings | None = None) -> FastAPI:
+    container = build_container(settings)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        app.state.container.settings.prepare_runtime_paths()
+        yield
+
+    app = FastAPI(
+        title="VeriClose API",
+        version="0.1.0",
+        description="Evidence-first settlement-to-ERP reconciliation controller.",
+        lifespan=lifespan,
+    )
+    app.state.container = container
+    app.include_router(health_router)
+    _mount_frontend(app, container)
+    return app
+
+
+def _mount_frontend(app: FastAPI, container: AppContainer) -> None:
+    static_dir = container.settings.static_dir
+    index_path = static_dir / "index.html"
+    assets_dir = static_dir / "assets"
+
+    if not index_path.is_file():
+
+        @app.get("/", include_in_schema=False)
+        async def development_root() -> dict[str, str]:
+            return {
+                "app": "VeriClose",
+                "status": "API ready; run the Vite development server for the web UI.",
+                "health": "/health/ready",
+                "docs": "/docs",
+            }
+
+        return
+
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="web-assets")
+
+    @app.get("/", include_in_schema=False)
+    async def production_root() -> FileResponse:
+        return FileResponse(index_path)
+
+    @app.get("/{requested_path:path}", include_in_schema=False)
+    async def spa_fallback(requested_path: str) -> FileResponse:
+        if requested_path.startswith(("api/", "health/")):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+        candidate = (static_dir / requested_path).resolve()
+        static_root = static_dir.resolve()
+        if candidate.is_file() and candidate.is_relative_to(static_root):
+            return FileResponse(candidate)
+        return FileResponse(index_path)
+
+
+app = create_app()
