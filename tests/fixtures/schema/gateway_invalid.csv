@@ -1,0 +1,2 @@
+gateway_event_id,event_type,transaction_id,settlement_id,amount_minor,currency,event_at,status,reference,narration
+gwe_bad,UNKNOWN,pay_bad,,-12.50,USD,2026-04-01 10:15:00,captured,,Invalid synthetic row

@@ -50,12 +50,12 @@ make judge       # M7: build and start the judge-local container profile
 make verify      # M8: lint + tests + benchmark + production build
 ```
 
-## Current implementation checkpoint — 2026-08-26
+## Current implementation checkpoint — 2026-08-27
 
-The **M0 walking skeleton is complete**. It proves the final delivery shape before
-finance logic is added: one repository, a typed FastAPI service, a React/Vite
-frontend, one-origin production serving, model-optional startup, automated checks,
-and a runnable multi-stage image.
+The **M0 walking skeleton and Segment 2 canonical/synthetic foundation are complete**.
+The repository now has pure immutable finance types, explicit source contracts, hidden
+event/case truth, deterministic source generation, controlled scenario injectors, and a
+reproducible 50+ record batch in addition to the deployable shell.
 
 Verified at this checkpoint:
 
@@ -67,16 +67,19 @@ Verified at this checkpoint:
   judge-facing container without a model key.
 - The production page was opened in a browser; it reached `/health/ready` and
   `/api/meta`, displayed the deterministic fallback, and produced no console errors.
+- `make generate` produces 315 source rows for the default seed across gateway, bank,
+  and ERP, plus a manifest and private truth labels.
+- 73 tests cover domain invariants, source contracts, scenario behavior, accounting
+  balance, deterministic bytes, control totals, and truth isolation.
 
 What this checkpoint intentionally **does not** claim:
 
-- no canonical finance model exists yet;
-- no CSV/XLSX is ingested yet;
+- generated CSV exists, but user-uploaded CSV/XLSX is not ingested or normalized yet;
 - no reconciliation, benchmark result, persistence schema, or AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S2.1, canonical domain types**. Persistence protocols
-and DuckDB implementation move to **S3.7**, after the types they store are stable.
+The next executable task is **S3.1, source-adapter contract**. Persistence protocols and
+DuckDB implementation remain in **S3.7**, after validated canonical import works.
 
 ---
 
@@ -279,22 +282,22 @@ Acceptance criteria:
 
 ## S2.1 Implement canonical domain types — P0
 
-- [ ] In `domain/enums.py`, define source, event, direction, proof-level, decision-state,
+- [x] In `domain/enums.py`, define source, event, direction, proof-level, decision-state,
   exception-category, severity, review-state, and action-state enums using stable wire values.
-- [ ] In `domain/money.py`, implement an immutable money value object that accepts integer
+- [x] In `domain/money.py`, implement an immutable money value object that accepts integer
   minor units only, requires an ISO currency code, and performs same-currency arithmetic.
-- [ ] In `domain/events.py`, implement immutable `RawRowRef` and `CanonicalEvent` types with
+- [x] In `domain/events.py`, implement immutable `RawRowRef` and `CanonicalEvent` types with
   source file hash, sheet/table name, 1-based row number, canonical event ID, entity,
   amount, direction, dates, source references, and preserved raw metadata.
-- [ ] In `domain/runs.py`, implement `RunManifest` and `SourceFile` with seed, policy version,
+- [x] In `domain/runs.py`, implement `RunManifest` and `SourceFile` with seed, policy version,
   mapping versions, input hashes, build ID, creation time, and run-state transitions.
-- [ ] In `domain/evidence.py`, implement `MatchGroup`, `ProofCheck`, and `EvidenceLink` so
+- [x] In `domain/evidence.py`, implement `MatchGroup`, `ProofCheck`, and `EvidenceLink` so
   expected/observed/tolerance values and precise source rows are serializable.
-- [ ] In `domain/decisions.py`, keep `MatchProposal` separate from the final
+- [x] In `domain/decisions.py`, keep `MatchProposal` separate from the final
   `ReconciliationDecision`; a proposal is rule output, while a decision is risk-gate output.
-- [ ] In `domain/exceptions.py` and `domain/actions.py`, implement `ExceptionCase`,
+- [x] In `domain/exceptions.py` and `domain/actions.py`, implement `ExceptionCase`,
   `ProposedAction`, `ReviewDecision`, and `ActionReceipt` with typed state transitions.
-- [ ] Add focused tests under `tests/unit/domain/` for paise boundaries, lineage requirements,
+- [x] Add focused tests under `tests/unit/domain/` for paise boundaries, lineage requirements,
   invalid enum/state transitions, proof-versus-support separation, and balanced journals.
 
 Depends on: S0.2, S0.3, S1.1.
@@ -310,16 +313,16 @@ Acceptance criteria:
 
 ## S2.2 Specify source schemas — P0
 
-- [ ] Create `docs/domain/SOURCE_SCHEMAS.md` with one canonical-field mapping table per source.
-- [ ] Specify gateway payment/refund/fee/tax/adjustment/settlement fields, sign semantics,
+- [x] Create `docs/domain/SOURCE_SCHEMAS.md` with one canonical-field mapping table per source.
+- [x] Specify gateway payment/refund/fee/tax/adjustment/settlement fields, sign semantics,
   references, and event dates.
-- [ ] Specify both bank layouts: signed amount and separate debit/credit columns; define value
+- [x] Specify both bank layouts: signed amount and separate debit/credit columns; define value
   date, booking date, UTR, narration, and bank-account identity behavior.
-- [ ] Specify ERP journal header/line fields, debit/credit rules, external references, account
+- [x] Specify ERP journal header/line fields, debit/credit rules, external references, account
   role mapping, and journal grouping keys.
-- [ ] Mark every field required, optional, derived, preserved-only, or rejected, including its
+- [x] Mark every field required, optional, derived, preserved-only, or rejected, including its
   accepted types and null behavior.
-- [ ] Add minimal CSV fixtures under `tests/fixtures/schema/` representing one valid row/layout
+- [x] Add minimal CSV fixtures under `tests/fixtures/schema/` representing one valid row/layout
   and one intentionally invalid row/layout for each source.
 
 Depends on: S2.1.
@@ -331,10 +334,10 @@ Acceptance criteria:
 
 ## S2.3 Design truth labels — P0
 
-- [ ] Define expected match-group labels.
-- [ ] Define expected proof disposition.
-- [ ] Define exception type, severity and expected next action.
-- [ ] Define valid timing differences separately from anomalies.
+- [x] Define expected match-group labels.
+- [x] Define expected proof disposition.
+- [x] Define exception type, severity and expected next action.
+- [x] Define valid timing differences separately from anomalies.
 
 Depends on: S2.1, S2.2.
 
@@ -345,10 +348,10 @@ Acceptance criteria:
 
 ## S2.4 Build deterministic synthetic generator — P0
 
-- [ ] Generate clean payments, settlements, bank credits and ERP journals.
-- [ ] Support seed, record count and exception-rate arguments.
-- [ ] Generate source files independently from truth labels.
-- [ ] Generate a manifest containing scenario counts and control totals.
+- [x] Generate clean payments, settlements, bank credits and ERP journals.
+- [x] Support seed, record count and exception-rate arguments.
+- [x] Generate source files independently from truth labels.
+- [x] Generate a manifest containing scenario counts and control totals.
 
 Depends on: S2.2, S2.3.
 
@@ -360,20 +363,20 @@ Acceptance criteria:
 
 ## S2.5 Implement scenario injectors — P0
 
-- [ ] Clean exact match.
-- [ ] Many payments to one settlement.
-- [ ] Partial settlement.
-- [ ] Refund applied in a later settlement.
-- [ ] Legitimate working-day date shift.
-- [ ] Missing or mistyped reference.
-- [ ] Duplicate source or ERP posting.
-- [ ] Missing bank credit.
-- [ ] Missing ERP posting.
-- [ ] Incorrect fee or tax.
-- [ ] Amount mismatch.
-- [ ] Orphan bank credit.
-- [ ] Unbalanced ERP journal.
-- [ ] Equal-amount ambiguous candidates.
+- [x] Clean exact match.
+- [x] Many payments to one settlement.
+- [x] Partial settlement.
+- [x] Refund applied in a later settlement.
+- [x] Legitimate working-day date shift.
+- [x] Missing or mistyped reference.
+- [x] Duplicate source or ERP posting.
+- [x] Missing bank credit.
+- [x] Missing ERP posting.
+- [x] Incorrect fee or tax.
+- [x] Amount mismatch.
+- [x] Orphan bank credit.
+- [x] Unbalanced ERP journal.
+- [x] Equal-amount ambiguous candidates.
 
 Depends on: S2.4.
 
@@ -385,9 +388,9 @@ Acceptance criteria:
 
 ## S2.6 Enforce truth isolation — P0
 
-- [ ] Place truth in an evaluation-only path/package.
-- [ ] Add an import-boundary test preventing runtime access.
-- [ ] Ensure API responses never expose hidden labels during reconciliation.
+- [x] Place truth in an evaluation-only path/package.
+- [x] Add an import-boundary test preventing runtime access.
+- [x] Ensure API responses never expose hidden labels during reconciliation.
 
 Depends on: S2.3, S2.4.
 
@@ -398,9 +401,9 @@ Acceptance criteria:
 
 ### Segment 2 exit gate
 
-- [ ] `make generate` creates three valid source files, truth and a manifest.
-- [ ] Scenario counts and control totals are reproducible.
-- [ ] Truth-isolation test passes.
+- [x] `make generate` creates three valid source files, truth and a manifest.
+- [x] Scenario counts and control totals are reproducible.
+- [x] Truth-isolation test passes.
 
 ---
 

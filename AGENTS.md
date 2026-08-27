@@ -81,4 +81,6 @@ If a command is not implemented for the current milestone, leave it as an explic
 
 ## Current milestone
 
-The current implementation target is M0: foundation and deployable walking skeleton. Do not implement matching or model integration until the skeleton, tests and production image pass.
+Segment 2 is complete. The current target is M1 ingestion: source-adapter contracts,
+versioned mappings, validation, normalization, immutable storage, and import orchestration.
+Do not implement matching or model integration until the Segment 3 exit gate passes.

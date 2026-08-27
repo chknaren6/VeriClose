@@ -1,0 +1,102 @@
+"""Stable domain vocabulary shared by files, APIs, storage, and audit records."""
+
+from enum import StrEnum
+
+
+class SourceType(StrEnum):
+    GATEWAY = "GATEWAY"
+    BANK = "BANK"
+    ERP = "ERP"
+
+
+class Direction(StrEnum):
+    """Accounting direction; numeric effect is decided by account/policy context."""
+
+    DEBIT = "DEBIT"
+    CREDIT = "CREDIT"
+
+
+class ProofLevel(StrEnum):
+    PROVED = "PROVED"
+    SUPPORTED = "SUPPORTED"
+    AMBIGUOUS = "AMBIGUOUS"
+    CONTRADICTED = "CONTRADICTED"
+    INVALID_INPUT = "INVALID_INPUT"
+
+
+class EventType(StrEnum):
+    PAYMENT = "PAYMENT"
+    REFUND = "REFUND"
+    FEE = "FEE"
+    TAX = "TAX"
+    ADJUSTMENT = "ADJUSTMENT"
+    SETTLEMENT = "SETTLEMENT"
+    BANK_CREDIT = "BANK_CREDIT"
+    BANK_DEBIT = "BANK_DEBIT"
+    ERP_JOURNAL_LINE = "ERP_JOURNAL_LINE"
+
+
+class ExceptionCategory(StrEnum):
+    DATA_QUALITY = "DATA_QUALITY"
+    REFERENCE = "REFERENCE"
+    TIMING = "TIMING"
+    AMOUNT = "AMOUNT"
+    DUPLICATE = "DUPLICATE"
+    MISSING_SOURCE = "MISSING_SOURCE"
+    ACCOUNTING = "ACCOUNTING"
+    POLICY = "POLICY"
+    AMBIGUOUS = "AMBIGUOUS"
+    UNKNOWN = "UNKNOWN"
+
+
+class DecisionState(StrEnum):
+    PROPOSED = "PROPOSED"
+    AUTO_CLEARED = "AUTO_CLEARED"
+    REVIEW_REQUIRED = "REVIEW_REQUIRED"
+    EXCEPTION = "EXCEPTION"
+
+
+class Severity(StrEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+class ReviewState(StrEnum):
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    EDIT_REQUESTED = "EDIT_REQUESTED"
+    DEFERRED = "DEFERRED"
+    INFORMATION_REQUESTED = "INFORMATION_REQUESTED"
+
+
+class ActionType(StrEnum):
+    JOURNAL_EXPORT = "JOURNAL_EXPORT"
+    CLARIFICATION_REQUEST = "CLARIFICATION_REQUEST"
+    MAPPING_CORRECTION = "MAPPING_CORRECTION"
+    CORRECTED_DATA_IMPORT = "CORRECTED_DATA_IMPORT"
+    WAIT = "WAIT"
+    ACCEPT_DIFFERENCE = "ACCEPT_DIFFERENCE"
+    MANUAL_REVIEW = "MANUAL_REVIEW"
+    NO_ACTION = "NO_ACTION"
+
+
+class ActionState(StrEnum):
+    PROPOSED = "PROPOSED"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    EXPORTED = "EXPORTED"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"
+
+
+class RunState(StrEnum):
+    CREATED = "CREATED"
+    FILES_ATTACHED = "FILES_ATTACHED"
+    VALIDATED = "VALIDATED"
+    RECONCILING = "RECONCILING"
+    COMPLETED = "COMPLETED"
+    FAILED_VALIDATION = "FAILED_VALIDATION"
+    FAILED = "FAILED"
+    CANCELLED = "CANCELLED"

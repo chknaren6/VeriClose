@@ -4,7 +4,10 @@
 
 VeriClose is being built for Razorpay Hackathon Track 04. It will process complete batches of gateway, bank and ERP records; automatically clear only provable matches; expose honest exceptions; and measure performance against hidden synthetic ground truth.
 
-The current implementation is the M0 walking skeleton: a typed FastAPI runtime, React connectivity shell, health and build metadata, deterministic no-model mode, tests and single-image packaging. Reconciliation logic begins in the next milestone.
+The current implementation includes the deployable M0 walking skeleton plus the Segment 2
+finance foundation: immutable canonical types, source contracts, deterministic synthetic
+gateway/bank/ERP batches, hidden ground truth and controlled exception scenarios. Upload,
+normalization and reconciliation are not implemented yet.
 
 ## Start locally
 
@@ -41,6 +44,24 @@ make verify
 ```
 
 This runs Python linting, backend tests, frontend type checking and the production frontend build.
+
+## Generate the synthetic company
+
+```bash
+make generate
+```
+
+This writes reproducible source files beneath `.data/synthetic/seed-42/`:
+
+```text
+inputs/gateway.csv
+inputs/bank.csv
+inputs/erp_gl.csv
+manifest.json
+private/ground_truth.json
+```
+
+Only evaluation code may read `private/ground_truth.json`.
 
 ## Judge-local container
 
@@ -79,6 +100,11 @@ React/Vite shell
 Read [PROJECT_PLAN.md](PROJECT_PLAN.md) for the product design, [TASKS.md](TASKS.md) for
 delivery gates, [BUILD_STEPS.md](BUILD_STEPS.md) for the implementation sequence, and
 [DEPLOYMENT.md](DEPLOYMENT.md) for the judge runbook.
+
+For a plain-language description of the inputs, outputs and user journey, read
+[docs/PRODUCT_WORKFLOW.md](docs/PRODUCT_WORKFLOW.md). Ideas that deliberately remain outside
+the frozen MVP are tracked separately in
+[docs/FUTURE_OPPORTUNITIES.md](docs/FUTURE_OPPORTUNITIES.md).
 
 ## Data safety
 

@@ -108,7 +108,7 @@ vericlose/
 │   │           ├── actions.py
 │   │           ├── exports.py
 │   │           └── demo.py
-│   └── web/
+│   └── web/It accepts canonIt accepts canonical objects and policies, then returns canonical decisions.
 │       ├── package.json
 │       ├── vite.config.ts
 │       └── src/
@@ -317,7 +317,9 @@ Completed on 2026-08-26:
 - [x] Step 0 — language, scope, invariants, safety rules, and architecture decisions.
 - [x] Step 1 — installable backend/frontend walking skeleton, automated checks,
   single-origin production build, and model-optional judge container.
-- [ ] Step 2 — canonical domain objects. **Start here next.**
+- [x] Step 2 — canonical domain objects and source/truth contracts.
+- [x] Step 3 — deterministic synthetic company, scenarios, private truth, and CLI.
+- [ ] Step 4 — adapter and mapping contracts. **Start here next.**
 
 The completed skeleton is intentionally thin: it reports only runtime facts and does
 not fabricate reconciliation or benchmark results. Preserve this behavior until real
@@ -451,7 +453,7 @@ are the only layer allowed to orchestrate those rules.
 
 Maps to: S2.1–S2.3.
 
-Status: **next implementation slice**.
+Status: **complete**.
 
 ### Goal
 
@@ -529,11 +531,21 @@ Write unit tests before adding persistence. Use boundary paise values and invali
 
 All domain tests pass without importing FastAPI, DuckDB, pandas/Polars or a model SDK.
 
+Completed evidence:
+
+- [x] Frozen domain objects validate paise, dates, lineage, proof, exceptions, reviews,
+  actions, balanced single-currency journals, and legal run transitions.
+- [x] Explicit wire helpers round-trip event IDs, integer amounts, and evidence coordinates.
+- [x] `SOURCE_SCHEMAS.md` defines gateway, both bank layouts, ERP GL, and invalid fixtures.
+- [x] Runtime architecture tests keep the pure domain free of delivery/infrastructure code.
+
 ---
 
 # Step 3 — Generate the synthetic company and hidden truth
 
 Maps to: S2.4–S2.6.
+
+Status: **complete**.
 
 ### Goal
 
@@ -559,17 +571,13 @@ Create repeatable finance batches whose correct relationships are known independ
 
 Use separate deterministic random streams for identifiers, amounts, dates and scenario placement. This reduces unrelated fixture churn when one generator component changes.
 
-### First scenarios
+### Implemented scenario suite
 
-Start with only:
-
-- exact clean match
-- missing bank receipt
-- duplicate ERP posting
-- fee/tax mismatch
-- ambiguous equal-amount candidate
-
-Add partial settlement, refunds and timing cases after the basic invariant engine exists.
+- clean exact and many-payments-to-one-settlement cases;
+- valid split settlement, later refund, and working-day timing differences;
+- mistyped reference, duplicate ERP posting, missing bank/ERP sources;
+- fee/tax and receipt amount mismatches;
+- orphan bank credit, unbalanced ERP journal, and equal-amount ambiguity.
 
 ### Coupling rule established
 
@@ -586,11 +594,21 @@ The generator may use shared domain enums or schemas, but must not call matching
 
 You can explain the correct outcome for every generated exception without running VeriClose.
 
+Completed evidence:
+
+- [x] `make generate` writes gateway, bank, ERP, manifest, and private truth artifacts.
+- [x] Default seed 42 creates 315 source rows and covers every implemented scenario family.
+- [x] Same-seed output is byte-identical; another seed changes identities, values, and placement.
+- [x] Every generated `PROVED` case passes component, bank-total, and ERP-balance checks.
+- [x] Source headers contain no case IDs, scenarios, dispositions, or other truth hints.
+
 ---
 
 # Step 4 — Define adapter and mapping contracts
 
 Maps to: S3.1, S3.5.
+
+Status: **next implementation slice**.
 
 ### Goal
 

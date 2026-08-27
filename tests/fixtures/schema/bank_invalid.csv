@@ -1,0 +1,2 @@
+bank_record_id,value_date,booking_date,credit_amount,debit_amount,utr,narration,currency,account_reference
+bnk_bad,not-a-date,2026-04-02,100.001,50.00,,Invalid both-sided row,INR,

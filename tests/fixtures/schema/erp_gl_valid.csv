@@ -1,0 +1,5 @@
+journal_id,line_number,posting_date,account_code,debit_amount,credit_amount,currency,external_reference,narration
+jrn_001,1,2026-04-02,110000,121.05,0.00,INR,set_001,Synthetic bank debit
+jrn_001,2,2026-04-02,510000,3.35,0.00,INR,set_001,Synthetic fee expense
+jrn_001,3,2026-04-02,140000,0.60,0.00,INR,set_001,Synthetic input GST
+jrn_001,4,2026-04-02,120000,0.00,125.00,INR,set_001,Synthetic clearing credit

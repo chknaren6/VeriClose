@@ -1,0 +1,2 @@
+bank_record_id,value_date,booking_date,signed_amount,utr,narration,currency,account_reference
+bnk_002,2026-04-03,2026-04-03,-25.00,utr_fee,Synthetic bank debit,INR,acct_demo_01

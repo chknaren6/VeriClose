@@ -1,0 +1,3 @@
+gateway_event_id,event_type,transaction_id,settlement_id,amount_minor,currency,event_at,status,reference,narration
+gwe_001,PAYMENT,pay_001,set_001,12500,INR,2026-04-01T10:15:00+00:00,captured,order_001,Synthetic payment
+gwe_002,SETTLEMENT,,set_001,12105,INR,2026-04-02T09:00:00+00:00,settled,utr_001,Synthetic settlement

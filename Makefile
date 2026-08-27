@@ -6,7 +6,13 @@ PORT ?= 8000
 BASE_URL ?= http://localhost:$(PORT)
 export UV_CACHE_DIR := $(CURDIR)/.uv-cache
 
-.PHONY: setup test lint format typecheck build-web verify dev dev-api dev-web health image judge smoke smoke-local smoke-container
+.PHONY: setup test lint format typecheck build-web verify generate dev dev-api dev-web health image judge smoke smoke-local smoke-container
+
+SEED ?= 42
+PAYMENTS ?= 120
+SETTLEMENTS ?= 24
+EXCEPTION_RATE ?= 0.40
+GENERATED_OUTPUT ?= .data/synthetic/seed-$(SEED)
 
 setup:
 	uv sync --dev
@@ -29,6 +35,9 @@ build-web:
 	pnpm --filter @vericlose/web build
 
 verify: lint test typecheck build-web
+
+generate:
+	$(PYTHON) python -m synthetic.generate --seed $(SEED) --payments $(PAYMENTS) --settlements $(SETTLEMENTS) --exception-rate $(EXCEPTION_RATE) --output $(GENERATED_OUTPUT)
 
 dev:
 	bash scripts/dev.sh
