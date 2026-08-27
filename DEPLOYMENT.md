@@ -71,8 +71,8 @@ Important variables:
 | Variable | Judge default | Purpose |
 |---|---:|---|
 | `VERICLOSE_ENVIRONMENT` | `judge-local` | Selects runtime behavior/profile. |
-| `VERICLOSE_DATA_DIR` | `/app/data` | Writable uploads, artifacts, and future local data. |
-| `VERICLOSE_DATABASE_PATH` | `/app/data/vericlose.duckdb` | Future local database path. |
+| `VERICLOSE_DATA_DIR` | `/app/data` | Writable immutable uploads and generated artifacts. |
+| `VERICLOSE_DATABASE_PATH` | `/app/data/vericlose.duckdb` | DuckDB persistence path. |
 | `VERICLOSE_DEMO_MODE` | `true` | Allows only safe synthetic demo behavior. |
 | `VERICLOSE_UPLOAD_MAX_BYTES` | `10485760` | Per-file upload ceiling. |
 | `VERICLOSE_DETERMINISTIC_SEED` | `42` | Default reproducibility seed. |
@@ -88,8 +88,9 @@ Do not put secrets in the image, source tree, Compose file, frontend bundle, or 
 - The process runs as a non-root user.
 - `/app/data` is the only required writable application directory.
 - Liveness means the process responds.
-- Readiness means settings loaded and the configured data path is writable; later milestones
-  will also check policy, mapping, storage schema, and production assets.
+- Readiness means settings loaded and the configured data path is writable. Mapping profiles are
+  validated when the application composition root starts; versioned DuckDB migrations are applied
+  transactionally on the first persistence operation.
 - SIGTERM/SIGINT must allow Uvicorn to shut down cleanly.
 
 ## External smoke check
@@ -131,8 +132,27 @@ Before handing a build to judges:
    are present in the image or Git history.
 6. Record the commit SHA and benchmark configuration shown in the demo.
 
-## Current M0 limitation
+## Current M1 capability and limitation
 
-The current image is a verified walking skeleton. It does not yet ingest finance files or
-claim reconciliation results. That capability is added inside the existing API, web app,
-and image as subsequent task gates pass.
+The current image contains the complete Segment 3 ingestion foundation. It can generate a
+synthetic company and run gateway, bank, and ERP files through detection, safe versioned mapping,
+staged validation, exact normalization, immutable file storage, and transactional DuckDB
+persistence. It does **not** yet claim reconciliation matches or accuracy metrics; those begin in
+Segment 4 and must be backed by real proof checks.
+
+Native end-to-end proof:
+
+```bash
+make generate
+make import-batch RUN_ID=judge-seed-42-v1
+```
+
+Expected properties of the default seed-42 batch:
+
+- 315 source rows become 315 traceable canonical events.
+- The run reaches `VALIDATED` with no quarantined rows.
+- Four deliberately unbalanced ERP journals remain visible as non-blocking accounting issues.
+- A repeated upload in the same run is rejected by content hash; re-import uses a new run ID.
+
+The generator and import CLI are also included in the production image, so the same proof can run
+without development dependencies when input and data directories are mounted into the container.

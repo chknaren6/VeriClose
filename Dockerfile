@@ -38,6 +38,8 @@ COPY --from=python-build /opt/venv /opt/venv
 COPY apps /app/apps
 COPY core /app/core
 COPY config /app/config
+COPY scripts /app/scripts
+COPY synthetic /app/synthetic
 COPY --from=web-build /build/apps/web/dist /app/apps/api/app/static
 
 RUN mkdir -p /app/data && chown -R vericlose:vericlose /app

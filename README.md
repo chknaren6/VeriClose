@@ -4,10 +4,10 @@
 
 VeriClose is being built for Razorpay Hackathon Track 04. It will process complete batches of gateway, bank and ERP records; automatically clear only provable matches; expose honest exceptions; and measure performance against hidden synthetic ground truth.
 
-The current implementation includes the deployable M0 walking skeleton plus the Segment 2
-finance foundation: immutable canonical types, source contracts, deterministic synthetic
-gateway/bank/ERP batches, hidden ground truth and controlled exception scenarios. Upload,
-normalization and reconciliation are not implemented yet.
+The current implementation includes the deployable shell and complete M1 ingestion pipeline:
+immutable canonical types, deterministic synthetic gateway/bank/ERP batches, CSV/XLSX source
+adapters, safe versioned mappings, staged validation, honest row quarantine, immutable source
+storage, and transactional DuckDB persistence. Reconciliation deliberately starts in Segment 4.
 
 ## Start locally
 
@@ -63,6 +63,27 @@ private/ground_truth.json
 
 Only evaluation code may read `private/ground_truth.json`.
 
+## Import and validate the complete batch
+
+After generating the files, run:
+
+```bash
+make import-batch RUN_ID=demo-seed-42-v1
+```
+
+The command prints a machine-readable summary containing the detected source/profile, rows seen,
+normalized and quarantined row counts, validation codes, total canonical event count, and final
+run state. Use a new `RUN_ID` for a re-import; previous source and canonical layers are immutable.
+
+To import your own synthetic CSV/XLSX files directly:
+
+```bash
+uv run python -m scripts.import_batch \
+  --gateway path/to/gateway.xlsx \
+  --bank path/to/bank.csv \
+  --erp path/to/erp_gl.xlsx
+```
+
 ## Judge-local container
 
 Docker Compose is optional. The baseline command uses plain Docker:
@@ -73,6 +94,9 @@ make judge
 ```
 
 Then open <http://localhost:8000>. The deterministic fallback works without an AI model key.
+
+The same image also contains the M1 import CLI. With generated inputs mounted under `/app/data`,
+it can be invoked with `python -m scripts.import_batch`; no development dependencies are needed.
 
 If Docker Compose is available:
 
@@ -85,7 +109,9 @@ docker compose up --build
 ```text
 React/Vite shell
     → FastAPI routes
-    → application composition root
+    → application composition root/import service
+    → adapter registry and versioned mappings
+    → immutable file store + DuckDB
     → future deterministic verification kernel
 ```
 

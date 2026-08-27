@@ -1,0 +1,30 @@
+schema_version: "1.0"
+profiles:
+  - profile_id: erp_gl_standard
+    version: "1.0.0"
+    source_type: ERP
+    formats: [CSV, XLSX]
+    fields:
+      journal_id: {aliases: [journal_id], required: true, transform: strip}
+      line_number: {aliases: [line_number], required: true, transform: integer}
+      posting_date: {aliases: [posting_date], required: true, transform: iso_date}
+      account_code: {aliases: [account_code], required: true, transform: strip}
+      debit_minor: {aliases: [debit_amount], required: true, transform: decimal_minor}
+      credit_minor: {aliases: [credit_amount], required: true, transform: decimal_minor}
+      currency: {aliases: [currency], required: true, transform: upper}
+      external_reference: {aliases: [external_reference], required: false, transform: strip}
+      narration: {aliases: [narration], required: false, transform: strip}
+  - profile_id: erp_gl_alt
+    version: "1.0.0"
+    source_type: ERP
+    formats: [CSV, XLSX]
+    fields:
+      journal_id: {aliases: [document_number, voucher_id], required: true, transform: strip}
+      line_number: {aliases: [document_line, sequence], required: true, transform: integer}
+      posting_date: {aliases: [document_date, gl_date], required: true, transform: iso_date}
+      account_code: {aliases: [gl_account, ledger_account], required: true, transform: strip}
+      debit_minor: {aliases: [debit_value, dr_amount], required: true, transform: decimal_minor}
+      credit_minor: {aliases: [credit_value, cr_amount], required: true, transform: decimal_minor}
+      currency: {aliases: [currency_code, ccy], required: true, transform: upper}
+      external_reference: {aliases: [reference, settlement_ref], required: false, transform: strip}
+      narration: {aliases: [description, memo], required: false, transform: strip}

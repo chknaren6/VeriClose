@@ -6,7 +6,7 @@ PORT ?= 8000
 BASE_URL ?= http://localhost:$(PORT)
 export UV_CACHE_DIR := $(CURDIR)/.uv-cache
 
-.PHONY: setup test lint format typecheck build-web verify generate dev dev-api dev-web health image judge smoke smoke-local smoke-container
+.PHONY: setup test lint format typecheck build-web verify generate import-batch dev dev-api dev-web health image judge smoke smoke-local smoke-container
 
 SEED ?= 42
 PAYMENTS ?= 120
@@ -38,6 +38,13 @@ verify: lint test typecheck build-web
 
 generate:
 	$(PYTHON) python -m synthetic.generate --seed $(SEED) --payments $(PAYMENTS) --settlements $(SETTLEMENTS) --exception-rate $(EXCEPTION_RATE) --output $(GENERATED_OUTPUT)
+
+RUN_ID ?= import-seed-$(SEED)-v1
+IMPORT_DATABASE ?= .data/vericlose.duckdb
+IMPORT_DATA_DIR ?= .data/imports
+
+import-batch:
+	$(PYTHON) python -m scripts.import_batch --gateway $(GENERATED_OUTPUT)/inputs/gateway.csv --bank $(GENERATED_OUTPUT)/inputs/bank.csv --erp $(GENERATED_OUTPUT)/inputs/erp_gl.csv --run-id $(RUN_ID) --database $(IMPORT_DATABASE) --data-dir $(IMPORT_DATA_DIR)
 
 dev:
 	bash scripts/dev.sh

@@ -319,11 +319,13 @@ Updated on 2026-08-27:
   single-origin production build, and model-optional judge container.
 - [x] Step 2 — canonical domain objects and source/truth contracts.
 - [x] Step 3 — deterministic synthetic company, scenarios, private truth, and CLI.
-- [ ] Step 4 — adapter and mapping contracts. **In progress: S3.1 is complete; S3.5 is pending.**
+- [x] Step 4 — adapter and mapping contracts.
   - [x] Step 4A — typed adapter port, reports, row disposition, mapping version propagation,
     shared contract tests, and alternate-layout proof.
-  - [ ] Step 4B — concrete profile schema, safe transforms, registry, and user confirmation
-    behavior in S3.5 after the three source adapters establish real requirements.
+  - [x] Step 4B — concrete profile schema, safe transforms, registry, and user confirmation.
+- [x] Step 5 — CSV/XLSX gateway, bank, and ERP adapters plus staged validation.
+- [x] Step 6 — immutable file storage, DuckDB repositories, and import application service.
+- [ ] Step 7 — deterministic candidate indexes and reconciliation policy. **Start here next.**
 
 The completed skeleton is intentionally thin: it reports only runtime facts and does
 not fabricate reconciliation or benchmark results. Preserve this behavior until real
@@ -612,7 +614,7 @@ Completed evidence:
 
 Maps to: S3.1, S3.5.
 
-Status: **in progress — S3.1 complete; S3.5 pending after S3.2–S3.4**.
+Status: **complete**.
 
 ### Goal
 
@@ -681,6 +683,8 @@ A fake alternate source layout can normalize without editing a reconciliation ru
 
 Maps to: S3.2–S3.7.
 
+Status: **complete**.
+
 ### Goal
 
 Convert each source into canonical events with exact lineage and actionable errors.
@@ -734,6 +738,8 @@ Print or inspect canonical events from all three files and trace every value to 
 # Step 6 — Add persistence and the import application service
 
 Maps to: S1.4, S3.7.
+
+Status: **complete**.
 
 ### Goal
 

@@ -81,6 +81,6 @@ If a command is not implemented for the current milestone, leave it as an explic
 
 ## Current milestone
 
-Segment 2 is complete. The current target is M1 ingestion: source-adapter contracts,
-versioned mappings, validation, normalization, immutable storage, and import orchestration.
-Do not implement matching or model integration until the Segment 3 exit gate passes.
+Segment 3 and the M1 ingestion exit gate are complete. The current target is M2: versioned
+reconciliation policy, bounded candidate indexes, deterministic proof rules, and the risk gate.
+Model integration remains forbidden until deterministic matching and evaluation are complete.

@@ -1,0 +1,43 @@
+schema_version: "1.0"
+profiles:
+  - profile_id: bank_debit_credit
+    version: "1.0.0"
+    source_type: BANK
+    formats: [CSV, XLSX]
+    fields:
+      source_record_id: {aliases: [bank_record_id], required: true, transform: strip}
+      value_date: {aliases: [value_date], required: true, transform: iso_date}
+      booking_date: {aliases: [booking_date], required: true, transform: iso_date}
+      credit_minor: {aliases: [credit_amount], required: true, transform: decimal_minor}
+      debit_minor: {aliases: [debit_amount], required: true, transform: decimal_minor}
+      bank_utr: {aliases: [utr], required: false, transform: strip}
+      narration: {aliases: [narration], required: false, transform: strip}
+      currency: {aliases: [currency], required: true, transform: upper}
+      account_code: {aliases: [account_reference], required: false, transform: strip}
+  - profile_id: bank_signed
+    version: "1.0.0"
+    source_type: BANK
+    formats: [CSV, XLSX]
+    fields:
+      source_record_id: {aliases: [bank_record_id, record_id], required: true, transform: strip}
+      value_date: {aliases: [value_date, transaction_date], required: true, transform: iso_date}
+      booking_date: {aliases: [booking_date, posted_date], required: true, transform: iso_date}
+      signed_amount_minor: {aliases: [signed_amount, transaction_amount], required: true, transform: decimal_minor}
+      bank_utr: {aliases: [utr, bank_reference], required: false, transform: strip}
+      narration: {aliases: [narration, description], required: false, transform: strip}
+      currency: {aliases: [currency, ccy], required: true, transform: upper}
+      account_code: {aliases: [account_reference, account_id], required: false, transform: strip}
+  - profile_id: bank_dr_cr_alt
+    version: "1.0.0"
+    source_type: BANK
+    formats: [CSV, XLSX]
+    fields:
+      source_record_id: {aliases: [statement_line_id], required: true, transform: strip}
+      value_date: {aliases: [effective_date], required: true, transform: iso_date}
+      booking_date: {aliases: [ledger_date], required: true, transform: iso_date}
+      credit_minor: {aliases: [credit], required: true, transform: decimal_minor}
+      debit_minor: {aliases: [debit], required: true, transform: decimal_minor}
+      bank_utr: {aliases: [reference_number], required: false, transform: strip}
+      narration: {aliases: [memo], required: false, transform: strip}
+      currency: {aliases: [currency_code], required: true, transform: upper}
+      account_code: {aliases: [bank_account], required: false, transform: strip}

@@ -1,0 +1,32 @@
+schema_version: "1.0"
+profiles:
+  - profile_id: gateway_standard
+    version: "1.0.0"
+    source_type: GATEWAY
+    formats: [CSV, XLSX]
+    fields:
+      source_record_id: {aliases: [gateway_event_id], required: true, transform: strip}
+      event_type: {aliases: [event_type], required: true, transform: upper}
+      payment_reference: {aliases: [transaction_id], required: false, transform: strip}
+      settlement_reference: {aliases: [settlement_id], required: false, transform: strip}
+      amount_minor: {aliases: [amount_minor], required: true, transform: minor_units}
+      currency: {aliases: [currency], required: true, transform: upper}
+      event_at: {aliases: [event_at], required: true, transform: iso_datetime}
+      status: {aliases: [status], required: false, transform: strip}
+      external_reference: {aliases: [reference], required: false, transform: strip}
+      narration: {aliases: [narration], required: false, transform: strip}
+  - profile_id: gateway_payments_alt
+    version: "1.0.0"
+    source_type: GATEWAY
+    formats: [CSV, XLSX]
+    fields:
+      source_record_id: {aliases: [payment_event_key, event_key], required: true, transform: strip}
+      event_type: {aliases: [record_type, type], required: true, transform: upper}
+      payment_reference: {aliases: [payment_id, transaction_ref], required: false, transform: strip}
+      settlement_reference: {aliases: [settlement_ref, settlement_key], required: false, transform: strip}
+      amount_minor: {aliases: [value_paise, amount_paise], required: true, transform: minor_units}
+      currency: {aliases: [currency_code, ccy], required: true, transform: upper}
+      event_at: {aliases: [created_at, occurred_at], required: true, transform: iso_datetime}
+      status: {aliases: [payment_status, state], required: false, transform: strip}
+      external_reference: {aliases: [merchant_reference, order_ref], required: false, transform: strip}
+      narration: {aliases: [description, notes], required: false, transform: strip}

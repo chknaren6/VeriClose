@@ -52,11 +52,12 @@ make verify      # M8: lint + tests + benchmark + production build
 
 ## Current implementation checkpoint — 2026-08-27
 
-The **M0 walking skeleton, Segment 2 foundation, and S3.1 adapter contract are complete**.
+The **M0 walking skeleton and M1 ingestion foundation through Segment 3 are complete**.
 The repository now has pure immutable finance types, explicit source contracts, hidden
 event/case truth, deterministic source generation, controlled scenario injectors, and a
 reproducible 50+ record batch in addition to the deployable shell. The adapter boundary now
-returns typed detection, validation, normalization, quarantine, and control-total results.
+returns typed detection, validation, normalization, quarantine, and control-total results;
+CSV/XLSX gateway, bank, and ERP data can be imported into immutable files and DuckDB records.
 
 Verified at this checkpoint:
 
@@ -70,18 +71,22 @@ Verified at this checkpoint:
   `/api/meta`, displayed the deterministic fallback, and produced no console errors.
 - `make generate` produces 315 source rows for the default seed across gateway, bank,
   and ERP, plus a manifest and private truth labels.
-- 89 tests cover domain invariants, source contracts, adapter conformance, no-silent-drop
-  normalization, scenario behavior, accounting balance, deterministic bytes, control totals,
-  and truth isolation.
+- `make import-batch` takes the three generated inputs through detect, map, staged validation,
+  normalization, control totals, immutable file storage, and transactional DuckDB persistence.
+- The default 315-row seed imports as `VALIDATED`; its intentionally unbalanced journal remains
+  canonical evidence and is persisted as a non-blocking `JOURNAL_UNBALANCED` accounting issue.
+- 144 tests cover domain invariants, all real adapter contracts, CSV/XLSX parsing, exact decimal
+  money, alternate layouts, ambiguity, staged diagnostics, immutable persistence, rollback,
+  scenario behavior, accounting balance, deterministic bytes, and truth isolation.
 
 What this checkpoint intentionally **does not** claim:
 
-- generated CSV exists, but user-uploaded CSV/XLSX is not ingested or normalized yet;
-- no reconciliation, benchmark result, persistence schema, or AI judgment exists;
+- the import pipeline exists, but the HTTP upload/review UI is scheduled for Segment 6;
+- no reconciliation decision, benchmark result, or AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S3.2, Razorpay-style gateway adapter**. Persistence protocols and
-DuckDB implementation remain in **S3.7**, after validated canonical import works.
+The next executable task is **S4.1, versioned reconciliation policy**. Segment 3 now satisfies
+the M1 exit gate; matching has intentionally not started inside ingestion code.
 
 ---
 
@@ -426,10 +431,10 @@ Acceptance criteria:
 
 ## S3.2 Implement Razorpay-style gateway adapter — P0
 
-- [ ] Support CSV and XLSX.
-- [ ] Parse payments, refunds, fees, taxes, adjustments and settlement references.
-- [ ] Preserve raw sign and map canonical direction.
-- [ ] Produce component control totals.
+- [x] Support CSV and XLSX.
+- [x] Parse payments, refunds, fees, taxes, adjustments and settlement references.
+- [x] Preserve raw sign and map canonical direction.
+- [x] Produce component control totals.
 
 Depends on: S3.1.
 
@@ -440,9 +445,9 @@ Acceptance criteria:
 
 ## S3.3 Implement generic bank adapter — P0
 
-- [ ] Parse debit/credit or signed-amount layouts.
-- [ ] Extract value date, narration and UTR/reference.
-- [ ] Preserve unmatched narration as untrusted text.
+- [x] Parse debit/credit or signed-amount layouts.
+- [x] Extract value date, narration and UTR/reference.
+- [x] Preserve unmatched narration as untrusted text.
 
 Depends on: S3.1.
 
@@ -453,9 +458,9 @@ Acceptance criteria:
 
 ## S3.4 Implement generic ERP GL adapter — P0
 
-- [ ] Parse journal, line, account, debit, credit, date and external reference.
-- [ ] Group journal lines.
-- [ ] Verify journal balance before reconciliation.
+- [x] Parse journal, line, account, debit, credit, date and external reference.
+- [x] Group journal lines.
+- [x] Verify journal balance before reconciliation.
 
 Depends on: S3.1.
 
@@ -466,10 +471,10 @@ Acceptance criteria:
 
 ## S3.5 Implement mapping profiles — P0
 
-- [ ] Define versioned profile schema.
-- [ ] Support column aliases and safe transforms.
-- [ ] Add auto-detection scoring with explicit user confirmation.
-- [ ] Save selected mapping to the run manifest.
+- [x] Define versioned profile schema.
+- [x] Support column aliases and safe transforms.
+- [x] Add auto-detection scoring with explicit user confirmation.
+- [x] Save selected mapping to the run manifest.
 
 Depends on: S3.2–S3.4.
 
@@ -480,11 +485,11 @@ Acceptance criteria:
 
 ## S3.6 Implement staged validation — P0
 
-- [ ] File validation.
-- [ ] Schema validation.
-- [ ] Semantic validation.
-- [ ] Accounting validation.
-- [ ] Cross-source readiness validation.
+- [x] File validation.
+- [x] Schema validation.
+- [x] Semantic validation.
+- [x] Accounting validation.
+- [x] Cross-source readiness validation.
 
 Depends on: S3.2–S3.5.
 
@@ -496,21 +501,21 @@ Acceptance criteria:
 
 ## S3.7 Persist raw and canonical layers — P0
 
-- [ ] Define `RunRepository`, `SourceFileRepository`, `EventRepository`,
+- [x] Define `RunRepository`, `SourceFileRepository`, `EventRepository`,
   `DecisionRepository`, `ReviewRepository`, and `AuditRepository` protocols in
   `core/vericlose/ports/repositories.py`; use domain types in signatures and expose no SQL.
-- [ ] Define `FileStore` in `core/vericlose/ports/file_store.py` with immutable put/get/hash
+- [x] Define `FileStore` in `core/vericlose/ports/file_store.py` with immutable put/get/hash
   operations and run-scoped paths.
-- [ ] Create versioned DuckDB migrations for runs, files, canonical events, proof checks,
+- [x] Create versioned DuckDB migrations for runs, files, canonical events, proof checks,
   evidence links, decisions, exceptions, reviews, actions, receipts, and audit events.
-- [ ] Implement DuckDB repositories under `core/vericlose/infrastructure/duckdb/` with explicit
+- [x] Implement DuckDB repositories under `core/vericlose/infrastructure/duckdb/` with explicit
   unit-of-work/transaction boundaries for import, decision persistence, and review/action writes.
-- [ ] Implement `LocalFileStore` that validates paths, uses content hashes, never overwrites an
+- [x] Implement `LocalFileStore` that validates paths, uses content hashes, never overwrites an
   original upload, and stores only beneath the configured data directory.
-- [ ] Save adapter version, mapping-profile version, policy version, file SHA-256, source row,
+- [x] Save adapter version, mapping-profile version, policy version, file SHA-256, source row,
   and canonical event ID so every value is reconstructable.
-- [ ] Add fake-repository contract tests plus a temporary-directory DuckDB integration test.
-- [ ] Prove that a review or proposed correction appends new state and cannot update the raw or
+- [x] Add fake-repository contract tests plus a temporary-directory DuckDB integration test.
+- [x] Prove that a review or proposed correction appends new state and cannot update the raw or
   canonical source layers.
 
 Depends on: S1.4, S3.2–S3.6.
@@ -522,9 +527,9 @@ Acceptance criteria:
 
 ### Segment 3 exit gate — M1 (25%)
 
-- [ ] Three source files pass through upload/detect/map/validate/normalize.
-- [ ] Alternate layouts produce equivalent canonical results.
-- [ ] Malformed inputs fail with precise diagnostics.
+- [x] Three source files pass through upload/detect/map/validate/normalize.
+- [x] Alternate layouts produce equivalent canonical results.
+- [x] Malformed inputs fail with precise diagnostics.
 
 ---
 
