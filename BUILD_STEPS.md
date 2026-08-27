@@ -312,14 +312,18 @@ The default dataset is small enough to process synchronously, but the kernel sho
 
 ## Implementation checkpoint
 
-Completed on 2026-08-26:
+Updated on 2026-08-27:
 
 - [x] Step 0 — language, scope, invariants, safety rules, and architecture decisions.
 - [x] Step 1 — installable backend/frontend walking skeleton, automated checks,
   single-origin production build, and model-optional judge container.
 - [x] Step 2 — canonical domain objects and source/truth contracts.
 - [x] Step 3 — deterministic synthetic company, scenarios, private truth, and CLI.
-- [ ] Step 4 — adapter and mapping contracts. **Start here next.**
+- [ ] Step 4 — adapter and mapping contracts. **In progress: S3.1 is complete; S3.5 is pending.**
+  - [x] Step 4A — typed adapter port, reports, row disposition, mapping version propagation,
+    shared contract tests, and alternate-layout proof.
+  - [ ] Step 4B — concrete profile schema, safe transforms, registry, and user confirmation
+    behavior in S3.5 after the three source adapters establish real requirements.
 
 The completed skeleton is intentionally thin: it reports only runtime facts and does
 not fabricate reconciliation or benchmark results. Preserve this behavior until real
@@ -608,7 +612,7 @@ Completed evidence:
 
 Maps to: S3.1, S3.5.
 
-Status: **next implementation slice**.
+Status: **in progress — S3.1 complete; S3.5 pending after S3.2–S3.4**.
 
 ### Goal
 
@@ -626,11 +630,22 @@ Make new input styles replaceable at the edge.
 Each adapter exposes:
 
 ```python
-detect(file) -> DetectionResult
-validate(file, mapping) -> ValidationReport
-normalize(file, mapping) -> list[CanonicalEvent]
+detect(document) -> DetectionResult
+validate(document, mapping) -> ValidationReport
+normalize(document, mapping, context) -> NormalizationResult
 control_totals(events) -> ControlTotals
 ```
+
+S3.1 completion evidence:
+
+- `SourceDocument` supplies immutable bytes and verifies the content hash before parsing.
+- `ValidationReport` distinguishes file/schema blockers from row-level quarantine issues.
+- `NormalizationResult` rejects missing or duplicate row dispositions, mismatched lineage,
+  and events produced under a different mapping-profile version.
+- The reusable adapter contract proves valid-row throughput, explicit invalid-row quarantine,
+  typed detection evidence, mapping-version propagation, and control-total coverage.
+- A fake alternate layout changes only the mapping profile and produces the same canonical
+  record ID, money, and timestamp without touching reconciliation code.
 
 ### Adapter registry behavior
 

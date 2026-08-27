@@ -52,15 +52,16 @@ make verify      # M8: lint + tests + benchmark + production build
 
 ## Current implementation checkpoint — 2026-08-27
 
-The **M0 walking skeleton and Segment 2 canonical/synthetic foundation are complete**.
+The **M0 walking skeleton, Segment 2 foundation, and S3.1 adapter contract are complete**.
 The repository now has pure immutable finance types, explicit source contracts, hidden
 event/case truth, deterministic source generation, controlled scenario injectors, and a
-reproducible 50+ record batch in addition to the deployable shell.
+reproducible 50+ record batch in addition to the deployable shell. The adapter boundary now
+returns typed detection, validation, normalization, quarantine, and control-total results.
 
 Verified at this checkpoint:
 
 - `uv sync --dev` and `pnpm install --frozen-lockfile` install from lockfiles.
-- `make verify` passes lint, six backend/architecture tests, frontend type checking,
+- `make verify` passes lint, the full backend/architecture test suite, frontend type checking,
   and the production web build.
 - `make smoke-local PORT=8011` starts the API and exercises readiness and metadata.
 - `make image` and `make smoke-container PORT=8012` build and exercise the exact
@@ -69,8 +70,9 @@ Verified at this checkpoint:
   `/api/meta`, displayed the deterministic fallback, and produced no console errors.
 - `make generate` produces 315 source rows for the default seed across gateway, bank,
   and ERP, plus a manifest and private truth labels.
-- 73 tests cover domain invariants, source contracts, scenario behavior, accounting
-  balance, deterministic bytes, control totals, and truth isolation.
+- 89 tests cover domain invariants, source contracts, adapter conformance, no-silent-drop
+  normalization, scenario behavior, accounting balance, deterministic bytes, control totals,
+  and truth isolation.
 
 What this checkpoint intentionally **does not** claim:
 
@@ -78,7 +80,7 @@ What this checkpoint intentionally **does not** claim:
 - no reconciliation, benchmark result, persistence schema, or AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S3.1, source-adapter contract**. Persistence protocols and
+The next executable task is **S3.2, Razorpay-style gateway adapter**. Persistence protocols and
 DuckDB implementation remain in **S3.7**, after validated canonical import works.
 
 ---
@@ -411,9 +413,9 @@ Acceptance criteria:
 
 ## S3.1 Define source-adapter contract — P0
 
-- [ ] Define detect, validate, normalize and control-total methods.
-- [ ] Define typed detection and validation reports.
-- [ ] Define mapping-profile version behavior.
+- [x] Define detect, validate, normalize and control-total methods.
+- [x] Define typed detection and validation reports.
+- [x] Define mapping-profile version behavior.
 
 Depends on: S2.1, S2.2.
 
