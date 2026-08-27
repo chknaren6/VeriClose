@@ -4,10 +4,10 @@
 
 VeriClose is being built for Razorpay Hackathon Track 04. It will process complete batches of gateway, bank and ERP records; automatically clear only provable matches; expose honest exceptions; and measure performance against hidden synthetic ground truth.
 
-The current implementation includes the deployable shell and complete M1 ingestion pipeline:
-immutable canonical types, deterministic synthetic gateway/bank/ERP batches, CSV/XLSX source
-adapters, safe versioned mappings, staged validation, honest row quarantine, immutable source
-storage, and transactional DuckDB persistence. Reconciliation deliberately starts in Segment 4.
+The current implementation includes the deployable shell, complete M1 ingestion pipeline, and M2
+deterministic verification kernel: immutable canonical evidence, strict versioned finance policy,
+bounded candidate search, accounting proof checks, an auto-clear risk gate, honest exceptions,
+append-only DuckDB persistence, and a complete judge-runnable close command. No model is required.
 
 ## Start locally
 
@@ -84,6 +84,19 @@ uv run python -m scripts.import_batch \
   --erp path/to/erp_gl.xlsx
 ```
 
+## Reconcile the complete batch
+
+Generate, import, prove, risk-gate, persist, and export the exception queue:
+
+```bash
+make generate
+make reconcile CLOSE_RUN_ID=demo-close-v1
+```
+
+The CLI reports operational verification throughput, proof-level counts, amount at risk, stage
+timings, and the exception-file path. This is operational run output—not an accuracy benchmark.
+Synthetic ground-truth accuracy and multi-seed safety gates are deliberately isolated in Segment 5.
+
 ## Judge-local container
 
 Docker Compose is optional. The baseline command uses plain Docker:
@@ -95,8 +108,19 @@ make judge
 
 Then open <http://localhost:8000>. The deterministic fallback works without an AI model key.
 
-The same image also contains the M1 import CLI. With generated inputs mounted under `/app/data`,
-it can be invoked with `python -m scripts.import_batch`; no development dependencies are needed.
+The same image contains both the M1 import CLI and M2 close CLI. With generated inputs mounted
+under `/app/data`, invoke `python -m scripts.import_batch` or `python -m scripts.reconcile`; no
+development dependencies are needed.
+
+For a mount-free proof entirely inside an ephemeral container volume:
+
+```bash
+docker run --rm -v /app/data vericlose:dev \
+  python -m scripts.reconcile --generate-demo \
+  --run-id judge-seed-42 --data-dir /app/data \
+  --database /app/data/vericlose.duckdb \
+  --exceptions-output /app/data/exceptions.json
+```
 
 If Docker Compose is available:
 
@@ -109,10 +133,11 @@ docker compose up --build
 ```text
 React/Vite shell
     → FastAPI routes
-    → application composition root/import service
+    → application composition root/import and reconciliation services
     → adapter registry and versioned mappings
     → immutable file store + DuckDB
-    → future deterministic verification kernel
+    → read-only candidate context + deterministic proof rules
+    → policy-owned risk gate + evidence-backed exceptions
 ```
 
 - `apps/api`: HTTP delivery and production static-asset serving
@@ -126,6 +151,10 @@ React/Vite shell
 Read [PROJECT_PLAN.md](PROJECT_PLAN.md) for the product design, [TASKS.md](TASKS.md) for
 delivery gates, [BUILD_STEPS.md](BUILD_STEPS.md) for the implementation sequence, and
 [DEPLOYMENT.md](DEPLOYMENT.md) for the judge runbook.
+
+For a complete explanation of what is currently implemented, how the layers cooperate, why each
+component exists, and the full architecture and runtime flowcharts, read
+[IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md).
 
 For a plain-language description of the inputs, outputs and user journey, read
 [docs/PRODUCT_WORKFLOW.md](docs/PRODUCT_WORKFLOW.md). Ideas that deliberately remain outside

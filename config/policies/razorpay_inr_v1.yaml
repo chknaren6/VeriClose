@@ -1,0 +1,138 @@
+schema_version: "1.0"
+policy_id: razorpay_inr_v1
+version: "1.0.0"
+currency: INR
+
+dates:
+  settlement_to_bank_min_days: 0
+  settlement_to_bank_max_days: 3
+  bank_to_erp_max_days: 3
+
+tolerances_minor:
+  settlement_components: 0
+  bank_receipt: 0
+  erp_posting: 0
+
+component_signs:
+  PAYMENT: 1
+  REFUND: -1
+  FEE: -1
+  TAX: -1
+  ADJUSTMENT_CREDIT: 1
+  ADJUSTMENT_DEBIT: -1
+
+account_roles:
+  bank:
+    account_codes: ["110000"]
+    direction: DEBIT
+  clearing:
+    account_codes: ["120000"]
+    direction: CREDIT
+  fee:
+    account_codes: ["510000"]
+    direction: DEBIT
+  tax:
+    account_codes: ["140000"]
+    direction: DEBIT
+
+grouping:
+  max_candidates: 12
+  max_group_size: 4
+  max_valid_groups: 2
+
+auto_clear:
+  enabled: true
+  required_checks:
+    - GATEWAY_SETTLEMENT_UNIQUE
+    - SETTLEMENT_COMPONENT_INVARIANT
+    - BANK_RECEIPT_PRESENT
+    - BANK_RECEIPT_AMOUNT
+    - BANK_RECEIPT_DIRECTION
+    - BANK_RECEIPT_REFERENCE
+    - BANK_RECEIPT_DATE
+    - BANK_RECEIPT_UNIQUE
+    - ERP_JOURNAL_PRESENT
+    - ERP_JOURNAL_UNIQUE
+    - ERP_JOURNAL_BALANCED
+    - ERP_BANK_POSTING
+    - ERP_CLEARING_POSTING
+    - ERP_FEE_POSTING
+    - ERP_TAX_POSTING
+
+support_scoring_bps:
+  amount: 5000
+  reference: 2500
+  date: 1500
+  narration: 1000
+
+exceptions:
+  REFERENCE_MISMATCH:
+    category: REFERENCE
+    severity: MEDIUM
+    action: CLARIFICATION_REQUEST
+    requires_company_input: true
+  DUPLICATE_IDENTIFIER:
+    category: DUPLICATE
+    severity: CRITICAL
+    action: JOURNAL_EXPORT
+    requires_company_input: false
+  DUPLICATE_ERP_POSTING:
+    category: DUPLICATE
+    severity: CRITICAL
+    action: JOURNAL_EXPORT
+    requires_company_input: false
+  MISSING_BANK_RECEIPT:
+    category: MISSING_SOURCE
+    severity: HIGH
+    action: CLARIFICATION_REQUEST
+    requires_company_input: true
+  MISSING_ERP_POSTING:
+    category: MISSING_SOURCE
+    severity: HIGH
+    action: JOURNAL_EXPORT
+    requires_company_input: false
+  SETTLEMENT_COMPONENT_MISMATCH:
+    category: AMOUNT
+    severity: HIGH
+    action: CLARIFICATION_REQUEST
+    requires_company_input: true
+  BANK_AMOUNT_MISMATCH:
+    category: AMOUNT
+    severity: CRITICAL
+    action: CLARIFICATION_REQUEST
+    requires_company_input: true
+  BANK_DATE_OUT_OF_RANGE:
+    category: TIMING
+    severity: MEDIUM
+    action: WAIT
+    requires_company_input: false
+  ERP_JOURNAL_UNBALANCED:
+    category: ACCOUNTING
+    severity: CRITICAL
+    action: CORRECTED_DATA_IMPORT
+    requires_company_input: true
+  BANK_RECEIPT_AMBIGUOUS:
+    category: AMBIGUOUS
+    severity: HIGH
+    action: MANUAL_REVIEW
+    requires_company_input: false
+  ORPHAN_BANK_CREDIT:
+    category: MISSING_SOURCE
+    severity: HIGH
+    action: CLARIFICATION_REQUEST
+    requires_company_input: true
+  ORPHAN_ERP_POSTING:
+    category: MISSING_SOURCE
+    severity: HIGH
+    action: MANUAL_REVIEW
+    requires_company_input: true
+  ERP_POSTING_MISMATCH:
+    category: ACCOUNTING
+    severity: CRITICAL
+    action: CORRECTED_DATA_IMPORT
+    requires_company_input: true
+  UNKNOWN_UNRESOLVED:
+    category: UNKNOWN
+    severity: MEDIUM
+    action: MANUAL_REVIEW
+    requires_company_input: true

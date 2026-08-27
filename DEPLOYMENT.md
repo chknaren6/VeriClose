@@ -33,7 +33,7 @@ Open:
 - build/runtime metadata: <http://localhost:8000/api/meta>
 
 The application must start without an AI provider credential. In that case `/api/meta`
-reports `model_enabled: false`, and all future deterministic finance functionality must
+reports `model_enabled: false`, and all deterministic finance functionality must
 remain available.
 
 ## Docker Compose convenience path
@@ -73,10 +73,12 @@ Important variables:
 | `VERICLOSE_ENVIRONMENT` | `judge-local` | Selects runtime behavior/profile. |
 | `VERICLOSE_DATA_DIR` | `/app/data` | Writable immutable uploads and generated artifacts. |
 | `VERICLOSE_DATABASE_PATH` | `/app/data/vericlose.duckdb` | DuckDB persistence path. |
+| `VERICLOSE_POLICY_PATH` | `/app/config/policies/razorpay_inr_v1.yaml` | Validated policy pack. |
 | `VERICLOSE_DEMO_MODE` | `true` | Allows only safe synthetic demo behavior. |
 | `VERICLOSE_UPLOAD_MAX_BYTES` | `10485760` | Per-file upload ceiling. |
 | `VERICLOSE_DETERMINISTIC_SEED` | `42` | Default reproducibility seed. |
-| `VERICLOSE_POLICY_VERSION` | `razorpay_inr_v1` | Versioned accounting policy selection. |
+| `VERICLOSE_RULE_VERSION` | `segment4-v1` | Deterministic rule-set version. |
+| `VERICLOSE_POLICY_VERSION` | `razorpay_inr_v1@1.0.0` | Accounting policy version. |
 | `VERICLOSE_MODEL_API_KEY` | unset | Optional investigation provider credential. |
 
 Do not put secrets in the image, source tree, Compose file, frontend bundle, or demo data.
@@ -132,27 +134,39 @@ Before handing a build to judges:
    are present in the image or Git history.
 6. Record the commit SHA and benchmark configuration shown in the demo.
 
-## Current M1 capability and limitation
+## Current M2 capability and limitation
 
-The current image contains the complete Segment 3 ingestion foundation. It can generate a
-synthetic company and run gateway, bank, and ERP files through detection, safe versioned mapping,
-staged validation, exact normalization, immutable file storage, and transactional DuckDB
-persistence. It does **not** yet claim reconciliation matches or accuracy metrics; those begin in
-Segment 4 and must be backed by real proof checks.
+The current image contains the Segment 3 ingestion foundation and Segment 4 deterministic
+verification kernel. It can generate a synthetic company, normalize three finance sources, build
+bounded candidates, prove accounting invariants, risk-gate decisions, persist evidence, and export
+an honest exception queue. It does **not** yet claim benchmark accuracy metrics; hidden-truth and
+multi-seed evaluation belong exclusively to Segment 5.
 
 Native end-to-end proof:
 
 ```bash
 make generate
-make import-batch RUN_ID=judge-seed-42-v1
+make reconcile CLOSE_RUN_ID=judge-seed-42-v1
 ```
 
 Expected properties of the default seed-42 batch:
 
-- 315 source rows become 315 traceable canonical events.
-- The run reaches `VALIDATED` with no quarantined rows.
-- Four deliberately unbalanced ERP journals remain visible as non-blocking accounting issues.
+- 315 source rows become 315 traceable canonical events and 25 case decisions.
+- The run reaches `COMPLETED` with 15 proved auto-clears and 10 honest exceptions.
+- Every decision contains persisted proof checks and exact source-row evidence.
+- Fuzzy support and ambiguous groups cannot auto-clear.
 - A repeated upload in the same run is rejected by content hash; re-import uses a new run ID.
 
 The generator and import CLI are also included in the production image, so the same proof can run
 without development dependencies when input and data directories are mounted into the container.
+
+To remove host bind-mount permissions from the proof entirely, run the synthetic generator and
+close loop inside an anonymous writable container volume:
+
+```bash
+docker run --rm -v /app/data vericlose:dev \
+  python -m scripts.reconcile --generate-demo \
+  --run-id judge-seed-42 --data-dir /app/data \
+  --database /app/data/vericlose.duckdb \
+  --exceptions-output /app/data/exceptions.json
+```

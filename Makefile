@@ -6,7 +6,7 @@ PORT ?= 8000
 BASE_URL ?= http://localhost:$(PORT)
 export UV_CACHE_DIR := $(CURDIR)/.uv-cache
 
-.PHONY: setup test lint format typecheck build-web verify generate import-batch dev dev-api dev-web health image judge smoke smoke-local smoke-container
+.PHONY: setup test lint format typecheck build-web verify generate import-batch reconcile dev dev-api dev-web health image judge smoke smoke-local smoke-container
 
 SEED ?= 42
 PAYMENTS ?= 120
@@ -45,6 +45,12 @@ IMPORT_DATA_DIR ?= .data/imports
 
 import-batch:
 	$(PYTHON) python -m scripts.import_batch --gateway $(GENERATED_OUTPUT)/inputs/gateway.csv --bank $(GENERATED_OUTPUT)/inputs/bank.csv --erp $(GENERATED_OUTPUT)/inputs/erp_gl.csv --run-id $(RUN_ID) --database $(IMPORT_DATABASE) --data-dir $(IMPORT_DATA_DIR)
+
+CLOSE_RUN_ID ?= close-seed-$(SEED)-v1
+EXCEPTIONS_OUTPUT ?= .data/reconciliation/$(CLOSE_RUN_ID)-exceptions.json
+
+reconcile:
+	$(PYTHON) python -m scripts.reconcile --gateway $(GENERATED_OUTPUT)/inputs/gateway.csv --bank $(GENERATED_OUTPUT)/inputs/bank.csv --erp $(GENERATED_OUTPUT)/inputs/erp_gl.csv --run-id $(CLOSE_RUN_ID) --seed $(SEED) --database $(IMPORT_DATABASE) --data-dir $(IMPORT_DATA_DIR) --exceptions-output $(EXCEPTIONS_OUTPUT)
 
 dev:
 	bash scripts/dev.sh

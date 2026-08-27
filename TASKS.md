@@ -52,7 +52,8 @@ make verify      # M8: lint + tests + benchmark + production build
 
 ## Current implementation checkpoint — 2026-08-27
 
-The **M0 walking skeleton and M1 ingestion foundation through Segment 3 are complete**.
+The **M0 walking skeleton, M1 ingestion foundation, and M2 deterministic verification kernel
+through Segment 4 are complete**.
 The repository now has pure immutable finance types, explicit source contracts, hidden
 event/case truth, deterministic source generation, controlled scenario injectors, and a
 reproducible 50+ record batch in addition to the deployable shell. The adapter boundary now
@@ -75,18 +76,21 @@ Verified at this checkpoint:
   normalization, control totals, immutable file storage, and transactional DuckDB persistence.
 - The default 315-row seed imports as `VALIDATED`; its intentionally unbalanced journal remains
   canonical evidence and is persisted as a non-blocking `JOURNAL_UNBALANCED` accounting issue.
-- 144 tests cover domain invariants, all real adapter contracts, CSV/XLSX parsing, exact decimal
-  money, alternate layouts, ambiguity, staged diagnostics, immutable persistence, rollback,
-  scenario behavior, accounting balance, deterministic bytes, and truth isolation.
+- `make reconcile` imports and closes the default 315-row batch into 25 decisions: 15 strictly
+  proved auto-clears and 10 evidence-backed exceptions across all five proof levels.
+- 156 tests cover domain and policy invariants, adapters, exact parsing, staged diagnostics,
+  immutable persistence, every synthetic scenario, false-clear prevention, deterministic row
+  ordering, bounded grouping, safe failure states, and truth isolation.
 
 What this checkpoint intentionally **does not** claim:
 
 - the import pipeline exists, but the HTTP upload/review UI is scheduled for Segment 6;
-- no reconciliation decision, benchmark result, or AI judgment exists;
+- operational reconciliation decisions exist, but benchmark accuracy metrics remain Segment 5;
+- no AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S4.1, versioned reconciliation policy**. Segment 3 now satisfies
-the M1 exit gate; matching has intentionally not started inside ingestion code.
+The next executable task is **S5.1, event-level evaluator**. Segment 4 satisfies the M2 exit gate;
+hidden truth remains isolated from runtime code and will only be consumed by evaluation tooling.
 
 ---
 
@@ -537,11 +541,11 @@ Acceptance criteria:
 
 ## S4.1 Define policy-pack schema — P0
 
-- [ ] Define currency and date policy.
-- [ ] Define component and account roles.
-- [ ] Define amount tolerances.
-- [ ] Define auto-clear eligibility.
-- [ ] Define allowed actions and severity behavior.
+- [x] Define currency and date policy.
+- [x] Define component and account roles.
+- [x] Define amount tolerances.
+- [x] Define auto-clear eligibility.
+- [x] Define allowed actions and severity behavior.
 
 Depends on: S2.1, S3.1.
 
@@ -552,10 +556,10 @@ Acceptance criteria:
 
 ## S4.2 Implement candidate blocking — P0
 
-- [ ] Block by legal entity and currency.
-- [ ] Block by compatible event type.
-- [ ] Apply bounded date windows.
-- [ ] Exclude already-consumed candidates where policy requires uniqueness.
+- [x] Block by legal entity and currency.
+- [x] Block by compatible event type.
+- [x] Apply bounded date windows.
+- [x] Exclude already-consumed candidates where policy requires uniqueness.
 
 Depends on: S4.1, Segment 3.
 
@@ -566,10 +570,10 @@ Acceptance criteria:
 
 ## S4.3 Implement exact-identifier rules — P0
 
-- [ ] Settlement-reference matching.
-- [ ] UTR matching.
-- [ ] ERP external-reference matching.
-- [ ] Duplicate/conflicting identifier detection.
+- [x] Settlement-reference matching.
+- [x] UTR matching.
+- [x] ERP external-reference matching.
+- [x] Duplicate/conflicting identifier detection.
 
 Depends on: S4.2.
 
@@ -580,9 +584,9 @@ Acceptance criteria:
 
 ## S4.4 Implement settlement component invariant — P0
 
-- [ ] Sum payment, refund, fee, tax and adjustment components using policy signs.
-- [ ] Compare expected settlement with source settlement total.
-- [ ] Record expected, observed, variance and tolerance as proof checks.
+- [x] Sum payment, refund, fee, tax and adjustment components using policy signs.
+- [x] Compare expected settlement with source settlement total.
+- [x] Record expected, observed, variance and tolerance as proof checks.
 
 Depends on: S4.1, S4.3.
 
@@ -593,10 +597,10 @@ Acceptance criteria:
 
 ## S4.5 Implement bank receipt proof — P0
 
-- [ ] Verify amount and direction.
-- [ ] Verify UTR/reference when available.
-- [ ] Verify allowed value-date behavior.
-- [ ] Detect missing and duplicate bank receipts.
+- [x] Verify amount and direction.
+- [x] Verify UTR/reference when available.
+- [x] Verify allowed value-date behavior.
+- [x] Detect missing and duplicate bank receipts.
 
 Depends on: S4.3, S4.4.
 
@@ -607,10 +611,10 @@ Acceptance criteria:
 
 ## S4.6 Implement ERP posting proof — P0
 
-- [ ] Verify bank and clearing postings.
-- [ ] Verify fee and tax account behavior.
-- [ ] Verify journal balance.
-- [ ] Detect wrong direction, wrong account, missing and duplicate postings.
+- [x] Verify bank and clearing postings.
+- [x] Verify fee and tax account behavior.
+- [x] Verify journal balance.
+- [x] Detect wrong direction, wrong account, missing and duplicate postings.
 
 Depends on: S4.4, S4.5.
 
@@ -621,10 +625,10 @@ Acceptance criteria:
 
 ## S4.7 Implement bounded grouping — P0
 
-- [ ] One-to-many membership matching.
-- [ ] Many-to-one aggregation where policy permits.
-- [ ] Enforce maximum candidate/group size and date window.
-- [ ] Reject non-unique valid groupings as ambiguous.
+- [x] One-to-many membership matching.
+- [x] Many-to-one aggregation where policy permits.
+- [x] Enforce maximum candidate/group size and date window.
+- [x] Reject non-unique valid groupings as ambiguous.
 
 Depends on: S4.2, S4.4–S4.6.
 
@@ -635,9 +639,9 @@ Acceptance criteria:
 
 ## S4.8 Implement candidate support scoring — P1
 
-- [ ] Score amount, date, reference-token and narration similarity.
-- [ ] Preserve a feature breakdown for review.
-- [ ] Use scoring only after proof rules fail.
+- [x] Score amount, date, reference-token and narration similarity.
+- [x] Preserve a feature breakdown for review.
+- [x] Use scoring only after proof rules fail.
 
 Depends on: S4.2.
 
@@ -648,9 +652,9 @@ Acceptance criteria:
 
 ## S4.9 Implement proof-level risk gate — P0
 
-- [ ] Map proposal checks to `PROVED`, `SUPPORTED`, `AMBIGUOUS`, `CONTRADICTED` or `INVALID_INPUT`.
-- [ ] Apply policy-level auto-clear permission.
-- [ ] Record decision and reason codes.
+- [x] Map proposal checks to `PROVED`, `SUPPORTED`, `AMBIGUOUS`, `CONTRADICTED` or `INVALID_INPUT`.
+- [x] Apply policy-level auto-clear permission.
+- [x] Record decision and reason codes.
 
 Depends on: S4.3–S4.8.
 
@@ -661,10 +665,10 @@ Acceptance criteria:
 
 ## S4.10 Implement exception creation and prioritization — P0
 
-- [ ] Assign stable reason code and severity.
-- [ ] Calculate amount at risk deterministically.
-- [ ] Attach rules attempted and evidence rows.
-- [ ] Set recommended workflow state and company-input flag.
+- [x] Assign stable reason code and severity.
+- [x] Calculate amount at risk deterministically.
+- [x] Attach rules attempted and evidence rows.
+- [x] Set recommended workflow state and company-input flag.
 
 Depends on: S4.9.
 
@@ -675,10 +679,10 @@ Acceptance criteria:
 
 ## S4.11 Implement deterministic run orchestration — P0
 
-- [ ] Execute validation, normalization, matching, risk gating and persistence.
-- [ ] Store stage timings and counts.
-- [ ] Add run-state transitions and safe failure states.
-- [ ] Implement `make reconcile`.
+- [x] Execute validation, normalization, matching, risk gating and persistence.
+- [x] Store stage timings and counts.
+- [x] Add run-state transitions and safe failure states.
+- [x] Implement `make reconcile`.
 
 Depends on: Segment 3, S4.1–S4.10.
 
@@ -690,9 +694,9 @@ Acceptance criteria:
 
 ### Segment 4 exit gate — M2 (45%)
 
-- [ ] Complete synthetic batch reconciles without UI or LLM.
-- [ ] Every decision has proof checks and source-row evidence.
-- [ ] Fuzzy or ambiguous cases never auto-clear.
+- [x] Complete synthetic batch reconciles without UI or LLM.
+- [x] Every decision has proof checks and source-row evidence.
+- [x] Fuzzy or ambiguous cases never auto-clear.
 
 ---
 

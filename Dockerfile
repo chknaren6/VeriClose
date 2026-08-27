@@ -27,7 +27,10 @@ ENV PATH="/opt/venv/bin:$PATH" \
     VERICLOSE_DATA_DIR=/app/data \
     VERICLOSE_DATABASE_PATH=/app/data/vericlose.duckdb \
     VERICLOSE_STATIC_DIR=/app/apps/api/app/static \
+    VERICLOSE_POLICY_PATH=/app/config/policies/razorpay_inr_v1.yaml \
     VERICLOSE_DEMO_MODE=true \
+    VERICLOSE_RULE_VERSION=segment4-v1 \
+    VERICLOSE_POLICY_VERSION=razorpay_inr_v1@1.0.0 \
     VERICLOSE_BUILD_COMMIT=${VERICLOSE_BUILD_COMMIT}
 
 WORKDIR /app

@@ -5,6 +5,7 @@ from pathlib import Path
 import httpx2
 import pytest
 
+from apps.api.app.composition import build_container
 from apps.api.app.main import create_app
 from apps.api.app.settings import AppSettings
 
@@ -58,8 +59,8 @@ async def test_meta_reports_non_secret_runtime_configuration(tmp_path: Path) -> 
         "app": "VeriClose",
         "environment": "test",
         "build_commit": "test-commit",
-        "rule_version": "skeleton",
-        "policy_version": "razorpay_inr_v1",
+        "rule_version": "segment4-v1",
+        "policy_version": "razorpay_inr_v1@1.0.0",
         "demo_mode": True,
         "model_enabled": False,
     }
@@ -72,3 +73,15 @@ async def test_development_root_explains_how_to_open_the_ui(tmp_path: Path) -> N
 
     assert response.status_code == 200
     assert response.json()["health"] == "/health/ready"
+
+
+def test_composition_rejects_a_policy_version_mismatch(tmp_path: Path) -> None:
+    settings = AppSettings(
+        environment="test",
+        data_dir=tmp_path / "data",
+        database_path=tmp_path / "data" / "test.duckdb",
+        static_dir=tmp_path / "missing-static",
+        policy_version="unexpected@9",
+    )
+    with pytest.raises(ValueError, match="does not match"):
+        build_container(settings)

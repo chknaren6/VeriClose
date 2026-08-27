@@ -183,15 +183,7 @@ def inject_mistyped_reference(batch: GeneratedBatch, case_id: str) -> GeneratedB
 
 def inject_duplicate_erp_posting(batch: GeneratedBatch, case_id: str) -> GeneratedBatch:
     originals = tuple(row for row in batch.erp_rows if row.case_id == case_id)
-    duplicates = tuple(
-        replace(
-            row,
-            erp_record_id=f"{row.erp_record_id}_duplicate",
-            journal_id=f"{row.journal_id}_duplicate",
-            narration=f"{row.narration} duplicate posting",
-        )
-        for row in originals
-    )
+    duplicates = tuple(_duplicate_erp_row(row) for row in originals)
     updated = replace(batch, erp_rows=batch.erp_rows + duplicates).refresh_truth_members(case_id)
     return _set_outcome(
         updated,
@@ -401,3 +393,13 @@ ANOMALY_INJECTORS = (
     inject_unbalanced_erp_journal,
     inject_equal_amount_ambiguity,
 )
+
+
+def _duplicate_erp_row(row: ErpRow) -> ErpRow:
+    journal_id = f"{row.journal_id}_duplicate"
+    return replace(
+        row,
+        erp_record_id=f"{journal_id}:{row.line_number}",
+        journal_id=journal_id,
+        narration=f"{row.narration} duplicate posting",
+    )

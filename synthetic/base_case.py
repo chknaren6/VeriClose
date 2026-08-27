@@ -231,7 +231,8 @@ def _balanced_erp_rows(
     return tuple(
         ErpRow(
             case_id=case_id,
-            erp_record_id=f"{journal_id}_line_{line_number}",
+            # The adapter reconstructs this stable identity from the two exported columns.
+            erp_record_id=f"{journal_id}:{line_number}",
             journal_id=journal_id,
             line_number=line_number,
             posting_date=posting_date,

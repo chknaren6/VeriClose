@@ -15,8 +15,19 @@ import duckdb
 from core.vericlose.audit.events import AuditEvent
 from core.vericlose.domain.actions import ActionReceipt, ProposedAction, ReviewDecision
 from core.vericlose.domain.decisions import ReconciliationDecision
-from core.vericlose.domain.enums import RunState, SourceType
+from core.vericlose.domain.enums import (
+    ActionType,
+    DecisionState,
+    ExceptionCategory,
+    ProofLevel,
+    RunState,
+    Severity,
+    SourceType,
+)
 from core.vericlose.domain.events import CanonicalEvent
+from core.vericlose.domain.evidence import EvidenceLink, ProofCheck
+from core.vericlose.domain.exceptions import ExceptionCase
+from core.vericlose.domain.money import Money
 from core.vericlose.domain.runs import RunManifest, SourceFile
 from core.vericlose.domain.wire import canonical_event_from_dict, canonical_event_to_dict
 from core.vericlose.ingestion.contracts import (
@@ -27,7 +38,7 @@ from core.vericlose.ingestion.contracts import (
     ValidationReport,
     ValidationStage,
 )
-from core.vericlose.ports.repositories import SourceFileRecord
+from core.vericlose.ports.repositories import ReconciliationRunRecord, SourceFileRecord
 
 MIGRATION_ROOT = Path(__file__).with_name("migrations")
 
@@ -48,6 +59,8 @@ class DuckDBUnitOfWork:
         self.source_files = DuckDBSourceFileRepository(self.connection)
         self.events = DuckDBEventRepository(self.connection)
         self.decisions = DuckDBDecisionRepository(self.connection)
+        self.exceptions = DuckDBExceptionRepository(self.connection)
+        self.reconciliation = DuckDBReconciliationRunRepository(self.connection)
         self.reviews = DuckDBReviewRepository(self.connection)
         self.actions = DuckDBActionRepository(self.connection)
         self.audit = DuckDBAuditRepository(self.connection)
@@ -211,6 +224,93 @@ class DuckDBDecisionRepository:
         self._connection.execute(
             "INSERT INTO decisions VALUES (?, ?, ?)",
             [run_id, decision.decision_id, _json(decision)],
+        )
+        for ordinal, check in enumerate(decision.proof_checks, start=1):
+            self._connection.execute(
+                "INSERT INTO proof_checks VALUES (?, ?, ?, ?)",
+                [run_id, decision.decision_id, ordinal, _json(check)],
+            )
+        _append_evidence(
+            self._connection,
+            run_id,
+            "DECISION",
+            decision.decision_id,
+            decision.evidence_links,
+        )
+
+    def list_for_run(self, run_id: str) -> tuple[ReconciliationDecision, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM decisions WHERE run_id = ? ORDER BY decision_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_decision_from_dict(json.loads(row[0])) for row in rows)
+
+
+class DuckDBExceptionRepository:
+    def __init__(self, connection: duckdb.DuckDBPyConnection) -> None:
+        self._connection = connection
+
+    def append(self, run_id: str, exception: ExceptionCase) -> None:
+        self._connection.execute(
+            "INSERT INTO exceptions VALUES (?, ?, ?)",
+            [run_id, exception.case_id, _json(exception)],
+        )
+        _append_evidence(
+            self._connection,
+            run_id,
+            "EXCEPTION",
+            exception.case_id,
+            exception.evidence_links,
+        )
+
+    def list_for_run(self, run_id: str) -> tuple[ExceptionCase, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM exceptions WHERE run_id = ? ORDER BY case_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_exception_from_dict(json.loads(row[0])) for row in rows)
+
+
+class DuckDBReconciliationRunRepository:
+    def __init__(self, connection: duckdb.DuckDBPyConnection) -> None:
+        self._connection = connection
+
+    def append(self, record: ReconciliationRunRecord) -> None:
+        self._connection.execute(
+            "INSERT INTO reconciliation_runs "
+            "(run_id, policy_version, rule_version, decision_count, auto_cleared_count, "
+            "exception_count, amount_at_risk_minor, stage_timings_json) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                record.run_id,
+                record.policy_version,
+                record.rule_version,
+                record.decision_count,
+                record.auto_cleared_count,
+                record.exception_count,
+                record.amount_at_risk_minor,
+                _json(record.stage_timings),
+            ],
+        )
+
+    def get(self, run_id: str) -> ReconciliationRunRecord | None:
+        row = self._connection.execute(
+            "SELECT policy_version, rule_version, decision_count, auto_cleared_count, "
+            "exception_count, amount_at_risk_minor, stage_timings_json "
+            "FROM reconciliation_runs WHERE run_id = ?",
+            [run_id],
+        ).fetchone()
+        if not row:
+            return None
+        return ReconciliationRunRecord(
+            run_id,
+            row[0],
+            row[1],
+            row[2],
+            row[3],
+            row[4],
+            row[5],
+            tuple(tuple(item) for item in json.loads(row[6])),
         )
 
 
@@ -418,4 +518,73 @@ def _validation_issue_from_dict(payload: dict[str, Any]) -> ValidationIssue:
         supplied_value=payload["supplied_value"],
         suggested_fix=payload["suggested_fix"],
         blocking=payload["blocking"],
+    )
+
+
+def _append_evidence(
+    connection: duckdb.DuckDBPyConnection,
+    run_id: str,
+    owner_type: str,
+    owner_id: str,
+    links: tuple[EvidenceLink, ...],
+) -> None:
+    for ordinal, link in enumerate(links, start=1):
+        connection.execute(
+            "INSERT INTO evidence_links VALUES (?, ?, ?, ?, ?)",
+            [run_id, owner_type, owner_id, ordinal, _json(link)],
+        )
+
+
+def _evidence_from_dict(payload: dict[str, Any]) -> EvidenceLink:
+    return EvidenceLink(
+        payload["event_id"],
+        payload["source_file_id"],
+        payload["table_name"],
+        payload["row_number"],
+        payload["raw_row_hash"],
+        payload["purpose"],
+    )
+
+
+def _proof_check_from_dict(payload: dict[str, Any]) -> ProofCheck:
+    return ProofCheck(
+        payload["check_code"],
+        payload["expected"],
+        payload["observed"],
+        payload["tolerance_minor"],
+        payload["passed"],
+        payload["required"],
+        tuple(_evidence_from_dict(item) for item in payload["evidence_links"]),
+    )
+
+
+def _decision_from_dict(payload: dict[str, Any]) -> ReconciliationDecision:
+    return ReconciliationDecision(
+        payload["decision_id"],
+        DecisionState(payload["state"]),
+        tuple(payload["event_ids"]),
+        ProofLevel(payload["proof_level"]),
+        tuple(_proof_check_from_dict(item) for item in payload["proof_checks"]),
+        tuple(_evidence_from_dict(item) for item in payload["evidence_links"]),
+        payload["uniqueness_passed"],
+        payload["contradiction_reason"],
+        payload["policy_allows_auto_clear"],
+        tuple(payload["related_proposal_ids"]),
+    )
+
+
+def _exception_from_dict(payload: dict[str, Any]) -> ExceptionCase:
+    money = payload["amount_at_risk"]
+    return ExceptionCase(
+        payload["case_id"],
+        payload["reason_code"],
+        ExceptionCategory(payload["category"]),
+        Severity(payload["severity"]),
+        Money(money["amount_minor"], money["currency"]),
+        ProofLevel(payload["proof_level"]),
+        tuple(_evidence_from_dict(item) for item in payload["evidence_links"]),
+        tuple(payload["rules_attempted"]),
+        payload["requires_company_input"],
+        ActionType(payload["recommended_action"]),
+        payload["owner"],
     )

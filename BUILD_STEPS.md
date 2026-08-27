@@ -325,11 +325,14 @@ Updated on 2026-08-27:
   - [x] Step 4B — concrete profile schema, safe transforms, registry, and user confirmation.
 - [x] Step 5 — CSV/XLSX gateway, bank, and ERP adapters plus staged validation.
 - [x] Step 6 — immutable file storage, DuckDB repositories, and import application service.
-- [ ] Step 7 — deterministic candidate indexes and reconciliation policy. **Start here next.**
+- [x] Step 7 — deterministic candidate indexes and reconciliation policy.
+- [x] Step 8 — exact settlement-to-bank-to-ERP proof slice and risk gate.
+- [x] Step 9 — complete deterministic rules, bounded grouping, support scoring, and exceptions.
+- [ ] Step 10 — evaluator, multi-seed benchmark, and safety thresholds. **Start here next.**
 
-The completed skeleton is intentionally thin: it reports only runtime facts and does
-not fabricate reconciliation or benchmark results. Preserve this behavior until real
-domain outputs exist.
+The runtime now reports real deterministic reconciliation outputs backed by persisted proof
+checks. It still does not fabricate benchmark accuracy; those metrics appear only after the
+Segment 5 evaluator reads isolated hidden truth.
 
 ---
 
@@ -800,6 +803,8 @@ A generated batch can be imported and reconstructed from repositories with linea
 
 Maps to: S4.1, S4.2.
 
+Status: **complete**.
+
 ### Goal
 
 Prepare efficient, deterministic input for matching rules.
@@ -838,6 +843,8 @@ Candidate lookup is understandable and bounded before any fuzzy or grouped searc
 # Step 8 — Carry one exact case through the kernel
 
 Maps to: S4.3, part of S4.4–S4.6, S4.9 and S4.11.
+
+Status: **complete**.
 
 ### Goal
 
@@ -886,6 +893,8 @@ One command imports and reconciles the clean case, and the stored decision lists
 # Step 9 — Deepen deterministic rules and exception creation
 
 Maps to: S4.4–S4.10.
+
+Status: **complete**.
 
 ### Goal
 

@@ -14,7 +14,6 @@ apps/web/dist
 .data
 data
 synthetic/output
-synthetic/truth
 evaluation/reports/*.json
 evaluation/reports/*.csv
 docs

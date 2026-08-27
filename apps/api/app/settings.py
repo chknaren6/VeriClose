@@ -24,12 +24,13 @@ class AppSettings(BaseSettings):
     data_dir: Path = Path(".data")
     database_path: Path = Path(".data/vericlose.duckdb")
     static_dir: Path = Path("apps/api/app/static")
+    policy_path: Path = Path("config/policies/razorpay_inr_v1.yaml")
     upload_max_bytes: int = 10 * 1024 * 1024
     demo_mode: bool = True
     deterministic_seed: int = 42
     build_commit: str = "development"
-    rule_version: str = "skeleton"
-    policy_version: str = "razorpay_inr_v1"
+    rule_version: str = "segment4-v1"
+    policy_version: str = "razorpay_inr_v1@1.0.0"
     model_api_key: SecretStr | None = None
 
     @property

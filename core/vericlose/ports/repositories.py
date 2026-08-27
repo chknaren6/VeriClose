@@ -8,6 +8,7 @@ from core.vericlose.audit.events import AuditEvent
 from core.vericlose.domain.actions import ActionReceipt, ProposedAction, ReviewDecision
 from core.vericlose.domain.decisions import ReconciliationDecision
 from core.vericlose.domain.events import CanonicalEvent
+from core.vericlose.domain.exceptions import ExceptionCase
 from core.vericlose.domain.runs import RunManifest, SourceFile
 from core.vericlose.ingestion.contracts import (
     ControlTotals,
@@ -54,6 +55,34 @@ class EventRepository(Protocol):
 class DecisionRepository(Protocol):
     def append(self, run_id: str, decision: ReconciliationDecision) -> None: ...
 
+    def list_for_run(self, run_id: str) -> tuple[ReconciliationDecision, ...]: ...
+
+
+@runtime_checkable
+class ExceptionRepository(Protocol):
+    def append(self, run_id: str, exception: ExceptionCase) -> None: ...
+
+    def list_for_run(self, run_id: str) -> tuple[ExceptionCase, ...]: ...
+
+
+@dataclass(frozen=True, slots=True)
+class ReconciliationRunRecord:
+    run_id: str
+    policy_version: str
+    rule_version: str
+    decision_count: int
+    auto_cleared_count: int
+    exception_count: int
+    amount_at_risk_minor: int
+    stage_timings: tuple[tuple[str, int, int, int], ...]
+
+
+@runtime_checkable
+class ReconciliationRunRepository(Protocol):
+    def append(self, record: ReconciliationRunRecord) -> None: ...
+
+    def get(self, run_id: str) -> ReconciliationRunRecord | None: ...
+
 
 @runtime_checkable
 class ReviewRepository(Protocol):
@@ -91,6 +120,8 @@ class PersistenceUnitOfWork(Protocol):
     source_files: SourceFileRepository
     events: EventRepository
     decisions: DecisionRepository
+    exceptions: ExceptionRepository
+    reconciliation: ReconciliationRunRepository
     reviews: ReviewRepository
     actions: ActionRepository
     audit: AuditRepository

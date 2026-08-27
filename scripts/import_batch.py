@@ -59,6 +59,8 @@ def main() -> int:
         run_id=run_id,
         documents=documents,
         context=NormalizationContext(run_id, args.legal_entity),
+        policy_version="razorpay_inr_v1@1.0.0",
+        rule_version="segment4-v1",
     )
     payload = {
         "run_id": result.manifest.run_id,

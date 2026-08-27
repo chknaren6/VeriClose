@@ -12,8 +12,11 @@ from core.vericlose.ports.repositories import (
     AuditRepository,
     DecisionRepository,
     EventRepository,
+    ExceptionRepository,
     IngestionRepository,
     PersistenceUnitOfWork,
+    ReconciliationRunRecord,
+    ReconciliationRunRepository,
     ReviewRepository,
     RunRepository,
     SourceFileRecord,
@@ -61,8 +64,29 @@ class FakeEventRepository:
 
 
 class FakeDecisionRepository:
+    def __init__(self) -> None:
+        self.items: dict[str, tuple] = {}
+
     def append(self, run_id: str, decision: object) -> None:
-        del run_id, decision
+        self.items[run_id] = self.items.get(run_id, ()) + (decision,)
+
+    def list_for_run(self, run_id: str) -> tuple:
+        return self.items.get(run_id, ())
+
+
+class FakeExceptionRepository(FakeDecisionRepository):
+    pass
+
+
+class FakeReconciliationRunRepository:
+    def __init__(self) -> None:
+        self.items: dict[str, ReconciliationRunRecord] = {}
+
+    def append(self, record: ReconciliationRunRecord) -> None:
+        self.items[record.run_id] = record
+
+    def get(self, run_id: str) -> ReconciliationRunRecord | None:
+        return self.items.get(run_id)
 
 
 class FakeReviewRepository:
@@ -107,6 +131,8 @@ class FakeUnitOfWork:
         self.source_files = FakeSourceFileRepository()
         self.events = FakeEventRepository()
         self.decisions = FakeDecisionRepository()
+        self.exceptions = FakeExceptionRepository()
+        self.reconciliation = FakeReconciliationRunRepository()
         self.reviews = FakeReviewRepository()
         self.actions = FakeActionRepository()
         self.audit = FakeAuditRepository()
@@ -126,6 +152,8 @@ def test_fake_repositories_implement_replaceable_ports_and_append_snapshots() ->
     assert isinstance(fake.source_files, SourceFileRepository)
     assert isinstance(fake.events, EventRepository)
     assert isinstance(fake.decisions, DecisionRepository)
+    assert isinstance(fake.exceptions, ExceptionRepository)
+    assert isinstance(fake.reconciliation, ReconciliationRunRepository)
     assert isinstance(fake.reviews, ReviewRepository)
     assert isinstance(fake.actions, ActionRepository)
     assert isinstance(fake.audit, AuditRepository)

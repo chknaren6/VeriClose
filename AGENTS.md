@@ -81,6 +81,6 @@ If a command is not implemented for the current milestone, leave it as an explic
 
 ## Current milestone
 
-Segment 3 and the M1 ingestion exit gate are complete. The current target is M2: versioned
-reconciliation policy, bounded candidate indexes, deterministic proof rules, and the risk gate.
-Model integration remains forbidden until deterministic matching and evaluation are complete.
+Segment 4 and the M2 deterministic-kernel exit gate are complete. The current target is M3:
+hidden-truth evaluation, multi-seed benchmarks, regression reports, and explicit safety thresholds.
+Model integration remains forbidden until deterministic evaluation is complete.
