@@ -20,6 +20,7 @@ from core.vericlose.domain.enums import (
     DecisionState,
     ExceptionCategory,
     ProofLevel,
+    ReviewState,
     RunState,
     Severity,
     SourceType,
@@ -125,6 +126,12 @@ class DuckDBRunRepository:
             [run_id],
         ).fetchone()
         return _run_from_dict(json.loads(row[0])) if row else None
+
+    def list_ids(self) -> tuple[str, ...]:
+        rows = self._connection.execute(
+            "SELECT DISTINCT run_id FROM runs ORDER BY run_id"
+        ).fetchall()
+        return tuple(row[0] for row in rows)
 
 
 class DuckDBSourceFileRepository:
@@ -323,6 +330,13 @@ class DuckDBReviewRepository:
             "INSERT INTO reviews VALUES (?, ?, ?, ?)",
             [run_id, review.review_id, _json(review), review.reviewed_at],
         )
+
+    def list_for_run(self, run_id: str) -> tuple[ReviewDecision, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM reviews WHERE run_id = ? ORDER BY reviewed_at, review_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_review_from_dict(json.loads(row[0])) for row in rows)
 
 
 class DuckDBActionRepository:
@@ -587,4 +601,15 @@ def _exception_from_dict(payload: dict[str, Any]) -> ExceptionCase:
         payload["requires_company_input"],
         ActionType(payload["recommended_action"]),
         payload["owner"],
+    )
+
+
+def _review_from_dict(payload: dict[str, Any]) -> ReviewDecision:
+    return ReviewDecision(
+        payload["review_id"],
+        payload["action_id"],
+        ReviewState(payload["state"]),
+        payload["reviewer_id"],
+        datetime.fromisoformat(payload["reviewed_at"]),
+        payload["comment"],
     )

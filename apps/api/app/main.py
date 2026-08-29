@@ -1,12 +1,15 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from apps.api.app.composition import AppContainer, build_container
 from apps.api.app.routes.health import router as health_router
+from apps.api.app.routes.workflow import WorkflowError
+from apps.api.app.routes.workflow import router as workflow_router
 from apps.api.app.settings import AppSettings
 
 
@@ -26,8 +29,72 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
     )
     app.state.container = container
     app.include_router(health_router)
+    app.include_router(workflow_router)
+    _install_error_handlers(app)
     _mount_frontend(app, container)
     return app
+
+
+def _install_error_handlers(app: FastAPI) -> None:
+    @app.exception_handler(WorkflowError)
+    async def workflow_error(_request: Request, error: WorkflowError) -> JSONResponse:
+        return JSONResponse(
+            status_code=error.http_status,
+            content={
+                "error": {
+                    "code": error.code,
+                    "message": error.message,
+                    "field": None,
+                    "suggested_fix": error.suggested_fix,
+                }
+            },
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_error(
+        _request: Request, error: RequestValidationError
+    ) -> JSONResponse:
+        first = error.errors()[0]
+        location = ".".join(str(item) for item in first.get("loc", ())[1:]) or None
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "error": {
+                    "code": "REQUEST_VALIDATION_FAILED",
+                    "message": first.get("msg", "Invalid request"),
+                    "field": location,
+                    "suggested_fix": "Correct the request field and retry",
+                }
+            },
+        )
+
+    @app.exception_handler(LookupError)
+    async def lookup_error(_request: Request, error: LookupError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "error": {
+                    "code": "RESOURCE_NOT_FOUND",
+                    "message": str(error),
+                    "field": None,
+                    "suggested_fix": "Check the run or case identifier",
+                }
+            },
+        )
+
+    @app.exception_handler(ValueError)
+    async def value_error(_request: Request, error: ValueError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content={
+                "error": {
+                    "code": "WORKFLOW_CONFLICT",
+                    "message": str(error),
+                    "field": None,
+                    "suggested_fix": "Inspect validation state and supplied confirmations",
+                }
+            },
+        )
 
 
 def _mount_frontend(app: FastAPI, container: AppContainer) -> None:

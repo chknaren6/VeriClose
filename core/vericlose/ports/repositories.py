@@ -34,6 +34,8 @@ class RunRepository(Protocol):
 
     def get(self, run_id: str) -> RunManifest | None: ...
 
+    def list_ids(self) -> tuple[str, ...]: ...
+
 
 @runtime_checkable
 class SourceFileRepository(Protocol):
@@ -87,6 +89,8 @@ class ReconciliationRunRepository(Protocol):
 @runtime_checkable
 class ReviewRepository(Protocol):
     def append(self, run_id: str, review: ReviewDecision) -> None: ...
+
+    def list_for_run(self, run_id: str) -> tuple[ReviewDecision, ...]: ...
 
 
 @runtime_checkable

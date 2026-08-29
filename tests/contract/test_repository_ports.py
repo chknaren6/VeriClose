@@ -35,6 +35,9 @@ class FakeRunRepository:
         snapshots = self.items.get(run_id, [])
         return snapshots[-1] if snapshots else None
 
+    def list_ids(self) -> tuple[str, ...]:
+        return tuple(sorted(self.items))
+
 
 class FakeSourceFileRepository:
     def __init__(self) -> None:
@@ -90,8 +93,14 @@ class FakeReconciliationRunRepository:
 
 
 class FakeReviewRepository:
+    def __init__(self) -> None:
+        self.items: dict[str, tuple] = {}
+
     def append(self, run_id: str, review: object) -> None:
-        del run_id, review
+        self.items[run_id] = self.items.get(run_id, ()) + (review,)
+
+    def list_for_run(self, run_id: str) -> tuple:
+        return self.items.get(run_id, ())
 
 
 class FakeActionRepository:

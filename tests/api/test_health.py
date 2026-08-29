@@ -50,6 +50,24 @@ async def test_readiness_prepares_writable_storage(tmp_path: Path) -> None:
 
 
 @pytest.mark.anyio
+async def test_judge_readiness_fails_when_production_assets_are_missing(tmp_path: Path) -> None:
+    settings = AppSettings(
+        environment="judge-local",
+        data_dir=tmp_path / "data",
+        database_path=tmp_path / "data" / "test.duckdb",
+        static_dir=tmp_path / "missing-static",
+    )
+    app = create_app(settings)
+    async with app.router.lifespan_context(app):
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
+            response = await client.get("/health/ready")
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "VeriClose runtime dependencies are not ready"
+
+
+@pytest.mark.anyio
 async def test_meta_reports_non_secret_runtime_configuration(tmp_path: Path) -> None:
     async with build_test_client(tmp_path) as client:
         response = await client.get("/api/meta")

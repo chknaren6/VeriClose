@@ -4,10 +4,9 @@
 
 VeriClose is being built for Razorpay Hackathon Track 04. It will process complete batches of gateway, bank and ERP records; automatically clear only provable matches; expose honest exceptions; and measure performance against hidden synthetic ground truth.
 
-The current implementation includes the deployable shell, complete M1 ingestion pipeline, and M2
-deterministic verification kernel: immutable canonical evidence, strict versioned finance policy,
-bounded candidate search, accounting proof checks, an auto-clear risk gate, honest exceptions,
-append-only DuckDB persistence, and a complete judge-runnable close command. No model is required.
+The current implementation is complete through M4: deployable ingestion, deterministic proof,
+honest multi-seed evaluation, stable workflow APIs, and an evidence-first review workspace with
+append-only reviewer classifications. No model is required.
 
 ## Start locally
 
@@ -131,9 +130,9 @@ docker compose up --build
 ## Current architecture
 
 ```text
-React/Vite shell
-    → FastAPI routes
-    → application composition root/import and reconciliation services
+React/Vite review workspace
+    → stable FastAPI workflow contracts
+    → application import/run/query/review services
     → adapter registry and versioned mappings
     → immutable file store + DuckDB
     → read-only candidate context + deterministic proof rules
@@ -147,6 +146,11 @@ React/Vite shell
 - `evaluation`: hidden-truth comparison and benchmarks
 - `config`: versioned source mappings and policy packs
 - `tests`: unit, integration, contract, adversarial and deployment checks
+
+Run `make benchmark` for the five-seed development safety gate or
+`make benchmark-submission` for the ten-seed submission gate. Results are written to
+`evaluation/reports/benchmark-latest.{json,md}` and include event/case accuracy, scenario
+diagnostics, p50/p95 performance, exception recall and false-clear enforcement.
 
 Read [PROJECT_PLAN.md](PROJECT_PLAN.md) for the product design, [TASKS.md](TASKS.md) for
 delivery gates, [BUILD_STEPS.md](BUILD_STEPS.md) for the implementation sequence, and

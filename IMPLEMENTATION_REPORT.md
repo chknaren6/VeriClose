@@ -2,8 +2,8 @@
 
 **Project:** VeriClose — Evidence-first settlement-to-ERP reconciliation  
 **Hackathon track:** Razorpay Track 04 — AI Finance Controller  
-**Implementation status:** M0, M1, and M2 complete through Segment 4  
-**Report date:** 27 August 2026
+**Implementation status:** M0–M4 complete through Segment 6
+**Report date:** 29 August 2026
 
 ---
 
@@ -43,8 +43,9 @@ decisions:
 | Deterministic amount at risk | ₹47,212.29 |
 
 These are operational outputs for one known demonstration seed. They are not accuracy claims.
-Formal multi-seed accuracy, precision, recall, false-clear rate, and regression thresholds belong
-to Segment 5.
+Accuracy is measured separately by the Segment 5 hidden-truth benchmark. The latest ten-seed run
+covered 3,149 events and 250 cases with 100% auto-clear precision, 100% exception recall, and zero
+false clears; the complete inspectable report lives in `evaluation/reports/benchmark-latest.md`.
 
 ---
 
@@ -83,8 +84,8 @@ flowchart LR
     X --> S
 ```
 
-The current loop stops after producing persisted decisions and an exception JSON artifact.
-Human review screens, correction approval, journal export, and re-run workflows are planned later.
+The Segment 6 web workflow now exposes persisted decisions for evidence inspection and preliminary
+classification. Correction approval, journal export, and re-run workflows remain later milestones.
 
 ---
 
@@ -97,7 +98,7 @@ The foundation proves that the project can be installed, tested, built, and run 
 | Component | What it does | Why it is useful |
 |---|---|---|
 | FastAPI application | Serves liveness, readiness, metadata, API documentation, and production assets | Gives one stable backend/runtime entry point |
-| React and Vite shell | Provides the frontend build and future review-interface boundary | Avoids mixing finance calculations into UI code |
+| React and Vite review workspace | Provides import, cockpit, queue, evidence and review screens | Avoids mixing finance calculations into UI code |
 | Typed settings | Controls environment, paths, policy version, rule version, demo mode, and optional model access | Makes judge and hosted deployments reproducible |
 | Multi-stage Docker image | Builds the frontend and locked Python runtime into one non-root image | Gives judges a repeatable artifact instead of local-machine assumptions |
 | Health and smoke checks | Verifies configuration, writable storage, policy loading, metadata, and production HTML | Detects packaging and deployment failures early |
@@ -355,6 +356,41 @@ explanation category or evidence.
 
 ---
 
+### 3.4 M3 — Honest evaluation and regression gate
+
+The hidden-truth evaluator compares persisted runtime outputs with isolated synthetic labels. It
+scores event grouping, proof disposition, exception class, auto-clear precision, exception recall
+and false clears. Five development seeds or ten submission seeds are aggregated before rates are
+calculated. Safety-threshold failures return a failing command, and reports retain incorrect IDs.
+
+The latest ten-seed report covers 3,149 events and 250 cases with 100% auto-clear precision, 100%
+exception recall and zero false clears. This is benchmark evidence, not an operational claim.
+
+### 3.5 M4 — Stable API and evidence-first review product
+
+Segment 6 adds a complete non-terminal workflow without moving finance logic into HTTP or React:
+
+1. Three upload slots accept CSV/XLSX gateway, bank and ERP exports.
+2. Candidate adapters and profiles are detected; ambiguous inference requires confirmation.
+3. Import returns mappings, sample rows, exact diagnostics and integer control totals.
+4. Validated batches can reconcile; invalid batches are blocked with stable error codes.
+5. The cockpit displays only operational counts, amounts, state and runtime.
+6. The exception queue sorts by severity/exposure and filters by proof or reason.
+7. The workbench aligns original/canonical values, lineage and deterministic proof checks.
+8. Preliminary reviews are append-only, survive refresh and create audit events.
+
+```mermaid
+flowchart LR
+    UI[React review workspace] --> HTTP[FastAPI contracts]
+    HTTP --> APP[Import, run, query and review services]
+    APP --> CORE[Deterministic finance kernel]
+    APP <--> DB[(DuckDB append-only records)]
+    TRUTH[Hidden truth] -. evaluation only .-> EVAL[Benchmark evaluator]
+```
+
+Runtime endpoints cannot access hidden truth. Benchmark output is unavailable unless the explicit
+benchmark environment is active, and operational metrics expose no accuracy claims.
+
 ## 4. Complete architecture
 
 ### 4.1 Layered architecture
@@ -364,7 +400,7 @@ flowchart TB
     subgraph Delivery[Delivery layer]
         CLI[Import and reconcile CLIs]
         API[FastAPI health, metadata, future product API]
-        WEB[React/Vite shell, future review UI]
+        WEB[React/Vite evidence review workspace]
     end
 
     subgraph Application[Application orchestration]
@@ -607,7 +643,7 @@ rewriting the earlier close.
 
 ## 8. Testing and verification
 
-The current release gate passes 156 backend tests plus frontend checks.
+The current release gate passes 168 backend tests plus frontend checks.
 
 Coverage includes:
 
@@ -673,7 +709,7 @@ make judge
 
 Then open:
 
-- Product shell: <http://localhost:8000>
+- Review product: <http://localhost:8000>
 - API documentation: <http://localhost:8000/docs>
 - Readiness: <http://localhost:8000/health/ready>
 - Metadata: <http://localhost:8000/api/meta>
@@ -704,14 +740,16 @@ docker run --rm -v /app/data vericlose:dev \
 - Complete-batch processing
 - Immutable evidence and append-only decisions
 - Operational close summary and exception export
+- Five/ten-seed evaluation and enforced safety thresholds
+- Stable import, run, case, evidence, proof-check, metric and review APIs
+- Three-source mapping/validation UI with diagnostics and control totals
+- Operational cockpit, exception queue and evidence-first workbench
+- Append-only preliminary reviews and review audit events
 - Model-optional deployment
 
 ### Intentionally not built yet
 
-- Formal Segment 5 evaluator and multi-seed benchmark reports
-- Accuracy, precision, recall, false-clear-rate, and threshold enforcement commands
-- HTTP upload, mapping-confirmation, evidence-review, and dashboard screens
-- Human approval/rejection workflow in the UI
+- Final human approval for financial actions (preliminary review is deliberately non-mutating)
 - Journal proposal/export and corrected-data re-run loop
 - LLM exception explanations or settlement Q&A
 - Authentication, organization isolation, and production authorization
@@ -720,8 +758,8 @@ docker run --rm -v /app/data vericlose:dev \
 - Multi-currency or multi-entity reconciliation
 - General ERP migration engine
 
-The current React interface is a deployable shell, not the finished finance review experience. The
-fully working product path is the CLI and Docker close command.
+The React interface is now functional but intentionally not final-polished. The CLI and Docker
+close command remain independent operational paths.
 
 ---
 
@@ -729,26 +767,15 @@ fully working product path is the CLI and Docker close command.
 
 ```mermaid
 flowchart LR
-    M2[M2 complete: deterministic kernel] --> M3[M3: evaluator and multi-seed benchmark]
-    M3 --> M4[M4: stable HTTP API and review UI]
-    M4 --> M5[M5: constrained exception investigator]
+    M2[M2 complete: deterministic kernel] --> M3[M3 complete: evaluator and safety gate]
+    M3 --> M4[M4 complete: stable API and review UI]
+    M4 --> M5[M5: practitioner review incorporated]
     M5 --> M6[M6: approval, journal export, correction and re-run]
     M6 --> M7[M7: hosted judge deployment and demo hardening]
 ```
 
-The immediate next step is Segment 5 because UI polish should not hide unsafe matching behavior.
-The evaluator should calculate:
-
-- group-membership correctness
-- auto-match precision
-- verified-match rate
-- false-clear count and rate
-- exception recall
-- per-scenario and per-rule outcomes
-- amount-weighted error
-- runtime and throughput across multiple seeds
-
-Only after those metrics are trustworthy should the review dashboard present them.
+The immediate next step is Segment 7: conduct a blinded practitioner review with the user's father,
+observe evidence-inspection order, and change terminology or policy only from documented findings.
 
 ---
 
@@ -786,4 +813,3 @@ The central product statement is:
 - `DEPLOYMENT.md` — judge and hosted runbook
 - `AGENTS.md` — repository engineering, finance-safety, and AI boundaries
 - `README.md` — quickest developer and judge entry point
-

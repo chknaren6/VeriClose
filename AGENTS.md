@@ -81,6 +81,6 @@ If a command is not implemented for the current milestone, leave it as an explic
 
 ## Current milestone
 
-Segment 4 and the M2 deterministic-kernel exit gate are complete. The current target is M3:
-hidden-truth evaluation, multi-seed benchmarks, regression reports, and explicit safety thresholds.
-Model integration remains forbidden until deterministic evaluation is complete.
+Segment 6 and the M4 end-to-end review-product gate are complete. The current target is M5:
+the first structured practitioner review and domain corrections based on observed evidence use.
+Model integration remains optional and may never change deterministic proof or auto-clear status.

@@ -7,6 +7,7 @@ from core.vericlose.adapters.bank import BankAdapter
 from core.vericlose.adapters.erp_gl import ErpGlAdapter
 from core.vericlose.adapters.gateway import GatewayAdapter
 from core.vericlose.adapters.registry import AdapterRegistry
+from core.vericlose.application.review_cases import PreliminaryReviewService, ReviewQueryService
 from core.vericlose.application.run_reconciliation import RunReconciliationService
 from core.vericlose.domain.enums import SourceType
 from core.vericlose.infrastructure.duckdb import DuckDBUnitOfWork
@@ -26,6 +27,8 @@ class AppContainer:
     reconciliation_policy: ReconciliationPolicy
     import_batch: ImportBatchService
     run_reconciliation: RunReconciliationService
+    review_query: ReviewQueryService
+    preliminary_review: PreliminaryReviewService
 
 
 def build_container(settings: AppSettings | None = None) -> AppContainer:
@@ -52,6 +55,8 @@ def build_container(settings: AppSettings | None = None) -> AppContainer:
         unit_of_work,
     )
     reconciliation_service = RunReconciliationService(policy, unit_of_work)
+    review_query = ReviewQueryService(unit_of_work)
+    preliminary_review = PreliminaryReviewService(review_query, unit_of_work)
     return AppContainer(
         resolved,
         catalog,
@@ -59,4 +64,6 @@ def build_container(settings: AppSettings | None = None) -> AppContainer:
         policy,
         import_service,
         reconciliation_service,
+        review_query,
+        preliminary_review,
     )

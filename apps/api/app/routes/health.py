@@ -1,7 +1,7 @@
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
 
 router = APIRouter(tags=["system"])
@@ -44,13 +44,28 @@ async def live() -> LiveResponse:
 async def ready(request: Request) -> ReadyResponse:
     container = request.app.state.container
     settings = container.settings
-    settings.prepare_runtime_paths()
-    _check_writable(settings.data_dir)
+    production_assets = settings.static_dir / "index.html"
+    try:
+        settings.prepare_runtime_paths()
+        _check_writable(settings.data_dir)
+        request.app.state.container.review_query.check_ready()
+        if (
+            settings.environment in {"judge-local", "hosted-demo"}
+            and not production_assets.is_file()
+        ):
+            raise RuntimeError("production web assets are missing")
+    except Exception as error:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="VeriClose runtime dependencies are not ready",
+        ) from error
     return ReadyResponse(
         status="ready",
         checks={
             "data_directory": "writable",
             "configuration": "loaded",
+            "database": "ready",
+            "production_assets": "ready" if production_assets.is_file() else "development-mode",
             "policy": container.reconciliation_policy.versioned_id,
             "model": "enabled" if settings.model_enabled else "deterministic-fallback",
         },

@@ -1,0 +1,13 @@
+schema_version: "1.0"
+profile_id: segment5_default
+development_seeds: [42, 73, 101, 211, 307]
+submission_seeds: [42, 73, 101, 211, 307, 401, 503, 607, 709, 811]
+dataset:
+  payments: 120
+  settlements: 24
+  exception_rate_bps: 4000
+thresholds:
+  minimum_auto_clear_precision_bps: 10000
+  minimum_exception_recall_bps: 10000
+  maximum_false_clear_count: 0
+  maximum_false_clear_rate_bps: 0

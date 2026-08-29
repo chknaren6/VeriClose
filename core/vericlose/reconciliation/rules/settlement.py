@@ -90,12 +90,29 @@ def analyze_settlement(
     if not component_passed:
         reasons.append("SETTLEMENT_COMPONENT_MISMATCH")
 
+    expected_utr = settlement_rows[0].external_reference if settlement_rows else None
     bank_group, bank_candidates, bank_ambiguous, bank_bounded = _select_bank_group(
         context,
         anchor,
         observed_net,
         consumed_bank_ids,
     )
+    exact_utr_candidates = tuple(
+        event
+        for event in context.indexes.by_utr.get(expected_utr or "", ())
+        if event.source_type is SourceType.BANK
+        and event.event_id not in consumed_bank_ids
+        and event.legal_entity_id == context.legal_entity_id
+        and event.money.currency == context.policy.currency
+    )
+    identifier_conflict = len(exact_utr_candidates) > 1 and sum(
+        event.money.amount_minor for event in exact_utr_candidates
+    ) != observed_net
+    if identifier_conflict:
+        bank_group = exact_utr_candidates
+        bank_candidates = exact_utr_candidates
+        bank_ambiguous = False
+        reasons.append("DUPLICATE_IDENTIFIER")
     all_bank_links = tuple(evidence(event, "bank receipt candidate") for event in bank_candidates)
     cited_bank = all_bank_links or gateway_links
     bank_present = bool(bank_group)
@@ -130,7 +147,6 @@ def analyze_settlement(
             cited_bank,
         )
     )
-    expected_utr = settlement_rows[0].external_reference if settlement_rows else None
     reference_passed = bank_present and bool(expected_utr) and all(
         event.bank_utr == expected_utr for event in bank_group
     )

@@ -26,8 +26,8 @@ Rules:
 | M0 | Scope, contracts and repository skeleton | 10% |
 | M1 | Synthetic truth, adapters and validated canonical data | 25% |
 | M2 | Deterministic verification kernel | 45% |
-| M3 | Honest evaluation harness | 55% |
-| M4 | Thin end-to-end review product | 65% |
+| M3 | Honest evaluation harness — complete | 55% |
+| M4 | Thin end-to-end review product — complete | 65% |
 | M5 | First practitioner review incorporated | 75% |
 | M6 | Bounded AI and correction loop | 88% |
 | M7 | Hardening, production image and holdout practitioner review | 95% |
@@ -50,10 +50,9 @@ make judge       # M7: build and start the judge-local container profile
 make verify      # M8: lint + tests + benchmark + production build
 ```
 
-## Current implementation checkpoint — 2026-08-27
+## Current implementation checkpoint — 2026-08-29
 
-The **M0 walking skeleton, M1 ingestion foundation, and M2 deterministic verification kernel
-through Segment 4 are complete**.
+The **M0–M4 milestones through Segment 6 are complete**.
 The repository now has pure immutable finance types, explicit source contracts, hidden
 event/case truth, deterministic source generation, controlled scenario injectors, and a
 reproducible 50+ record batch in addition to the deployable shell. The adapter boundary now
@@ -78,19 +77,19 @@ Verified at this checkpoint:
   canonical evidence and is persisted as a non-blocking `JOURNAL_UNBALANCED` accounting issue.
 - `make reconcile` imports and closes the default 315-row batch into 25 decisions: 15 strictly
   proved auto-clears and 10 evidence-backed exceptions across all five proof levels.
-- 156 tests cover domain and policy invariants, adapters, exact parsing, staged diagnostics,
+- 168 tests cover domain and policy invariants, adapters, exact parsing, staged diagnostics,
   immutable persistence, every synthetic scenario, false-clear prevention, deterministic row
   ordering, bounded grouping, safe failure states, and truth isolation.
 
 What this checkpoint intentionally **does not** claim:
 
-- the import pipeline exists, but the HTTP upload/review UI is scheduled for Segment 6;
-- operational reconciliation decisions exist, but benchmark accuracy metrics remain Segment 5;
+- production action execution, journal export, and corrected-data re-runs remain later segments;
+- operational screens never display benchmark-only accuracy claims;
 - no AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S5.1, event-level evaluator**. Segment 4 satisfies the M2 exit gate;
-hidden truth remains isolated from runtime code and will only be consumed by evaluation tooling.
+The next executable task is **S7.1, practitioner review preparation**. Segment 6 satisfies the M4
+exit gate; hidden truth remains isolated from operational API and UI code.
 
 ---
 
@@ -704,9 +703,9 @@ Acceptance criteria:
 
 ## S5.1 Implement event-level evaluator — P0
 
-- [ ] Compare predicted group and disposition with truth.
-- [ ] Report per-scenario correctness.
-- [ ] List incorrect event IDs.
+- [x] Compare predicted group and disposition with truth.
+- [x] Report per-scenario correctness.
+- [x] List incorrect event IDs.
 
 Depends on: S2.6, S4.11.
 
@@ -717,9 +716,9 @@ Acceptance criteria:
 
 ## S5.2 Implement case-level evaluator — P0
 
-- [ ] Score proved, review and exception decisions.
-- [ ] Calculate auto-match precision, exception recall and false-clear rate.
-- [ ] Produce confusion matrix.
+- [x] Score proved, review and exception decisions.
+- [x] Calculate auto-match precision, exception recall and false-clear rate.
+- [x] Produce confusion matrix.
 
 Depends on: S5.1.
 
@@ -730,10 +729,10 @@ Acceptance criteria:
 
 ## S5.3 Add multi-seed benchmark — P0
 
-- [ ] Run at least five seeds during normal development and ten for submission.
-- [ ] Record dataset size, scenario mix and exception rate.
-- [ ] Report p50/p95 runtime and throughput.
-- [ ] Implement `make benchmark`.
+- [x] Run at least five seeds during normal development and ten for submission.
+- [x] Record dataset size, scenario mix and exception rate.
+- [x] Report p50/p95 runtime and throughput.
+- [x] Implement `make benchmark`.
 
 Depends on: S5.1, S5.2.
 
@@ -744,10 +743,10 @@ Acceptance criteria:
 
 ## S5.4 Add safety thresholds — P0
 
-- [ ] Configure target auto-clear precision.
-- [ ] Configure target exception recall.
-- [ ] Configure allowed false-clear count/rate.
-- [ ] Fail the command when thresholds are missed.
+- [x] Configure target auto-clear precision.
+- [x] Configure target exception recall.
+- [x] Configure allowed false-clear count/rate.
+- [x] Fail the command when thresholds are missed.
 
 Depends on: S5.3.
 
@@ -758,13 +757,13 @@ Acceptance criteria:
 
 ## S5.5 Create adversarial suite — P0
 
-- [ ] Equal amount and equal date candidates.
-- [ ] Duplicate IDs with conflicting amounts.
-- [ ] Boundary and invalid dates.
-- [ ] Very large paise amounts.
-- [ ] Prompt-like text in narration.
-- [ ] Missing columns and malformed workbook sheets.
-- [ ] Unbalanced and reversed journals.
+- [x] Equal amount and equal date candidates.
+- [x] Duplicate IDs with conflicting amounts.
+- [x] Boundary and invalid dates.
+- [x] Very large paise amounts.
+- [x] Prompt-like text in narration.
+- [x] Missing columns and malformed workbook sheets.
+- [x] Unbalanced and reversed journals.
 
 Depends on: S5.2.
 
@@ -775,10 +774,10 @@ Acceptance criteria:
 
 ## S5.6 Add property-based accounting tests — P1
 
-- [ ] Amount normalization never loses paise.
-- [ ] Balanced journals remain balanced after normalization.
-- [ ] Permuting source-row order does not change results.
-- [ ] Duplicate action application is idempotent when action work exists.
+- [x] Amount normalization never loses paise.
+- [x] Balanced journals remain balanced after normalization.
+- [x] Permuting source-row order does not change results.
+- [x] Record the duplicate-action idempotency invariant; executable action application begins in S8.
 
 Depends on: S4.11.
 
@@ -788,9 +787,9 @@ Acceptance criteria:
 
 ### Segment 5 exit gate — M3 (55%)
 
-- [ ] Benchmark reports event and case results over multiple seeds.
-- [ ] False-clear failures block the benchmark.
-- [ ] Incorrect cases are inspectable, not hidden behind aggregate metrics.
+- [x] Benchmark reports event and case results over multiple seeds.
+- [x] False-clear failures block the benchmark.
+- [x] Incorrect cases are inspectable, not hidden behind aggregate metrics.
 
 ---
 
@@ -798,13 +797,13 @@ Acceptance criteria:
 
 ## S6.1 Define API contracts — P0
 
-- [ ] Liveness, readiness and build-metadata endpoints.
-- [ ] Upload/detect/map/validate endpoints.
-- [ ] Start/get run endpoints.
-- [ ] List/get case endpoints.
-- [ ] Evidence and proof-check endpoints.
-- [ ] Operational and benchmark metric endpoints.
-- [ ] Review-state endpoint without financial mutation.
+- [x] Liveness, readiness and build-metadata endpoints.
+- [x] Upload/detect/map/validate endpoints.
+- [x] Start/get run endpoints.
+- [x] List/get case endpoints.
+- [x] Evidence and proof-check endpoints.
+- [x] Operational and benchmark metric endpoints.
+- [x] Review-state endpoint without financial mutation.
 
 Depends on: S4.11, Segment 5.
 
@@ -816,11 +815,11 @@ Acceptance criteria:
 
 ## S6.2 Build import and mapping screen — P0
 
-- [ ] Add gateway, bank and ERP upload slots.
-- [ ] Show detected adapter/profile.
-- [ ] Show field mapping and sample rows.
-- [ ] Show exact validation errors and control totals.
-- [ ] Require confirmation for inferred required mappings.
+- [x] Add gateway, bank and ERP upload slots.
+- [x] Show detected adapter/profile.
+- [x] Show field mapping and sample rows.
+- [x] Show exact validation errors and control totals.
+- [x] Require confirmation for inferred required mappings.
 
 Depends on: S3.5–S3.7, S6.1.
 
@@ -831,10 +830,10 @@ Acceptance criteria:
 
 ## S6.3 Build run cockpit — P0
 
-- [ ] Show verified/review/unresolved counts and amounts.
-- [ ] Show amount at risk and reason distribution.
-- [ ] Show pipeline state and runtime.
-- [ ] Separate benchmark accuracy from operational status.
+- [x] Show verified/review/unresolved counts and amounts.
+- [x] Show amount at risk and reason distribution.
+- [x] Show pipeline state and runtime.
+- [x] Separate benchmark accuracy from operational status.
 
 Depends on: S6.1.
 
@@ -845,10 +844,10 @@ Acceptance criteria:
 
 ## S6.4 Build exception queue — P0
 
-- [ ] List case ID, reason, severity, amount at risk, proof level and next action.
-- [ ] Sort by severity and amount exposure.
-- [ ] Filter by state and reason.
-- [ ] Make unresolved external-information cases visible.
+- [x] List case ID, reason, severity, amount at risk, proof level and next action.
+- [x] Sort by severity and amount exposure.
+- [x] Filter by state and reason.
+- [x] Make unresolved external-information cases visible.
 
 Depends on: S6.1, S6.3.
 
@@ -859,11 +858,11 @@ Acceptance criteria:
 
 ## S6.5 Build evidence-first case workbench — P0
 
-- [ ] Align gateway, bank and ERP source rows.
-- [ ] Show original and canonical values.
-- [ ] Show settlement equation and variance.
-- [ ] Show proof checks and rules attempted.
-- [ ] Visually separate verified facts from future AI/advisory space.
+- [x] Align gateway, bank and ERP source rows.
+- [x] Show original and canonical values.
+- [x] Show settlement equation and variance.
+- [x] Show proof checks and rules attempted.
+- [x] Visually separate verified facts from future AI/advisory space.
 
 Depends on: S6.1, S6.4.
 
@@ -874,9 +873,9 @@ Acceptance criteria:
 
 ## S6.6 Persist preliminary review state — P0
 
-- [ ] Allow reviewer classification, note and defer state.
-- [ ] Preserve previous decisions.
-- [ ] Add reviewer/time audit event.
+- [x] Allow reviewer classification, note and defer state.
+- [x] Preserve previous decisions.
+- [x] Add reviewer/time audit event.
 
 Depends on: S1.4, S6.5.
 
@@ -887,12 +886,12 @@ Acceptance criteria:
 
 ## S6.7 Design all essential UI states — P1
 
-- [ ] Empty and first-run state.
-- [ ] Uploading, validating and processing state.
-- [ ] Validation failure state.
-- [ ] No-match and ambiguous states.
-- [ ] Model-unavailable placeholder.
-- [ ] No-exceptions success state.
+- [x] Empty and first-run state.
+- [x] Uploading, validating and processing state.
+- [x] Validation failure state.
+- [x] No-match and ambiguous states.
+- [x] Model-unavailable placeholder.
+- [x] No-exceptions success state.
 
 Depends on: S6.2–S6.6.
 
@@ -903,9 +902,9 @@ Acceptance criteria:
 
 ### Segment 6 exit gate — M4 (65%)
 
-- [ ] A non-developer can upload, reconcile, inspect evidence and classify cases through the UI.
-- [ ] The product is functional but intentionally not final-polished.
-- [ ] Practitioner review pack can be prepared without inventing results.
+- [x] A non-developer can upload, reconcile, inspect evidence and classify cases through the UI.
+- [x] The product is functional but intentionally not final-polished.
+- [x] Practitioner review pack can be prepared without inventing results.
 
 ---
 
