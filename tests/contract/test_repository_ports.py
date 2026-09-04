@@ -14,6 +14,7 @@ from core.vericlose.ports.repositories import (
     EventRepository,
     ExceptionRepository,
     IngestionRepository,
+    InvestigationRepository,
     PersistenceUnitOfWork,
     ReconciliationRunRecord,
     ReconciliationRunRepository,
@@ -104,11 +105,43 @@ class FakeReviewRepository:
 
 
 class FakeActionRepository:
+    def __init__(self) -> None:
+        self.actions: dict[str, tuple] = {}
+        self.receipts: dict[str, tuple] = {}
+
     def append_action(self, run_id: str, action: object) -> None:
-        del run_id, action
+        self.actions[run_id] = self.actions.get(run_id, ()) + (action,)
 
     def append_receipt(self, run_id: str, receipt: object) -> None:
-        del run_id, receipt
+        self.receipts[run_id] = self.receipts.get(run_id, ()) + (receipt,)
+
+    def list_for_run(self, run_id: str) -> tuple:
+        return self.actions.get(run_id, ())
+
+    def list_receipts(self, run_id: str) -> tuple:
+        return self.receipts.get(run_id, ())
+
+    def find_receipt(self, run_id: str, idempotency_key: str):
+        return next(
+            (
+                item
+                for item in self.receipts.get(run_id, ())
+                if item.idempotency_key == idempotency_key
+            ),
+            None,
+        )
+
+
+class FakeInvestigationRepository:
+    def __init__(self) -> None:
+        self.items: dict[tuple[str, str], tuple] = {}
+
+    def append(self, result: object) -> None:
+        key = (result.run_id, result.case_id)
+        self.items[key] = self.items.get(key, ()) + (result,)
+
+    def list_for_case(self, run_id: str, case_id: str) -> tuple:
+        return self.items.get((run_id, case_id), ())
 
 
 class FakeAuditRepository:
@@ -117,6 +150,9 @@ class FakeAuditRepository:
 
     def append(self, event: AuditEvent) -> None:
         self.items.append(event)
+
+    def list_for_run(self, run_id: str) -> tuple[AuditEvent, ...]:
+        return tuple(item for item in self.items if item.run_id == run_id)
 
 
 class FakeIngestionRepository:
@@ -144,6 +180,7 @@ class FakeUnitOfWork:
         self.reconciliation = FakeReconciliationRunRepository()
         self.reviews = FakeReviewRepository()
         self.actions = FakeActionRepository()
+        self.investigations = FakeInvestigationRepository()
         self.audit = FakeAuditRepository()
         self.ingestion = FakeIngestionRepository()
 
@@ -165,6 +202,7 @@ def test_fake_repositories_implement_replaceable_ports_and_append_snapshots() ->
     assert isinstance(fake.reconciliation, ReconciliationRunRepository)
     assert isinstance(fake.reviews, ReviewRepository)
     assert isinstance(fake.actions, ActionRepository)
+    assert isinstance(fake.investigations, InvestigationRepository)
     assert isinstance(fake.audit, AuditRepository)
     assert isinstance(fake.ingestion, IngestionRepository)
 

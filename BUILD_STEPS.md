@@ -331,7 +331,7 @@ Updated on 2026-08-27:
 - [x] Step 10 — evaluator, multi-seed benchmark, and safety thresholds.
 - [x] Step 11 — stable API contracts and operational endpoints.
 - [x] Step 12 — evidence-first review UI.
-- [ ] Step 13 — 65% practitioner review. **Start here next.**
+- [ ] Step 13 — practitioner pack/tooling complete; conduct the real session next.
 
 The runtime now reports real deterministic reconciliation outputs backed by persisted proof
 checks. It still does not fabricate benchmark accuracy; those metrics appear only after the

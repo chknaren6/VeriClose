@@ -1,0 +1,5 @@
+action_id,case_id,line_number,account_code,direction,amount_minor,currency,reference,narration,policy_version,evidence_ids
+action_3ff5a0ba3cb64b095cda,case_858b991e121b2a012442,1,110000,DEBIT,195280,INR,set_demo_0002,Bank receipt,razorpay_inr_v1@1.0.0,example-seed-42-v1:BANK:bnk_demo_0002
+action_3ff5a0ba3cb64b095cda,case_858b991e121b2a012442,2,510000,DEBIT,4000,INR,set_demo_0002,Gateway fee expense,razorpay_inr_v1@1.0.0,example-seed-42-v1:GATEWAY:gwe_fee_demo_0002
+action_3ff5a0ba3cb64b095cda,case_858b991e121b2a012442,3,140000,DEBIT,720,INR,set_demo_0002,Input GST on gateway fee,razorpay_inr_v1@1.0.0,example-seed-42-v1:GATEWAY:gwe_tax_demo_0002
+action_3ff5a0ba3cb64b095cda,case_858b991e121b2a012442,4,120000,CREDIT,200000,INR,set_demo_0002,Gateway clearing,razorpay_inr_v1@1.0.0,example-seed-42-v1:GATEWAY:gwe_demo_0002|example-seed-42-v1:GATEWAY:gwe_set_demo_0002

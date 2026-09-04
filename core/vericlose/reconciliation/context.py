@@ -58,8 +58,7 @@ class ReconciliationContext:
         return tuple(
             event
             for event in self.indexes.by_settlement_reference.get(reference, ())
-            if event.source_type is SourceType.GATEWAY
-            and self._same_scope(event)
+            if event.source_type is SourceType.GATEWAY and self._same_scope(event)
         )
 
     def erp_journals(self, reference: str) -> tuple[tuple[CanonicalEvent, ...], ...]:

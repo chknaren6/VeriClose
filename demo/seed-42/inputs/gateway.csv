@@ -1,0 +1,13 @@
+gateway_event_id,event_type,transaction_id,settlement_id,amount_minor,currency,event_at,status,reference,narration
+gwe_demo_0001,PAYMENT,pay_demo_0001,set_demo_0001,100000,INR,2026-04-01T10:00:00+00:00,captured,order_demo_0001,Synthetic captured payment
+gwe_fee_demo_0001,FEE,,set_demo_0001,2000,INR,2026-04-01T10:00:00+00:00,processed,set_demo_0001,Synthetic gateway fee
+gwe_tax_demo_0001,TAX,,set_demo_0001,360,INR,2026-04-01T10:00:00+00:00,processed,set_demo_0001,Synthetic GST on gateway fee
+gwe_set_demo_0001,SETTLEMENT,,set_demo_0001,97640,INR,2026-04-01T10:00:00+00:00,settled,UTRDEMO00000001,Synthetic net settlement
+gwe_demo_0002,PAYMENT,pay_demo_0002,set_demo_0002,200000,INR,2026-04-02T10:00:00+00:00,captured,order_demo_0002,Synthetic captured payment
+gwe_fee_demo_0002,FEE,,set_demo_0002,4000,INR,2026-04-02T10:00:00+00:00,processed,set_demo_0002,Synthetic gateway fee
+gwe_tax_demo_0002,TAX,,set_demo_0002,720,INR,2026-04-02T10:00:00+00:00,processed,set_demo_0002,Synthetic GST on gateway fee
+gwe_set_demo_0002,SETTLEMENT,,set_demo_0002,195280,INR,2026-04-02T10:00:00+00:00,settled,UTRDEMO00000002,Synthetic net settlement
+gwe_demo_0003,PAYMENT,pay_demo_0003,set_demo_0003,150000,INR,2026-04-03T10:00:00+00:00,captured,order_demo_0003,Synthetic captured payment
+gwe_fee_demo_0003,FEE,,set_demo_0003,3000,INR,2026-04-03T10:00:00+00:00,processed,set_demo_0003,Synthetic gateway fee
+gwe_tax_demo_0003,TAX,,set_demo_0003,540,INR,2026-04-03T10:00:00+00:00,processed,set_demo_0003,Synthetic GST on gateway fee
+gwe_set_demo_0003,SETTLEMENT,,set_demo_0003,146460,INR,2026-04-03T10:00:00+00:00,settled,UTRDEMO00000003,Synthetic net settlement awaiting bank evidence

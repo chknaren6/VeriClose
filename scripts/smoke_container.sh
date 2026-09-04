@@ -4,6 +4,7 @@ set -euo pipefail
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 port="${1:-8012}"
 image="${2:-vericlose:dev}"
+output="${3:-}"
 container_name="vericlose-smoke-${port}"
 base_url="http://127.0.0.1:${port}"
 
@@ -23,7 +24,11 @@ if ! uv run python scripts/wait_for_ready.py --url "$base_url/health/ready" --ti
   docker logs "$container_id" >&2 || true
   exit 1
 fi
-uv run python scripts/smoke.py --base-url "$base_url"
+smoke_args=(--base-url "$base_url")
+if [[ -n "$output" ]]; then
+  smoke_args+=(--output "$output")
+fi
+uv run python scripts/smoke.py "${smoke_args[@]}"
 
 served_title="$(python - "$base_url" <<'PY'
 import sys

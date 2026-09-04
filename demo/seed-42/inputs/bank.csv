@@ -1,0 +1,3 @@
+bank_record_id,value_date,booking_date,credit_amount,debit_amount,utr,narration,currency,account_reference
+bnk_demo_0001,2026-04-02,2026-04-02,976.40,0.00,UTRDEMO00000001,Synthetic settlement set_demo_0001,INR,acct_demo_01
+bnk_demo_0002,2026-04-03,2026-04-03,1952.80,0.00,UTRDEMO00000002,Synthetic settlement set_demo_0002,INR,acct_demo_01

@@ -25,14 +25,11 @@ def score_bank_group(
     references = {event.bank_utr for event in group if event.bank_utr}
     reference_equal = bool(expected_utr and references == {expected_utr})
     distances = tuple(
-        abs(((event.value_date or event.event_at.date()) - settlement_date).days)
-        for event in group
+        abs(((event.value_date or event.event_at.date()) - settlement_date).days) for event in group
     )
     date_supported = max(distances) <= policy.dates.settlement_to_bank_max_days
     narration_text = " ".join(event.narration or "" for event in group).lower()
-    narration_ratio = SequenceMatcher(
-        None, settlement_reference.lower(), narration_text
-    ).ratio()
+    narration_ratio = SequenceMatcher(None, settlement_reference.lower(), narration_text).ratio()
     narration_score = round(weights["narration"] * narration_ratio)
     features = (
         SupportFeature("amount", weights["amount"] if amount_equal else 0, str(amount_equal)),

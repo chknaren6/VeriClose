@@ -13,11 +13,19 @@ from typing import Any
 import duckdb
 
 from core.vericlose.audit.events import AuditEvent
-from core.vericlose.domain.actions import ActionReceipt, ProposedAction, ReviewDecision
+from core.vericlose.domain.actions import (
+    ActionReceipt,
+    JournalLine,
+    JournalProposal,
+    ProposedAction,
+    ReviewDecision,
+)
 from core.vericlose.domain.decisions import ReconciliationDecision
 from core.vericlose.domain.enums import (
+    ActionState,
     ActionType,
     DecisionState,
+    Direction,
     ExceptionCategory,
     ProofLevel,
     ReviewState,
@@ -38,6 +46,12 @@ from core.vericlose.ingestion.contracts import (
     ValidationIssue,
     ValidationReport,
     ValidationStage,
+)
+from core.vericlose.investigation.models import (
+    AdvisoryJournal,
+    AdvisoryJournalLine,
+    InvestigationResult,
+    InvestigationStatus,
 )
 from core.vericlose.ports.repositories import ReconciliationRunRecord, SourceFileRecord
 
@@ -64,6 +78,7 @@ class DuckDBUnitOfWork:
         self.reconciliation = DuckDBReconciliationRunRepository(self.connection)
         self.reviews = DuckDBReviewRepository(self.connection)
         self.actions = DuckDBActionRepository(self.connection)
+        self.investigations = DuckDBInvestigationRepository(self.connection)
         self.audit = DuckDBAuditRepository(self.connection)
         self.ingestion = DuckDBIngestionRepository(self.connection)
         return self
@@ -367,6 +382,56 @@ class DuckDBActionRepository:
             ],
         )
 
+    def list_for_run(self, run_id: str) -> tuple[ProposedAction, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM actions AS candidate "
+            "WHERE run_id = ? AND snapshot_number = ("
+            "SELECT max(snapshot_number) FROM actions "
+            "WHERE run_id = candidate.run_id AND action_id = candidate.action_id) "
+            "ORDER BY action_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_action_from_dict(json.loads(row[0])) for row in rows)
+
+    def list_receipts(self, run_id: str) -> tuple[ActionReceipt, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM receipts WHERE run_id = ? ORDER BY executed_at, receipt_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_receipt_from_dict(json.loads(row[0])) for row in rows)
+
+    def find_receipt(self, run_id: str, idempotency_key: str) -> ActionReceipt | None:
+        row = self._connection.execute(
+            "SELECT payload_json FROM receipts WHERE run_id = ? AND idempotency_key = ?",
+            [run_id, idempotency_key],
+        ).fetchone()
+        return _receipt_from_dict(json.loads(row[0])) if row else None
+
+
+class DuckDBInvestigationRepository:
+    def __init__(self, connection: duckdb.DuckDBPyConnection) -> None:
+        self._connection = connection
+
+    def append(self, result: InvestigationResult) -> None:
+        self._connection.execute(
+            "INSERT INTO investigations VALUES (?, ?, ?, ?, ?)",
+            [
+                result.run_id,
+                result.case_id,
+                result.investigation_id,
+                _json(result),
+                result.created_at,
+            ],
+        )
+
+    def list_for_case(self, run_id: str, case_id: str) -> tuple[InvestigationResult, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM investigations "
+            "WHERE run_id = ? AND case_id = ? ORDER BY created_at, investigation_id",
+            [run_id, case_id],
+        ).fetchall()
+        return tuple(_investigation_from_dict(json.loads(row[0])) for row in rows)
+
 
 class DuckDBAuditRepository:
     def __init__(self, connection: duckdb.DuckDBPyConnection) -> None:
@@ -377,6 +442,13 @@ class DuckDBAuditRepository:
             "INSERT INTO audit_events VALUES (?, ?, ?, ?, ?)",
             [event.run_id, event.audit_id, event.event_type, _json(event), event.occurred_at],
         )
+
+    def list_for_run(self, run_id: str) -> tuple[AuditEvent, ...]:
+        rows = self._connection.execute(
+            "SELECT payload_json FROM audit_events WHERE run_id = ? ORDER BY occurred_at, audit_id",
+            [run_id],
+        ).fetchall()
+        return tuple(_audit_from_dict(json.loads(row[0])) for row in rows)
 
 
 class DuckDBIngestionRepository:
@@ -612,4 +684,87 @@ def _review_from_dict(payload: dict[str, Any]) -> ReviewDecision:
         payload["reviewer_id"],
         datetime.fromisoformat(payload["reviewed_at"]),
         payload["comment"],
+    )
+
+
+def _audit_from_dict(payload: dict[str, Any]) -> AuditEvent:
+    return AuditEvent(
+        payload["audit_id"],
+        payload["run_id"],
+        payload["event_type"],
+        datetime.fromisoformat(payload["occurred_at"]),
+        tuple(tuple(pair) for pair in payload["details"]),
+    )
+
+
+def _action_from_dict(payload: dict[str, Any]) -> ProposedAction:
+    journal_payload = payload["journal"]
+    journal = None
+    if journal_payload is not None:
+        journal = JournalProposal(
+            tuple(
+                JournalLine(
+                    item["account_code"],
+                    Money(item["money"]["amount_minor"], item["money"]["currency"]),
+                    Direction(item["direction"]),
+                    item["narration"],
+                    tuple(_evidence_from_dict(link) for link in item["evidence_links"]),
+                )
+                for item in journal_payload["lines"]
+            )
+        )
+    return ProposedAction(
+        payload["action_id"],
+        ActionType(payload["action_type"]),
+        payload["case_id"],
+        ActionState(payload["state"]),
+        journal,
+        tuple(tuple(pair) for pair in payload["payload"]),
+        tuple(_evidence_from_dict(item) for item in payload["evidence_links"]),
+        datetime.fromisoformat(payload["created_at"]),
+    )
+
+
+def _receipt_from_dict(payload: dict[str, Any]) -> ActionReceipt:
+    return ActionReceipt(
+        payload["receipt_id"],
+        payload["action_id"],
+        payload["idempotency_key"],
+        datetime.fromisoformat(payload["executed_at"]),
+        tuple(tuple(pair) for pair in payload["result_payload"]),
+    )
+
+
+def _investigation_from_dict(payload: dict[str, Any]) -> InvestigationResult:
+    raw_journal = payload["advisory_journal"]
+    journal = None
+    if raw_journal is not None:
+        journal = AdvisoryJournal(
+            tuple(
+                AdvisoryJournalLine(
+                    item["account_code"],
+                    Direction(item["direction"]),
+                    item["amount_minor"],
+                    tuple(item["evidence_ids"]),
+                )
+                for item in raw_journal["lines"]
+            )
+        )
+    return InvestigationResult(
+        payload["investigation_id"],
+        payload["run_id"],
+        payload["case_id"],
+        InvestigationStatus(payload["status"]),
+        payload["hypothesis"],
+        payload["explanation"],
+        tuple(payload["evidence_ids"]),
+        payload["confidence_bps"],
+        ActionType(payload["recommended_action"]),
+        payload["requires_human_approval"],
+        journal,
+        payload["prompt_version"],
+        payload["model_version"],
+        payload["latency_ms"],
+        payload["failure_code"],
+        datetime.fromisoformat(payload["created_at"]),
     )

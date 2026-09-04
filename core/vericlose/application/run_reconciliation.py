@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -16,6 +18,8 @@ from core.vericlose.ports.repositories import (
 from core.vericlose.reconciliation.pipeline import KernelResult, reconcile
 from core.vericlose.reconciliation.policy import ReconciliationPolicy
 from core.vericlose.reconciliation.rules.settlement import RULE_VERSION
+
+_LOGGER = logging.getLogger("vericlose.reconciliation")
 
 
 class ReconciliationRunStateError(ValueError):
@@ -57,6 +61,7 @@ class RunReconciliationService:
                     f"{self._policy.versioned_id}"
                 )
             events = repositories.events.list_for_run(run_id)
+            _log("reconciliation_started", run_id, event_count=len(events))
             reconciling = manifest.transition(RunState.RECONCILING)
             repositories.runs.append(reconciling)
             repositories.audit.append(
@@ -106,8 +111,20 @@ class RunReconciliationService:
                         ),
                     )
                 )
+            _log(
+                "reconciliation_completed",
+                run_id,
+                decision_count=summary.decision_count,
+                auto_cleared_count=summary.auto_cleared_count,
+                exception_count=summary.exception_count,
+                stage_timings=[
+                    {"stage": stage, "duration_ms": duration}
+                    for stage, duration, _input, _output in summary.stage_timings
+                ],
+            )
         except Exception:
             self._mark_failed(reconciling, timestamp)
+            _log("reconciliation_failed", run_id)
             raise
         return ReconcileRunResult(completed, kernel, summary)
 
@@ -124,3 +141,9 @@ class RunReconciliationService:
                         timestamp,
                     )
                 )
+
+
+def _log(event: str, run_id: str, **details: object) -> None:
+    """Emit searchable operational metadata without raw source values."""
+
+    _LOGGER.info(json.dumps({"event": event, "run_id": run_id, **details}, sort_keys=True))

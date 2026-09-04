@@ -1,0 +1,12 @@
+{
+  "artifact_sha256": "fc0b1851a34a2f7c5435a3f443be3ed73dff640de4044dc7f72dccedcefc76f3",
+  "base_url": "http://127.0.0.1:8000",
+  "build_commit": "local",
+  "case_count": 3,
+  "checked_at": "2026-09-04T16:17:29.793295+00:00",
+  "environment": "judge-local",
+  "exception_case_id": "case_56ab9ca7d0d9d1a8852f",
+  "model_enabled": false,
+  "run_id": "demo-42-20260904161728-fc25094f",
+  "status": "passed"
+}

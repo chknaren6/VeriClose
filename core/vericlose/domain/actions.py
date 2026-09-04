@@ -79,14 +79,10 @@ class JournalProposal:
         if len(currencies) != 1:
             raise ValueError("all journal lines must use the same currency")
         debit_total = sum(
-            line.money.amount_minor
-            for line in self.lines
-            if line.direction is Direction.DEBIT
+            line.money.amount_minor for line in self.lines if line.direction is Direction.DEBIT
         )
         credit_total = sum(
-            line.money.amount_minor
-            for line in self.lines
-            if line.direction is Direction.CREDIT
+            line.money.amount_minor for line in self.lines if line.direction is Direction.CREDIT
         )
         if debit_total != credit_total:
             raise ValueError(f"Journal is unbalanced: debits={debit_total} credits={credit_total}")
@@ -125,9 +121,7 @@ class ProposedAction:
 
         allowed = ACTION_TRANSITIONS[self.state]
         if next_state not in allowed:
-            raise ValueError(
-                f"invalid action transition: {self.state.value} -> {next_state.value}"
-            )
+            raise ValueError(f"invalid action transition: {self.state.value} -> {next_state.value}")
         return replace(self, state=next_state)
 
 

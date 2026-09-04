@@ -13,8 +13,10 @@ _HEX = frozenset("0123456789abcdef")
 
 
 def _require_sha256(value: str, field_name: str) -> None:
-    if not isinstance(value, str) or len(value) != 64 or any(
-        character not in _HEX for character in value.lower()
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(character not in _HEX for character in value.lower())
     ):
         raise ValueError(f"{field_name} must be a 64-character hexadecimal string")
 

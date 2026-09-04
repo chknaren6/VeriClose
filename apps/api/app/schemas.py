@@ -1,5 +1,7 @@
 """Stable HTTP contracts expressed in VeriClose domain terminology."""
 
+from __future__ import annotations
+
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -155,6 +157,32 @@ class ReviewResponse(BaseModel):
     comment: str | None
 
 
+class AdvisoryJournalLineResponse(BaseModel):
+    account_code: str
+    direction: str
+    amount_minor: int
+    evidence_ids: list[str]
+
+
+class InvestigationResponse(BaseModel):
+    investigation_id: str | None
+    status: str
+    message: str
+    hypothesis: str | None
+    explanation: str | None
+    evidence_ids: list[str]
+    confidence_bps: int
+    recommended_action: str | None
+    requires_human_approval: bool
+    advisory_journal: list[AdvisoryJournalLineResponse]
+    prompt_version: str | None
+    model_version: str | None
+    latency_ms: int
+    failure_code: str | None
+    created_at: str | None
+    reviews: list[ReviewResponse]
+
+
 class CaseListItemResponse(BaseModel):
     case_id: str
     decision_id: str
@@ -218,13 +246,84 @@ class CaseDetailResponse(CaseListItemResponse):
     evidence: list[EvidenceResponse]
     proof_checks: list[ProofCheckResponse]
     reviews: list[ReviewResponse]
-    advisory: dict[str, str]
+    advisory: InvestigationResponse
 
 
 class ReviewRequest(BaseModel):
     state: Literal["APPROVED", "REJECTED", "EDIT_REQUESTED", "DEFERRED", "INFORMATION_REQUESTED"]
     reviewer_id: str = Field(min_length=1, max_length=100)
     comment: str | None = Field(default=None, max_length=2000)
+
+
+class InvestigationReviewRequest(BaseModel):
+    state: Literal["APPROVED", "REJECTED"]
+    reviewer_id: str = Field(min_length=1, max_length=100)
+    comment: str | None = Field(default=None, max_length=2000)
+
+
+class JournalLineResponse(BaseModel):
+    account_code: str
+    direction: str
+    amount_minor: int
+    currency: str
+    narration: str
+    evidence_ids: list[str]
+
+
+class ActionReceiptResponse(BaseModel):
+    receipt_id: str
+    action_id: str
+    idempotency_key: str
+    executed_at: str
+    result: dict[str, str]
+    download_url: str | None
+
+
+class ActionResponse(BaseModel):
+    action_id: str
+    action_type: str
+    case_id: str
+    state: str
+    payload: dict[str, str]
+    journal_lines: list[JournalLineResponse]
+    evidence: list[EvidenceResponse]
+    created_at: str
+    effect_scope: str
+    reviews: list[ReviewResponse]
+    receipts: list[ActionReceiptResponse]
+
+
+class ActionReviewRequest(BaseModel):
+    state: Literal["APPROVED", "REJECTED", "EDIT_REQUESTED", "DEFERRED"]
+    reviewer_id: str = Field(min_length=1, max_length=100)
+    comment: str | None = Field(default=None, max_length=2000)
+    edits: dict[str, str] = Field(default_factory=dict)
+
+
+class CorrectionRequest(BaseModel):
+    new_run_id: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{2,79}$")
+
+
+class CorrectionResponse(BaseModel):
+    previous_run_id: str
+    new_run_id: str
+    previous_case_id: str
+    new_case_id: str | None
+    previous_proof_level: str
+    new_proof_level: str | None
+    resolved: bool
+    receipt: ActionReceiptResponse
+
+
+class QuestionRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=1000)
+
+
+class QuestionResponse(BaseModel):
+    status: Literal["ANSWERED", "ABSTAINED"]
+    answer: str
+    case_ids: list[str]
+    evidence_ids: list[str]
 
 
 class OperationalMetricsResponse(BaseModel):

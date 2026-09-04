@@ -16,6 +16,7 @@ from core.vericlose.ingestion.contracts import (
     ValidationIssue,
     ValidationReport,
 )
+from core.vericlose.investigation.models import InvestigationResult
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,10 +100,25 @@ class ActionRepository(Protocol):
 
     def append_receipt(self, run_id: str, receipt: ActionReceipt) -> None: ...
 
+    def list_for_run(self, run_id: str) -> tuple[ProposedAction, ...]: ...
+
+    def list_receipts(self, run_id: str) -> tuple[ActionReceipt, ...]: ...
+
+    def find_receipt(self, run_id: str, idempotency_key: str) -> ActionReceipt | None: ...
+
+
+@runtime_checkable
+class InvestigationRepository(Protocol):
+    def append(self, result: InvestigationResult) -> None: ...
+
+    def list_for_case(self, run_id: str, case_id: str) -> tuple[InvestigationResult, ...]: ...
+
 
 @runtime_checkable
 class AuditRepository(Protocol):
     def append(self, event: AuditEvent) -> None: ...
+
+    def list_for_run(self, run_id: str) -> tuple[AuditEvent, ...]: ...
 
 
 @runtime_checkable
@@ -128,6 +144,7 @@ class PersistenceUnitOfWork(Protocol):
     reconciliation: ReconciliationRunRepository
     reviews: ReviewRepository
     actions: ActionRepository
+    investigations: InvestigationRepository
     audit: AuditRepository
     ingestion: IngestionRepository
 

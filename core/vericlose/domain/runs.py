@@ -40,9 +40,7 @@ ALLOWED_TRANSITIONS: dict[RunState, frozenset[RunState]] = {
         {RunState.VALIDATED, RunState.FAILED_VALIDATION, RunState.CANCELLED}
     ),
     RunState.VALIDATED: frozenset({RunState.RECONCILING, RunState.CANCELLED}),
-    RunState.RECONCILING: frozenset(
-        {RunState.COMPLETED, RunState.FAILED, RunState.CANCELLED}
-    ),
+    RunState.RECONCILING: frozenset({RunState.COMPLETED, RunState.FAILED, RunState.CANCELLED}),
     RunState.COMPLETED: frozenset(),
     RunState.FAILED: frozenset(),
     RunState.FAILED_VALIDATION: frozenset(),

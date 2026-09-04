@@ -2,11 +2,15 @@ PYTHON := uv run
 WEB_DIR := apps/web
 IMAGE_NAME ?= vericlose:dev
 CONTAINER_NAME ?= vericlose-judge
+HOST_UID ?= $(shell id -u)
+HOST_GID ?= $(shell id -g)
 PORT ?= 8000
 BASE_URL ?= http://localhost:$(PORT)
+SMOKE_OUTPUT ?=
+JUDGE_MODEL_ENV := $(if $(VERICLOSE_MODEL_API_KEY),-e VERICLOSE_MODEL_API_KEY) $(if $(VERICLOSE_MODEL_NAME),-e VERICLOSE_MODEL_NAME) $(if $(VERICLOSE_MODEL_BASE_URL),-e VERICLOSE_MODEL_BASE_URL) $(if $(VERICLOSE_MODEL_TIMEOUT_SECONDS),-e VERICLOSE_MODEL_TIMEOUT_SECONDS)
 export UV_CACHE_DIR := $(CURDIR)/.uv-cache
 
-.PHONY: setup test lint format typecheck build-web verify generate import-batch reconcile benchmark benchmark-submission dev dev-api dev-web health image judge smoke smoke-local smoke-container
+.PHONY: setup test lint format typecheck build-web verify generate import-batch reconcile benchmark benchmark-submission examples review-pack review-analyze demo dev dev-api dev-web health image judge smoke smoke-local smoke-container
 
 SEED ?= 42
 PAYMENTS ?= 120
@@ -60,6 +64,24 @@ benchmark:
 benchmark-submission:
 	$(PYTHON) python -m evaluation.benchmark --submission --output-prefix $(BENCHMARK_OUTPUT)
 
+EXAMPLES_OUTPUT ?= docs/examples
+BUILD_COMMIT ?= local
+
+examples: benchmark
+	$(PYTHON) python -m scripts.generate_examples --output $(EXAMPLES_OUTPUT) --build-commit $(BUILD_COMMIT)
+
+REVIEW_PACK ?= docs/practitioner/review_01
+REVIEW_PRIVATE ?= .data/practitioner/review_01/private
+
+review-pack:
+	$(PYTHON) python -m evaluation.practitioner_review build --output $(REVIEW_PACK) --private $(REVIEW_PRIVATE)
+
+review-analyze:
+	$(PYTHON) python -m evaluation.practitioner_review analyze --pack $(REVIEW_PACK) --private $(REVIEW_PRIVATE) --report docs/domain/DOMAIN_REVIEW_01.md --golden evaluation/golden/practitioner_review_01.json
+
+demo:
+	bash scripts/dev.sh
+
 dev:
 	bash scripts/dev.sh
 
@@ -76,13 +98,13 @@ image:
 	docker build --build-arg VERICLOSE_BUILD_COMMIT=local -t $(IMAGE_NAME) .
 
 judge:
-	docker run --rm --name $(CONTAINER_NAME) -p $(PORT):8000 -v "$(CURDIR)/.data:/app/data" $(IMAGE_NAME)
+	docker run --rm --name $(CONTAINER_NAME) --user "$(HOST_UID):$(HOST_GID)" -p $(PORT):8000 -v "$(CURDIR)/.data:/app/data:Z" $(JUDGE_MODEL_ENV) $(IMAGE_NAME)
 
 smoke:
-	$(PYTHON) python scripts/smoke.py --base-url $(BASE_URL)
+	$(PYTHON) python scripts/smoke.py --base-url $(BASE_URL) $(if $(SMOKE_OUTPUT),--output $(SMOKE_OUTPUT),)
 
 smoke-local:
-	bash scripts/smoke_local.sh $(PORT)
+	bash scripts/smoke_local.sh $(PORT) $(SMOKE_OUTPUT)
 
 smoke-container:
-	bash scripts/smoke_container.sh $(PORT) $(IMAGE_NAME)
+	bash scripts/smoke_container.sh $(PORT) $(IMAGE_NAME) $(SMOKE_OUTPUT)

@@ -89,14 +89,15 @@ async def test_api_completes_import_reconcile_evidence_and_review_loop(tmp_path:
 
         cases = await client.get(f"/api/v1/runs/{payload['run_id']}/cases")
         assert cases.status_code == 200
-        assert len(cases.json()) == 25
-        exception = next(item for item in cases.json() if item["proof_level"] != "PROVED")
+        case_items = cases.json()
+        assert len(case_items) == 25
+        exception = next(item for item in case_items if item["proof_level"] != "PROVED")
         detail = await client.get(f"/api/v1/cases/{exception['case_id']}")
         assert detail.status_code == 200
         assert detail.json()["events"]
         assert detail.json()["evidence"]
         assert detail.json()["proof_checks"]
-        assert detail.json()["advisory"]["status"] == "unavailable"
+        assert detail.json()["advisory"]["status"] == "NOT_REQUESTED"
         assert all("row_number" in event for event in detail.json()["events"])
         original_event_ids = [event["event_id"] for event in detail.json()["events"]]
 
@@ -118,6 +119,74 @@ async def test_api_completes_import_reconcile_evidence_and_review_loop(tmp_path:
         refreshed = await client.get(f"/api/v1/cases/{exception['case_id']}")
         assert refreshed.json()["reviews"][-1]["state"] == "DEFERRED"
         assert [event["event_id"] for event in refreshed.json()["events"]] == original_event_ids
+
+        investigation = await client.post(f"/api/v1/cases/{exception['case_id']}/investigations")
+        assert investigation.status_code == 201
+        assert investigation.json()["status"] == "DETERMINISTIC_FALLBACK"
+        assert investigation.json()["failure_code"] == "MODEL_UNAVAILABLE"
+        rejected_advice = await client.post(
+            f"/api/v1/cases/{exception['case_id']}/investigation-reviews",
+            json={
+                "state": "REJECTED",
+                "reviewer_id": "dad-reviewer",
+                "comment": "Need remittance advice first",
+            },
+        )
+        assert rejected_advice.status_code == 201
+
+        answered = await client.post(
+            f"/api/v1/runs/{payload['run_id']}/questions",
+            json={"question": f"Why is {exception['case_id']} unresolved?"},
+        )
+        assert answered.json()["status"] == "ANSWERED"
+        abstained = await client.post(
+            f"/api/v1/runs/{payload['run_id']}/questions",
+            json={"question": "What happened in an absent supplier system?"},
+        )
+        assert abstained.json()["status"] == "ABSTAINED"
+
+        for kind in ("close-report", "exception-pack", "audit-log"):
+            artifact = await client.get(f"/api/v1/runs/{payload['run_id']}/artifacts/{kind}")
+            assert artifact.status_code == 200
+            assert artifact.content
+            assert len(artifact.headers["x-vericlose-sha256"]) == 64
+
+        missing_erp = next(
+            item for item in case_items if item["reason_code"] == "MISSING_ERP_POSTING"
+        )
+        proposed = await client.post(f"/api/v1/cases/{missing_erp['case_id']}/actions")
+        assert proposed.status_code == 201, proposed.text
+        action = proposed.json()
+        assert action["action_type"] == "JOURNAL_EXPORT"
+        assert action["journal_lines"]
+        premature = await client.post(f"/api/v1/actions/{action['action_id']}/export")
+        assert premature.status_code == 409
+        approved = await client.post(
+            f"/api/v1/actions/{action['action_id']}/reviews",
+            json={
+                "state": "APPROVED",
+                "reviewer_id": "controller-01",
+                "comment": "Accounts and evidence checked",
+                "edits": {},
+            },
+        )
+        assert approved.json()["state"] == "APPROVED"
+        exported = await client.post(f"/api/v1/actions/{action['action_id']}/export")
+        assert exported.status_code == 200
+        repeated_export = await client.post(f"/api/v1/actions/{action['action_id']}/export")
+        assert repeated_export.json()["receipt_id"] == exported.json()["receipt_id"]
+        journal = await client.get(f"/api/v1/actions/{action['action_id']}/artifact")
+        assert journal.status_code == 200
+        assert b"amount_minor" in journal.content
+
+        correction = await client.post(
+            f"/api/v1/actions/{action['action_id']}/apply-correction",
+            json={"new_run_id": "segment9-corrected"},
+        )
+        assert correction.status_code == 200, correction.text
+        assert correction.json()["previous_proof_level"] == "SUPPORTED"
+        assert correction.json()["new_proof_level"] == "PROVED"
+        assert correction.json()["resolved"] is True
 
         benchmark = await client.get("/api/v1/benchmarks/latest")
         assert benchmark.status_code == 404
@@ -141,3 +210,73 @@ async def test_invalid_batch_cannot_start_reconciliation(tmp_path: Path) -> None
         started = await client.post("/api/v1/runs", json={"run_id": payload["run_id"]})
         assert started.status_code == 409
         assert started.json()["error"]["code"] == "WORKFLOW_CONFLICT"
+
+
+@pytest.mark.anyio
+async def test_demo_reset_restores_known_proved_and_exception_cases(tmp_path: Path) -> None:
+    async with _client(tmp_path) as client:
+        reset = await client.post("/api/v1/demo/reset")
+        assert reset.status_code == 200, reset.text
+        run = reset.json()
+        assert run["state"] == "COMPLETED"
+        assert run["operational_summary"]["decision_count"] == 3
+        assert run["operational_summary"]["verified_count"] == 1
+        assert run["operational_summary"]["review_or_exception_count"] == 2
+
+        cases = (await client.get(f"/api/v1/runs/{run['run_id']}/cases")).json()
+        assert {item["proof_level"] for item in cases} == {"PROVED", "SUPPORTED"}
+        assert {item["reason_code"] for item in cases if item["reason_code"]} >= {
+            "MISSING_BANK_RECEIPT",
+            "MISSING_ERP_POSTING",
+        }
+        exception = next(item for item in cases if item["proof_level"] != "PROVED")
+        detail = await client.get(f"/api/v1/cases/{exception['case_id']}")
+        assert detail.status_code == 200
+        assert detail.json()["evidence"]
+
+        restored_again = await client.post("/api/v1/demo/reset")
+        assert restored_again.status_code == 200
+        assert restored_again.json()["run_id"] != run["run_id"]
+
+
+@pytest.mark.anyio
+async def test_upload_boundary_rejects_invalid_encoding_format_and_size(tmp_path: Path) -> None:
+    async with _client(tmp_path) as client:
+        base = {
+            "run_id": "unsafe-upload-test",
+            "legal_entity_id": "demo-merchant-in",
+            "confirmations": [],
+        }
+        invalid_base64 = await client.post(
+            "/api/v1/uploads/detect",
+            json={
+                **base,
+                "documents": [
+                    {
+                        "file_id": "gateway",
+                        "original_name": "gateway.csv",
+                        "media_type": "text/csv",
+                        "content_base64": "not-base64!",
+                    }
+                ],
+            },
+        )
+        assert invalid_base64.status_code == 400
+        assert invalid_base64.json()["error"]["code"] == "UPLOAD_BASE64_INVALID"
+
+        unsupported = await client.post(
+            "/api/v1/uploads/detect",
+            json={
+                **base,
+                "documents": [
+                    {
+                        "file_id": "gateway",
+                        "original_name": "../../client-ledger.pdf",
+                        "media_type": "application/pdf",
+                        "content_base64": base64.b64encode(b"synthetic").decode(),
+                    }
+                ],
+            },
+        )
+        assert unsupported.status_code == 400
+        assert unsupported.json()["error"]["code"] == "UPLOAD_FORMAT_UNSUPPORTED"

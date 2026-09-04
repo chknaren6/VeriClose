@@ -50,9 +50,7 @@ class ProofCheck:
         if not isinstance(self.passed, bool) or not isinstance(self.required, bool):
             raise TypeError("passed and required must be booleans")
         if self.tolerance_minor is not None:
-            if isinstance(self.tolerance_minor, bool) or not isinstance(
-                self.tolerance_minor, int
-            ):
+            if isinstance(self.tolerance_minor, bool) or not isinstance(self.tolerance_minor, int):
                 raise TypeError("tolerance_minor must be an integer or None")
             if self.tolerance_minor < 0:
                 raise ValueError("tolerance_minor cannot be negative")
@@ -76,8 +74,7 @@ class MatchGroup:
         if not self.event_ids:
             raise ValueError("event_ids cannot be empty")
         if any(
-            not isinstance(event_id, str) or not event_id.strip()
-            for event_id in self.event_ids
+            not isinstance(event_id, str) or not event_id.strip() for event_id in self.event_ids
         ):
             raise ValueError("event_ids cannot contain blank values")
         if len(set(self.event_ids)) != len(self.event_ids):

@@ -1,0 +1,82 @@
+{
+  "currency": "INR",
+  "exceptions": [
+    {
+      "amount_at_risk_minor": 195280,
+      "case_id": "case_858b991e121b2a012442",
+      "evidence": [
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_demo_0002",
+          "raw_row_hash": "c2a266e74c554d35d31ec9cab2b3c37dcb4a2fbbbe6d713974d47c6a2aaaf387",
+          "row_number": 6,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_fee_demo_0002",
+          "raw_row_hash": "56d32804fce37d52efb896497b4881a0e32fd889699652c72de169e41b62a865",
+          "row_number": 7,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_set_demo_0002",
+          "raw_row_hash": "1279e40e49a8e0a8013345fe98fc5cd5b4fe024b0ea2579b45b11b658bf1f07c",
+          "row_number": 9,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_tax_demo_0002",
+          "raw_row_hash": "01c685cbf43cccdd945a43d3097d607027ac43c576ede316311d87969e66fbde",
+          "row_number": 8,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:BANK:bnk_demo_0002",
+          "raw_row_hash": "76909770d17d5b15d9859f610742f10aa131d88a9dfd85580103b9e5fa569dce",
+          "row_number": 3,
+          "source_file_id": "bank"
+        }
+      ],
+      "proof_level": "SUPPORTED",
+      "reason_code": "MISSING_ERP_POSTING",
+      "recommended_action": "JOURNAL_EXPORT",
+      "requires_company_input": false,
+      "severity": "HIGH"
+    },
+    {
+      "amount_at_risk_minor": 146460,
+      "case_id": "case_8804f926170a71e44e5f",
+      "evidence": [
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_demo_0003",
+          "raw_row_hash": "1fc65ea166a8e5500c2af9f00267dbea2913d3109645ba6b99857a9942daebb6",
+          "row_number": 10,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_fee_demo_0003",
+          "raw_row_hash": "94444d9de2dde64af14ceb0333b27f4763ae4c0c16a89644fe883298869063cd",
+          "row_number": 11,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_set_demo_0003",
+          "raw_row_hash": "12668e1ba15ea9addc8a9e1223a43dd32eb6c103a3c2f6b391976ed472fa60db",
+          "row_number": 13,
+          "source_file_id": "gateway"
+        },
+        {
+          "event_id": "example-seed-42-v1:GATEWAY:gwe_tax_demo_0003",
+          "raw_row_hash": "cdfde752bd13985c815e27ced642ae6ce262321323c32eb102ebd8d2e127af39",
+          "row_number": 12,
+          "source_file_id": "gateway"
+        }
+      ],
+      "proof_level": "SUPPORTED",
+      "reason_code": "MISSING_BANK_RECEIPT",
+      "recommended_action": "CLARIFICATION_REQUEST",
+      "requires_company_input": true,
+      "severity": "HIGH"
+    }
+  ],
+  "run_id": "example-seed-42-v1"
+}

@@ -33,9 +33,7 @@ def analyze_settlement(
 ) -> CaseProposal:
     gateway = context.gateway_settlement(settlement_reference)
     gateway_links = tuple(evidence(event, "gateway settlement component") for event in gateway)
-    settlement_rows = tuple(
-        event for event in gateway if event.event_type is EventType.SETTLEMENT
-    )
+    settlement_rows = tuple(event for event in gateway if event.event_type is EventType.SETTLEMENT)
     checks: list[ProofCheck] = []
     reasons: list[str] = []
     ambiguous = False
@@ -105,9 +103,10 @@ def analyze_settlement(
         and event.legal_entity_id == context.legal_entity_id
         and event.money.currency == context.policy.currency
     )
-    identifier_conflict = len(exact_utr_candidates) > 1 and sum(
-        event.money.amount_minor for event in exact_utr_candidates
-    ) != observed_net
+    identifier_conflict = (
+        len(exact_utr_candidates) > 1
+        and sum(event.money.amount_minor for event in exact_utr_candidates) != observed_net
+    )
     if identifier_conflict:
         bank_group = exact_utr_candidates
         bank_candidates = exact_utr_candidates
@@ -147,8 +146,10 @@ def analyze_settlement(
             cited_bank,
         )
     )
-    reference_passed = bank_present and bool(expected_utr) and all(
-        event.bank_utr == expected_utr for event in bank_group
+    reference_passed = (
+        bank_present
+        and bool(expected_utr)
+        and all(event.bank_utr == expected_utr for event in bank_group)
     )
     checks.append(
         _check(

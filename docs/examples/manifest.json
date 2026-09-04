@@ -1,0 +1,37 @@
+{
+  "build_commit": "local",
+  "dataset": "checked-in synthetic seed-42 demo",
+  "files": {
+    "approved-journal.csv": {
+      "sha256": "8f108020d2940ba1140d66abc63970074dffdeb2ab5bb632cd977f25cef82ca0",
+      "size_bytes": 872
+    },
+    "audit-log.json": {
+      "sha256": "e224af8c779c2fe7bfdb00ce43cb6d282b4b4f5e67d55da9e031c05fdc379b71",
+      "size_bytes": 2443
+    },
+    "benchmark-report.md": {
+      "sha256": "c562b1eaf3af08428cb1a3324d850ef03681a45421a8a119da71e161cacc49c9",
+      "size_bytes": 1099
+    },
+    "browser-path-check.md": {
+      "sha256": "86b4877989a78746a2b265fa3ae1af561dc94460c32d5e343c39b0ce6e200445",
+      "size_bytes": 1222
+    },
+    "close-report.csv": {
+      "sha256": "c48357048555c037de200a9393e4cebb429c2c0e92d87abb73ee9ced274e2b6a",
+      "size_bytes": 439
+    },
+    "deployment-smoke-container.json": {
+      "sha256": "8da0a8851bfd8fc95fecfde0b2fb2270940c4159ae1e6f9d97ea3895bb1001a9",
+      "size_bytes": 408
+    },
+    "exception-pack.json": {
+      "sha256": "5efbcb79d09e506b05a0be4f067bad5e8d6516a3622f5cda4cf626ae61934770",
+      "size_bytes": 2949
+    }
+  },
+  "generated_at": "2026-09-04T12:00:00+00:00",
+  "run_id": "example-seed-42-v1",
+  "schema_version": "1.0"
+}

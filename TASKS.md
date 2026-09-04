@@ -50,7 +50,7 @@ make judge       # M7: build and start the judge-local container profile
 make verify      # M8: lint + tests + benchmark + production build
 ```
 
-## Current implementation checkpoint — 2026-08-29
+## Current implementation checkpoint — 2026-08-30
 
 The **M0–M4 milestones through Segment 6 are complete**.
 The repository now has pure immutable finance types, explicit source contracts, hidden
@@ -77,7 +77,7 @@ Verified at this checkpoint:
   canonical evidence and is persisted as a non-blocking `JOURNAL_UNBALANCED` accounting issue.
 - `make reconcile` imports and closes the default 315-row batch into 25 decisions: 15 strictly
   proved auto-clears and 10 evidence-backed exceptions across all five proof levels.
-- 168 tests cover domain and policy invariants, adapters, exact parsing, staged diagnostics,
+- 173 tests cover domain and policy invariants, adapters, exact parsing, staged diagnostics,
   immutable persistence, every synthetic scenario, false-clear prevention, deterministic row
   ordering, bounded grouping, safe failure states, and truth isolation.
 
@@ -88,8 +88,19 @@ What this checkpoint intentionally **does not** claim:
 - no AI judgment exists;
 - dashboard numbers are not mocked.
 
-The next executable task is **S7.1, practitioner review preparation**. Segment 6 satisfies the M4
-exit gate; hidden truth remains isolated from operational API and UI code.
+The Segment 7 review tooling now generates 25 blinded cases across five seeds and all five proof
+levels, validates structured labels/feature decisions, reserves a separate holdout and refuses to
+publish incomplete findings. The next executable task is **S7.2, the real uncoached practitioner
+session**; hidden truth remains isolated from operational API and UI code.
+
+## Current delivery checkpoint — 2026-09-04
+
+The executable post-M4 controller work is complete through the local Segment 8–11 path:
+structured advisory investigation/fallback, approval-gated actions, checksummed exports, corrected
+mock-ERP re-run, known-seed demo reset, close artifacts, accessibility polish, full verification,
+container smoke and a browser-path check. M5/M7/M8 are deliberately still open because real
+practitioner observation, a hosted URL, and the submission video cannot be substituted by code.
+See `docs/NEXT_BUILD_FRAMEWORK.md` for the safe continuation sequence.
 
 ---
 
@@ -912,11 +923,11 @@ Acceptance criteria:
 
 ## S7.1 Prepare practitioner review materials — P0
 
-- [ ] Create five-minute walkthrough.
-- [ ] Document current assumptions and policy values.
-- [ ] Select 20–30 blinded cases across proof levels and exception types.
-- [ ] Create structured label and feature-priority forms.
-- [ ] List the five least-certain system decisions.
+- [x] Create five-minute walkthrough.
+- [x] Document current assumptions and policy values.
+- [x] Select 20–30 blinded cases across proof levels and exception types.
+- [x] Create structured label and feature-priority forms.
+- [x] List the five least-certain system decisions.
 
 Depends on: M4.
 
@@ -955,6 +966,8 @@ Acceptance criteria:
 
 ## S7.4 Prioritize feature and workflow feedback — P0
 
+- [x] Implement validation for priority, impact/cost/scope scores and accepted-item task IDs.
+
 - [ ] Classify must-have, should-have, later and reject.
 - [ ] Score trust impact, review-time impact, build cost and scope risk.
 - [ ] Convert accepted items into task IDs.
@@ -968,10 +981,12 @@ Acceptance criteria:
 
 ## S7.5 Publish `DOMAIN_REVIEW_01.md` — P0
 
+- [x] Publish an explicit awaiting-session placeholder that cannot imply completed findings.
+
 - [ ] Document methodology and sample size.
 - [ ] Document findings and disagreements.
 - [ ] Document accepted/deferred/rejected changes.
-- [ ] Document privacy constraints.
+- [x] Document privacy constraints.
 
 Depends on: S7.2–S7.4.
 
@@ -982,9 +997,11 @@ Acceptance criteria:
 
 ## S7.6 Build practitioner golden suite — P0
 
+- [x] Implement sanitized golden promotion with deferred-case and holdout exclusion.
+
 - [ ] Convert accepted labelled cases into sanitized synthetic fixtures.
 - [ ] Add expected proof, exception and action labels.
-- [ ] Keep a different holdout set for the 90% review.
+- [x] Keep a different holdout set for the 90% review.
 
 Depends on: S7.3, S7.5.
 
@@ -1026,7 +1043,7 @@ Acceptance criteria:
 
 - [ ] Structured practitioner feedback is documented.
 - [ ] Accepted finance logic is encoded in tests and policies.
-- [ ] A holdout practitioner set remains unused.
+- [x] A holdout practitioner set remains unused.
 - [ ] Updated benchmark has no hidden regression.
 
 ---
@@ -1035,9 +1052,9 @@ Acceptance criteria:
 
 ## S8.1 Define investigator schemas — P0
 
-- [ ] Define hypothesis, evidence IDs, confidence, action type and approval requirement.
-- [ ] Define optional journal and clarification structures.
-- [ ] Define refusal/fallback output.
+- [x] Define hypothesis, evidence IDs, confidence, action type and approval requirement.
+- [x] Define optional journal and clarification structures.
+- [x] Define refusal/fallback output.
 
 Depends on: S4.10, M5.
 
@@ -1048,9 +1065,9 @@ Acceptance criteria:
 
 ## S8.2 Implement investigator tool boundary — P0
 
-- [ ] Implement read-only case, evidence, proof, policy and candidate tools.
-- [ ] Implement attach-explanation and queue-proposal outputs.
-- [ ] Exclude posting, source editing and auto-clear tools.
+- [x] Implement read-only case, evidence, proof, policy and candidate tools.
+- [x] Implement attach-explanation and queue-proposal outputs.
+- [x] Exclude posting, source editing and auto-clear tools.
 
 Depends on: S8.1.
 
@@ -1061,10 +1078,10 @@ Acceptance criteria:
 
 ## S8.3 Implement structured model call — P0
 
-- [ ] Build minimum-evidence prompt context.
-- [ ] Delimit uploaded text as untrusted data.
-- [ ] Validate structured response.
-- [ ] Record model and prompt versions, latency and failure state.
+- [x] Build minimum-evidence prompt context.
+- [x] Delimit uploaded text as untrusted data.
+- [x] Validate structured response.
+- [x] Record model and prompt versions, latency and failure state.
 
 Depends on: S8.1, S8.2.
 
@@ -1075,10 +1092,10 @@ Acceptance criteria:
 
 ## S8.4 Implement deterministic post-validation — P0
 
-- [ ] Recalculate all mentioned amounts.
-- [ ] Validate evidence ownership.
-- [ ] Validate debit/credit balance for proposed journals.
-- [ ] Downgrade unsupported certainty language/state.
+- [x] Recalculate all mentioned amounts.
+- [x] Validate evidence ownership.
+- [x] Validate debit/credit balance for proposed journals.
+- [x] Downgrade unsupported certainty language/state.
 
 Depends on: S8.3.
 
@@ -1089,9 +1106,9 @@ Acceptance criteria:
 
 ## S8.5 Implement model-unavailable fallback — P0
 
-- [ ] Generate rule-based explanation template.
-- [ ] Generate deterministic next-action category.
-- [ ] Mark run/case as model-fallback without blocking reconciliation.
+- [x] Generate rule-based explanation template.
+- [x] Generate deterministic next-action category.
+- [x] Mark run/case as model-fallback without blocking reconciliation.
 
 Depends on: S8.1.
 
@@ -1102,10 +1119,10 @@ Acceptance criteria:
 
 ## S8.6 Add agent explanation to workbench — P0
 
-- [ ] Show hypothesis separately from verified facts.
-- [ ] Link every cited evidence ID to its row.
-- [ ] Show confidence as advisory, not proof.
-- [ ] Allow reviewer rejection and notes.
+- [x] Show hypothesis separately from verified facts.
+- [x] Link every cited evidence ID to its row.
+- [x] Show confidence as advisory, not proof.
+- [x] Allow reviewer rejection and notes.
 
 Depends on: S6.5, S8.3–S8.5.
 
@@ -1116,10 +1133,10 @@ Acceptance criteria:
 
 ## S8.7 Add grounded unresolved-case Q&A — P1
 
-- [ ] Limit questions to a selected completed run.
-- [ ] Answer only from stored evidence, checks and reviews.
-- [ ] Link cited cases/rows.
-- [ ] Refuse requests requiring absent source data.
+- [x] Limit questions to a selected completed run.
+- [x] Answer only from stored evidence, checks and reviews.
+- [x] Link cited cases/rows.
+- [x] Refuse requests requiring absent source data.
 
 Depends on: S8.6.
 
@@ -1130,9 +1147,9 @@ Acceptance criteria:
 
 ### Segment 8 exit gate
 
-- [ ] Structured investigator handles supported exception categories.
-- [ ] Invalid or unavailable model output safely falls back.
-- [ ] AI cannot change proof level or auto-clear status.
+- [x] Structured investigator handles supported exception categories.
+- [x] Invalid or unavailable model output safely falls back.
+- [x] AI cannot change proof level or auto-clear status.
 
 ---
 
@@ -1140,11 +1157,11 @@ Acceptance criteria:
 
 ## S9.1 Define proposed-action types — P0
 
-- [ ] Journal proposal.
-- [ ] Clarification request.
-- [ ] Mapping correction.
-- [ ] Wait for expected timing event.
-- [ ] No action/accepted difference.
+- [x] Journal proposal.
+- [x] Clarification request.
+- [x] Mapping correction.
+- [x] Wait for expected timing event.
+- [x] No action/accepted difference.
 
 Depends on: S7.7, S8.1.
 
@@ -1155,10 +1172,10 @@ Acceptance criteria:
 
 ## S9.2 Implement journal proposal engine — P0
 
-- [ ] Generate lines from policy and deterministic variance.
-- [ ] Require account, direction, amount, currency and reference.
-- [ ] Verify total debits equal total credits.
-- [ ] Link every line to case evidence.
+- [x] Generate lines from policy and deterministic variance.
+- [x] Require account, direction, amount, currency and reference.
+- [x] Verify total debits equal total credits.
+- [x] Link every line to case evidence.
 
 Depends on: S9.1.
 
@@ -1169,10 +1186,10 @@ Acceptance criteria:
 
 ## S9.3 Build action review UI — P0
 
-- [ ] Preview before approval.
-- [ ] Approve, reject or edit allowed fields.
-- [ ] Require reviewer identity/name in demo form.
-- [ ] Show effect scope and idempotency key.
+- [x] Preview before approval.
+- [x] Approve, reject or edit allowed fields.
+- [x] Require reviewer identity/name in demo form.
+- [x] Show effect scope and idempotency key.
 
 Depends on: S9.1, S9.2, S6.6.
 
@@ -1183,9 +1200,9 @@ Acceptance criteria:
 
 ## S9.4 Implement journal CSV export — P0
 
-- [ ] Export approved balanced journal lines.
-- [ ] Include case, evidence and policy references.
-- [ ] Produce checksum and action receipt.
+- [x] Export approved balanced journal lines.
+- [x] Include case, evidence and policy references.
+- [x] Produce checksum and action receipt.
 
 Depends on: S9.3.
 
@@ -1196,10 +1213,10 @@ Acceptance criteria:
 
 ## S9.5 Implement corrected-data import and affected re-run — P0
 
-- [ ] Import a corrected mock ERP file or approved mock entry.
-- [ ] Create a new source/run version.
-- [ ] Re-run only affected match groups when safe.
-- [ ] Preserve before/after decisions.
+- [x] Import a corrected mock ERP file or approved mock entry.
+- [x] Create a new source/run version.
+- [x] Re-run only affected match groups when safe (full replay is the safer bounded MVP path).
+- [x] Preserve before/after decisions.
 
 Depends on: S9.3, S9.4.
 
@@ -1210,9 +1227,9 @@ Acceptance criteria:
 
 ## S9.6 Build clarification-request export — P1
 
-- [ ] Draft evidence-backed question.
-- [ ] Include missing/contradictory fields without unnecessary data.
-- [ ] Export as text/Markdown, not real email delivery.
+- [x] Draft evidence-backed question.
+- [x] Include missing/contradictory fields without unnecessary data.
+- [x] Export as text/Markdown, not real email delivery.
 
 Depends on: S9.1, S8.6.
 
@@ -1223,9 +1240,9 @@ Acceptance criteria:
 
 ### Segment 9 exit gate — M6 (88%)
 
-- [ ] One correction completes the entire closed loop.
-- [ ] One case is intentionally left unresolved.
-- [ ] All actions require approval and produce audit receipts.
+- [x] One correction completes the entire closed loop.
+- [x] One case is intentionally left unresolved.
+- [x] All actions require approval and produce audit receipts.
 
 ---
 
@@ -1260,10 +1277,10 @@ Acceptance criteria:
 
 ## S10.3 Test AI failure and hostile text — P0
 
-- [ ] Timeout and malformed output.
-- [ ] Missing credentials.
-- [ ] Prompt-like bank narration.
-- [ ] Invented evidence IDs and amounts.
+- [x] Timeout and malformed output.
+- [x] Missing credentials.
+- [x] Prompt-like bank narration.
+- [x] Invented evidence IDs and amounts.
 
 Depends on: Segment 8.
 
@@ -1274,11 +1291,11 @@ Acceptance criteria:
 
 ## S10.4 Improve accessibility and financial presentation — P1
 
-- [ ] Keyboard-accessible review controls.
-- [ ] Status labels/icons in addition to color.
-- [ ] Exact locale-aware rupee and paise formatting.
-- [ ] Responsive evidence layout.
-- [ ] Accessible validation summaries.
+- [x] Keyboard-accessible review controls.
+- [x] Status labels/icons in addition to color.
+- [x] Exact locale-aware rupee and paise formatting.
+- [x] Responsive evidence layout.
+- [x] Accessible validation summaries.
 
 Depends on: S6.7, M6.
 
@@ -1289,10 +1306,10 @@ Acceptance criteria:
 
 ## S10.5 Improve performance and observability — P1
 
-- [ ] Measure pipeline stage latency.
-- [ ] Add structured run/case logs without sensitive raw values.
-- [ ] Profile default and larger benchmark batches.
-- [ ] Prevent accidental N-squared candidate explosions through blocking limits.
+- [x] Measure pipeline stage latency.
+- [x] Add structured run/case logs without sensitive raw values.
+- [x] Profile default and larger benchmark batches.
+- [x] Prevent accidental N-squared candidate explosions through blocking limits.
 
 Depends on: S5.3, M6.
 
@@ -1352,10 +1369,10 @@ Acceptance criteria:
 
 ### Segment 10 exit gate — M7 (95%)
 
-- [ ] Failure behavior is visible and recoverable.
+- [x] Failure behavior is visible and recoverable.
 - [ ] Holdout practitioner results are documented.
-- [ ] Known limitations and unresolved cases are explicit.
-- [ ] The production image passes the deployed smoke test locally.
+- [x] Known limitations and unresolved cases are explicit.
+- [x] The production image passes the deployed smoke test locally.
 
 ---
 
@@ -1363,9 +1380,9 @@ Acceptance criteria:
 
 ## S11.1 Finish one-command developer experience — P0
 
-- [ ] Implement `make demo`.
-- [ ] Implement final `make verify`.
-- [ ] Add `.env.example`, prerequisites and troubleshooting.
+- [x] Implement `make demo`.
+- [x] Implement final `make verify`.
+- [x] Add `.env.example`, prerequisites and troubleshooting.
 - [ ] Verify native setup from a fresh clone/environment.
 - [ ] Verify `docker compose up --build` from a clean Docker cache where practical.
 
@@ -1380,11 +1397,11 @@ Acceptance criteria:
 ## S11.2 Add hosted-demo reset and safety behavior — P0
 
 - [x] Add a visible synthetic-data-only notice.
-- [ ] Restrict file type and upload size.
-- [ ] Store uploads under generated IDs rather than supplied paths.
-- [ ] Add known-seed demo reset or automatic startup seed.
-- [ ] Define and document retention/purge behavior.
-- [ ] Disable debug endpoints and verbose error leakage in hosted mode.
+- [x] Restrict file type and upload size.
+- [x] Store uploads under generated IDs rather than supplied paths.
+- [x] Add known-seed demo reset or automatic startup seed.
+- [x] Define and document retention/purge behavior.
+- [x] Disable debug endpoints and verbose error leakage in hosted mode.
 
 Depends on: S1.6, S10.8.
 
@@ -1414,12 +1431,12 @@ Acceptance criteria:
 
 ## S11.4 Run deployment smoke and browser-path tests — P0
 
-- [ ] Run `make smoke` against judge-local.
+- [x] Run `make smoke` against judge-local.
 - [ ] Run `make smoke` against the hosted URL.
-- [ ] Verify model-optional fallback against judge-local.
-- [ ] Test sample upload, run completion, case evidence and artifact export.
-- [ ] Perform one browser-level principal-path test or documented manual checklist.
-- [ ] Save smoke results with build commit and timestamp.
+- [x] Verify model-optional fallback against judge-local.
+- [x] Test sample upload, run completion, case evidence and artifact export.
+- [x] Perform one browser-level principal-path test or documented manual checklist.
+- [x] Save smoke results with build commit and timestamp.
 
 Depends on: S11.3.
 
@@ -1431,7 +1448,7 @@ Acceptance criteria:
 
 ## S11.5 Write `DEPLOYMENT.md` — P0
 
-- [ ] Document hosted URL and demo reset.
+- [ ] Document hosted URL and demo reset (reset is documented; no hosted URL exists yet).
 - [x] Document container and native paths.
 - [x] Document runtime profiles and environment variables.
 - [x] Document health endpoints and smoke command.
@@ -1448,16 +1465,16 @@ Acceptance criteria:
 ## S11.6 Write the README — P0
 
 - [x] Problem and one-sentence solution.
-- [ ] Hosted demo and local judge command above the fold.
-- [ ] Demo flow and screenshots/GIF if useful.
-- [ ] Architecture diagram.
+- [ ] Hosted demo and local judge command above the fold (local command is present; hosted URL remains pending).
+- [x] Demo flow and screenshots/GIF if useful.
+- [x] Architecture diagram.
 - [x] Setup and foundation commands; extend with demo/benchmark commands when implemented.
-- [ ] Dataset and benchmark methodology.
-- [ ] Measured results and incorrect-case links.
-- [ ] AI-versus-deterministic decision boundaries.
-- [ ] Failure recovery and known limitations.
-- [ ] Practitioner review methodology.
-- [ ] Adjacent product directions and expansion path.
+- [x] Dataset and benchmark methodology.
+- [x] Measured results and incorrect-case links.
+- [x] AI-versus-deterministic decision boundaries.
+- [x] Failure recovery and known limitations.
+- [x] Practitioner review methodology.
+- [x] Adjacent product directions and expansion path.
 
 Depends on: S11.1–S11.5.
 
@@ -1469,13 +1486,13 @@ Acceptance criteria:
 
 ## S11.7 Produce example artifacts — P0
 
-- [ ] Close report.
-- [ ] Exception pack.
-- [ ] Audit log.
-- [ ] Journal proposal/export.
-- [ ] Benchmark report.
+- [x] Close report.
+- [x] Exception pack.
+- [x] Audit log.
+- [x] Journal proposal/export.
+- [x] Benchmark report.
 - [ ] Practitioner review summary.
-- [ ] Deployment smoke report.
+- [x] Deployment smoke report.
 
 Depends on: M7, S11.4.
 

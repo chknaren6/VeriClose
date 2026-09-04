@@ -28,6 +28,7 @@ ENV PATH="/opt/venv/bin:$PATH" \
     VERICLOSE_DATABASE_PATH=/app/data/vericlose.duckdb \
     VERICLOSE_STATIC_DIR=/app/apps/api/app/static \
     VERICLOSE_POLICY_PATH=/app/config/policies/razorpay_inr_v1.yaml \
+    VERICLOSE_DEMO_FIXTURE_DIR=/app/demo/seed-42/inputs \
     VERICLOSE_DEMO_MODE=true \
     VERICLOSE_RULE_VERSION=segment4-v1 \
     VERICLOSE_POLICY_VERSION=razorpay_inr_v1@1.0.0 \
@@ -41,6 +42,7 @@ COPY --from=python-build /opt/venv /opt/venv
 COPY apps /app/apps
 COPY core /app/core
 COPY config /app/config
+COPY demo /app/demo
 COPY scripts /app/scripts
 COPY synthetic /app/synthetic
 COPY --from=web-build /build/apps/web/dist /app/apps/api/app/static

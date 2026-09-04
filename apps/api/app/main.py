@@ -15,6 +15,7 @@ from apps.api.app.settings import AppSettings
 
 def create_app(settings: AppSettings | None = None) -> FastAPI:
     container = build_container(settings)
+    hosted = container.settings.environment == "hosted-demo"
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -26,6 +27,9 @@ def create_app(settings: AppSettings | None = None) -> FastAPI:
         version="0.1.0",
         description="Evidence-first settlement-to-ERP reconciliation controller.",
         lifespan=lifespan,
+        docs_url=None if hosted else "/docs",
+        redoc_url=None if hosted else "/redoc",
+        openapi_url=None if hosted else "/openapi.json",
     )
     app.state.container = container
     app.include_router(health_router)
@@ -84,12 +88,17 @@ def _install_error_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(ValueError)
     async def value_error(_request: Request, error: ValueError) -> JSONResponse:
+        hosted = _request.app.state.container.settings.environment == "hosted-demo"
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={
                 "error": {
                     "code": "WORKFLOW_CONFLICT",
-                    "message": str(error),
+                    "message": (
+                        "The request conflicts with the current workflow state"
+                        if hosted
+                        else str(error)
+                    ),
                     "field": None,
                     "suggested_fix": "Inspect validation state and supplied confirmations",
                 }

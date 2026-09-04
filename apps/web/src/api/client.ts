@@ -1,6 +1,6 @@
 import type {
-  CaseDetail, CaseItem, Detection, ImportResult, MetaResponse, ReadyResponse,
-  RunResult, RuntimeStatus, UploadPayload,
+  CaseDetail, CaseItem, CorrectionResult, Detection, GroundedAnswer, ImportResult,
+  MetaResponse, ProposedAction, ReadyResponse, RunResult, RuntimeStatus, UploadPayload,
 } from "./types";
 
 type ApiError = { error?: { message?: string; suggested_fix?: string } };
@@ -32,6 +32,10 @@ export const importUploads = (payload: UploadPayload) => requestJson<ImportResul
   "/api/v1/uploads", { method: "POST", body: JSON.stringify(payload) });
 export const startRun = (runId: string) => requestJson<RunResult>(
   "/api/v1/runs", { method: "POST", body: JSON.stringify({ run_id: runId }) });
+export const resetDemo = () => requestJson<RunResult>(
+  "/api/v1/demo/reset", { method: "POST" });
+export const getRun = (runId: string) => requestJson<RunResult>(
+  `/api/v1/runs/${encodeURIComponent(runId)}`);
 export const listCases = (runId: string) => requestJson<CaseItem[]>(
   `/api/v1/runs/${encodeURIComponent(runId)}/cases`);
 export const getCase = (caseId: string) => requestJson<CaseDetail>(
@@ -41,3 +45,32 @@ export const recordReview = (caseId: string, state: string, reviewerId: string, 
     method: "POST",
     body: JSON.stringify({ state, reviewer_id: reviewerId, comment: comment || null }),
   });
+export const investigateCase = (caseId: string) => requestJson<CaseDetail["advisory"]>(
+  `/api/v1/cases/${encodeURIComponent(caseId)}/investigations`, { method: "POST" });
+export const reviewInvestigation = (
+  caseId: string, state: "APPROVED" | "REJECTED", reviewerId: string, comment: string,
+) => requestJson(`/api/v1/cases/${encodeURIComponent(caseId)}/investigation-reviews`, {
+  method: "POST", body: JSON.stringify({ state, reviewer_id: reviewerId, comment: comment || null }),
+});
+export const proposeAction = (caseId: string) => requestJson<ProposedAction>(
+  `/api/v1/cases/${encodeURIComponent(caseId)}/actions`, { method: "POST" });
+export const getAction = (actionId: string) => requestJson<ProposedAction>(
+  `/api/v1/actions/${encodeURIComponent(actionId)}`);
+export const reviewAction = (
+  actionId: string, state: string, reviewerId: string, comment: string,
+  edits: Record<string, string> = {},
+) => requestJson<ProposedAction>(`/api/v1/actions/${encodeURIComponent(actionId)}/reviews`, {
+  method: "POST",
+  body: JSON.stringify({ state, reviewer_id: reviewerId, comment: comment || null, edits }),
+});
+export const exportAction = (actionId: string) => requestJson(
+  `/api/v1/actions/${encodeURIComponent(actionId)}/export`, { method: "POST" });
+export const applyCorrection = (actionId: string, newRunId: string) =>
+  requestJson<CorrectionResult>(
+    `/api/v1/actions/${encodeURIComponent(actionId)}/apply-correction`,
+    { method: "POST", body: JSON.stringify({ new_run_id: newRunId }) },
+  );
+export const askRunQuestion = (runId: string, question: string) => requestJson<GroundedAnswer>(
+  `/api/v1/runs/${encodeURIComponent(runId)}/questions`,
+  { method: "POST", body: JSON.stringify({ question }) },
+);

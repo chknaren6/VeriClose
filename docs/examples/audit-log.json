@@ -1,0 +1,122 @@
+[
+  {
+    "audit_id": "audit_6894e7379ed94e97afff",
+    "details": [
+      [
+        "action_id",
+        "action_3ff5a0ba3cb64b095cda"
+      ],
+      [
+        "state",
+        "APPROVED"
+      ],
+      [
+        "reviewer_id",
+        "example-controller"
+      ],
+      [
+        "edited",
+        "false"
+      ]
+    ],
+    "event_type": "ACTION_REVIEW_RECORDED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  },
+  {
+    "audit_id": "audit_action_3ff5a0ba3cb64b095cda_proposed",
+    "details": [
+      [
+        "case_id",
+        "case_858b991e121b2a012442"
+      ],
+      [
+        "action_id",
+        "action_3ff5a0ba3cb64b095cda"
+      ],
+      [
+        "action_type",
+        "JOURNAL_EXPORT"
+      ]
+    ],
+    "event_type": "ACTION_PROPOSED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  },
+  {
+    "audit_id": "audit_receipt_7a3517091881540f3029",
+    "details": [
+      [
+        "action_id",
+        "action_3ff5a0ba3cb64b095cda"
+      ],
+      [
+        "receipt_id",
+        "receipt_7a3517091881540f3029"
+      ],
+      [
+        "sha256",
+        "8f108020d2940ba1140d66abc63970074dffdeb2ab5bb632cd977f25cef82ca0"
+      ]
+    ],
+    "event_type": "ACTION_EXPORTED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  },
+  {
+    "audit_id": "example-seed-42-v1:import",
+    "details": [
+      [
+        "file_count",
+        "3"
+      ],
+      [
+        "event_count",
+        "18"
+      ],
+      [
+        "state",
+        "VALIDATED"
+      ]
+    ],
+    "event_type": "IMPORT_COMPLETED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  },
+  {
+    "audit_id": "example-seed-42-v1:reconciliation-completed",
+    "details": [
+      [
+        "decision_count",
+        "3"
+      ],
+      [
+        "auto_cleared_count",
+        "1"
+      ],
+      [
+        "exception_count",
+        "2"
+      ],
+      [
+        "amount_at_risk_minor",
+        "341740"
+      ]
+    ],
+    "event_type": "RECONCILIATION_COMPLETED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  },
+  {
+    "audit_id": "example-seed-42-v1:reconciliation-started",
+    "details": [
+      [
+        "event_count",
+        "18"
+      ]
+    ],
+    "event_type": "RECONCILIATION_STARTED",
+    "occurred_at": "2026-09-04T12:00:00+00:00",
+    "run_id": "example-seed-42-v1"
+  }
+]

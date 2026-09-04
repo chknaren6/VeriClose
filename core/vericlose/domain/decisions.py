@@ -33,9 +33,7 @@ class MatchProposal:
             _require_text(value, field_name)
         if not isinstance(self.proposed_proof_level, ProofLevel):
             raise TypeError("proposed_proof_level must be a ProofLevel")
-        if isinstance(self.support_score_bps, bool) or not isinstance(
-            self.support_score_bps, int
-        ):
+        if isinstance(self.support_score_bps, bool) or not isinstance(self.support_score_bps, int):
             raise TypeError("support_score_bps must be an integer")
         if not 0 <= self.support_score_bps <= 10_000:
             raise ValueError("support_score_bps must be between 0 and 10_000")

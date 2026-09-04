@@ -2,8 +2,9 @@
 
 **Project:** VeriClose — Evidence-first settlement-to-ERP reconciliation  
 **Hackathon track:** Razorpay Track 04 — AI Finance Controller  
-**Implementation status:** M0–M4 complete through Segment 6
-**Report date:** 29 August 2026
+**Implementation status:** M0–M4 complete; executable Segment 8–11 controller work added; practitioner and hosted-release gates remain pending
+
+**Report date:** 4 September 2026
 
 ---
 
@@ -84,8 +85,15 @@ flowchart LR
     X --> S
 ```
 
-The Segment 6 web workflow now exposes persisted decisions for evidence inspection and preliminary
-classification. Correction approval, journal export, and re-run workflows remain later milestones.
+The web workflow exposes persisted decisions for evidence inspection and preliminary
+classification. The later approval, journal export and correction/re-run loop is now described in
+the release addendum below.
+
+> **Release addendum (4 September 2026).** The later controller loop is now implemented locally:
+> bounded structured investigation with deterministic fallback, reviewable advisory evidence,
+> approval-gated journal/clarification exports, immutable action receipts, corrected mock-ERP
+> import, deterministic re-run, run artifacts, seed reset and expanded external smoke checks.
+> The remaining non-code gates are practitioner observation/holdout, a real hosted URL and video.
 
 ---
 
@@ -112,7 +120,7 @@ deterministic fallback and do not disable finance functionality.
 M1 creates reliable input evidence before matching begins.
 
 #### Synthetic company generator
-
+/
 The generator creates a reproducible gateway, bank, and ERP world from a seed. It outputs:
 
 ```text
@@ -391,6 +399,24 @@ flowchart LR
 Runtime endpoints cannot access hidden truth. Benchmark output is unavailable unless the explicit
 benchmark environment is active, and operational metrics expose no accuracy claims.
 
+### 3.6 M5 preparation — Blinded practitioner-review system
+
+The first real domain review has not been fabricated or marked complete. The repository now contains
+the machinery needed to conduct it rigorously:
+
+- a reproducible 25-case pack drawn from five seeds;
+- exactly five cases from each proof level and nine scenarios overall;
+- blinded source evidence with system decisions absent from committed review artifacts;
+- private reveal data and a diverse five-decision uncertainty list under ignored runtime storage;
+- a separately reserved seed holdout for the later 90% validation review;
+- structured observation, label, disagreement-resolution and feature-priority forms;
+- validation that rejects incomplete labels, unexplained disagreements, low-trust must-haves and
+  accepted work without task IDs;
+- automatic agreement/disagreement reporting and sanitized golden-suite promotion after completion.
+
+`make review-analyze` currently fails by design because no practitioner has labelled the cases. No
+agreement rate, accepted rule or UX finding is claimed before the real session.
+
 ## 4. Complete architecture
 
 ### 4.1 Layered architecture
@@ -399,13 +425,15 @@ benchmark environment is active, and operational metrics expose no accuracy clai
 flowchart TB
     subgraph Delivery[Delivery layer]
         CLI[Import and reconcile CLIs]
-        API[FastAPI health, metadata, future product API]
+        API[FastAPI health, metadata and workflow API]
         WEB[React/Vite evidence review workspace]
     end
 
     subgraph Application[Application orchestration]
         IMPORT[ImportBatchService]
         CLOSE[RunReconciliationService]
+        QUERY[ReviewQueryService]
+        REVIEW[PreliminaryReviewService]
     end
 
     subgraph Core[Pure finance core]
@@ -643,7 +671,7 @@ rewriting the earlier close.
 
 ## 8. Testing and verification
 
-The current release gate passes 168 backend tests plus frontend checks.
+The current release gate passes 173 backend tests plus frontend checks.
 
 Coverage includes:
 
@@ -745,10 +773,12 @@ docker run --rm -v /app/data vericlose:dev \
 - Three-source mapping/validation UI with diagnostics and control totals
 - Operational cockpit, exception queue and evidence-first workbench
 - Append-only preliminary reviews and review audit events
+- Reproducible blinded practitioner pack, validated forms and golden-promotion tooling
 - Model-optional deployment
 
 ### Intentionally not built yet
 
+- Real practitioner findings and domain corrections; the session is still awaiting human input
 - Final human approval for financial actions (preliminary review is deliberately non-mutating)
 - Journal proposal/export and corrected-data re-run loop
 - LLM exception explanations or settlement Q&A
@@ -774,8 +804,9 @@ flowchart LR
     M6 --> M7[M7: hosted judge deployment and demo hardening]
 ```
 
-The immediate next step is Segment 7: conduct a blinded practitioner review with the user's father,
-observe evidence-inspection order, and change terminology or policy only from documented findings.
+The immediate next step is the human portion of Segment 7: conduct the blinded review with the
+user's father, record observation order and independent labels, resolve disagreements, then encode
+only accepted changes as failing tests, policy/rule updates and measured before/after benchmarks.
 
 ---
 
@@ -796,7 +827,7 @@ A concise judge explanation can follow this sequence:
    transactionally; failures become explicit run states.
 8. **Demonstration:** one command closes all 315 rows, reports 25 decisions, and lists the 10 cases
    it honestly could not clear.
-9. **Next step:** evaluate across multiple hidden seeds before adding AI explanations or UI polish.
+9. **Next step:** convert real practitioner disagreements into tested policy and evidence-UX changes.
 
 The central product statement is:
 
@@ -813,3 +844,5 @@ The central product statement is:
 - `DEPLOYMENT.md` — judge and hosted runbook
 - `AGENTS.md` — repository engineering, finance-safety, and AI boundaries
 - `README.md` — quickest developer and judge entry point
+- `docs/domain/DOMAIN_REVIEW_01.md` — honest status and eventual findings of the first review
+- `docs/practitioner/review_01/` — blinded cases, session protocol and structured forms

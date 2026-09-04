@@ -38,9 +38,7 @@ class KernelResult:
         return sum(decision.policy_allows_auto_clear for decision in self.decisions)
 
 
-def reconcile(
-    events: tuple[CanonicalEvent, ...], policy: ReconciliationPolicy
-) -> KernelResult:
+def reconcile(events: tuple[CanonicalEvent, ...], policy: ReconciliationPolicy) -> KernelResult:
     started = perf_counter_ns()
     context = ReconciliationContext.build(events, policy)
     event_by_id = {event.event_id: event for event in context.events}

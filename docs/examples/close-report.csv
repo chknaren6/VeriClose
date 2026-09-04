@@ -1,0 +1,4 @@
+run_id,case_id,decision_state,proof_level,reason_code,amount_at_risk_minor,currency,action_type,action_state,evidence_count
+example-seed-42-v1,case_858b991e121b2a012442,REVIEW_REQUIRED,SUPPORTED,MISSING_ERP_POSTING,195280,INR,JOURNAL_EXPORT,EXPORTED,5
+example-seed-42-v1,case_8804f926170a71e44e5f,REVIEW_REQUIRED,SUPPORTED,MISSING_BANK_RECEIPT,146460,INR,,,4
+example-seed-42-v1,decision_dddcabfa45e529319da0,AUTO_CLEARED,PROVED,,0,INR,,,9

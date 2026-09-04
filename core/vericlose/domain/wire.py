@@ -41,9 +41,7 @@ def canonical_event_to_dict(event: CanonicalEvent) -> dict[str, Any]:
             "row_number": event.lineage.row_number,
             "raw_row_hash": event.lineage.raw_row_hash,
         },
-        "raw_fields": [
-            {"name": field.name, "value": field.value} for field in event.raw_fields
-        ],
+        "raw_fields": [{"name": field.name, "value": field.value} for field in event.raw_fields],
         "mapping_profile_version": event.mapping_profile_version,
     }
 

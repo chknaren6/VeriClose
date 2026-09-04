@@ -1,7 +1,8 @@
 # VeriClose Deployment Runbook
 
 This runbook defines the reproducible, model-optional deployment path a judge can use.
-The same container will remain the delivery shape as reconciliation capability is added.
+The production image contains the complete local controller loop, including synthetic reset,
+evidence review, approval-gated export, mock correction and re-run.
 
 ## Supported judge path
 
@@ -35,6 +36,10 @@ Open:
 The application must start without an AI provider credential. In that case `/api/meta`
 reports `model_enabled: false`, and all deterministic finance functionality must
 remain available.
+
+In the product, use **Restore demo** to start a new known seed-42 run. It contains one proved
+case, one `MISSING_ERP_POSTING` correction path, and one independent `MISSING_BANK_RECEIPT` that
+remains open after the correction. Reset never uses a caller-provided filesystem path.
 
 ## Docker Compose convenience path
 
@@ -74,12 +79,16 @@ Important variables:
 | `VERICLOSE_DATA_DIR` | `/app/data` | Writable immutable uploads and generated artifacts. |
 | `VERICLOSE_DATABASE_PATH` | `/app/data/vericlose.duckdb` | DuckDB persistence path. |
 | `VERICLOSE_POLICY_PATH` | `/app/config/policies/razorpay_inr_v1.yaml` | Validated policy pack. |
+| `VERICLOSE_DEMO_FIXTURE_DIR` | `/app/demo/seed-42/inputs` | Checked-in synthetic reset source only. |
 | `VERICLOSE_DEMO_MODE` | `true` | Allows only safe synthetic demo behavior. |
 | `VERICLOSE_UPLOAD_MAX_BYTES` | `10485760` | Per-file upload ceiling. |
 | `VERICLOSE_DETERMINISTIC_SEED` | `42` | Default reproducibility seed. |
 | `VERICLOSE_RULE_VERSION` | `segment4-v1` | Deterministic rule-set version. |
 | `VERICLOSE_POLICY_VERSION` | `razorpay_inr_v1@1.0.0` | Accounting policy version. |
 | `VERICLOSE_MODEL_API_KEY` | unset | Optional investigation provider credential. |
+| `VERICLOSE_MODEL_NAME` | `gpt-5-mini` | Optional bounded investigator model. |
+| `VERICLOSE_MODEL_TIMEOUT_SECONDS` | `12` | Model request timeout before deterministic fallback. |
+| `VERICLOSE_RETENTION_HOURS` | `24` | Hosted-demo operator retention policy window. |
 
 Do not put secrets in the image, source tree, Compose file, frontend bundle, or demo data.
 
@@ -87,6 +96,8 @@ Do not put secrets in the image, source tree, Compose file, frontend bundle, or 
 
 - The process listens on container port `8000`.
 - FastAPI serves `/api/*`, health endpoints, docs, and compiled React assets on one origin.
+- In `hosted-demo` mode, API docs/OpenAPI are disabled and workflow conflict messages do not expose
+  raw internal error text.
 - The process runs as a non-root user.
 - `/app/data` is the only required writable application directory.
 - Liveness means the process responds.
@@ -103,13 +114,18 @@ For an already-running deployment:
 BASE_URL=http://localhost:8000 make smoke
 ```
 
-This checks readiness and metadata from outside the application process. `make
-smoke-container` additionally builds a short-lived container, waits for readiness,
-checks the production HTML shell, and then removes the container.
+This starts a fresh known-seed run from outside the application process, asserts a proved case and
+an honest exception, opens evidence through the API and downloads a checksummed exception pack.
+`make smoke-container` additionally checks the production HTML shell and removes its short-lived
+container. Save a result with:
+
+```bash
+make smoke-container SMOKE_OUTPUT=docs/examples/deployment-smoke-container.json
+```
 
 ## Hosted demo profile
 
-The future hosted demo will use the same image with environment configuration changed:
+Use the same image with environment configuration changed:
 
 ```text
 VERICLOSE_ENVIRONMENT=hosted-demo
@@ -118,9 +134,15 @@ VERICLOSE_DATA_DIR=/app/data
 VERICLOSE_DATABASE_PATH=/app/data/vericlose.duckdb
 ```
 
-The hosting platform must provide persistent writable storage if runs must survive a
-restart. Without it, deployment is still valid for an ephemeral judge demo, but run data
-will be lost when the container is replaced.
+The current repository does not claim a hosted URL. Choose a host with HTTPS and either:
+
+- **ephemeral demo storage:** reset after restart; this is the recommended judging profile; or
+- **persistent volume:** retain synthetic run history temporarily, then purge the whole demo data
+  volume at or before the documented `VERICLOSE_RETENTION_HOURS` window.
+
+The application never purges accounting evidence inside a run. Retention is an operator-level,
+whole-demo-data lifecycle decision for synthetic hosted sessions. Do not use this build for real
+financial data.
 
 ## Release gate
 
@@ -134,13 +156,13 @@ Before handing a build to judges:
    are present in the image or Git history.
 6. Record the commit SHA and benchmark configuration shown in the demo.
 
-## Current M2 capability and limitation
+## Current capability and limits
 
-The current image contains the Segment 3 ingestion foundation and Segment 4 deterministic
-verification kernel. It can generate a synthetic company, normalize three finance sources, build
-bounded candidates, prove accounting invariants, risk-gate decisions, persist evidence, and export
-an honest exception queue. It does **not** yet claim benchmark accuracy metrics; hidden-truth and
-multi-seed evaluation belong exclusively to Segment 5.
+The image validates three sources, preserves immutable lineage, applies bounded deterministic
+proof, exposes case evidence, provides bounded advisory fallback, requires approval before action
+export, imports an approved mock journal as a new source version, and re-runs deterministically.
+It does not perform live ERP posting, process real client data, or claim a practitioner review,
+hosted deployment or certification that has not occurred.
 
 Native end-to-end proof:
 

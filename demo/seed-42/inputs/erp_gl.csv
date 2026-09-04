@@ -1,0 +1,5 @@
+journal_id,line_number,posting_date,account_code,debit_amount,credit_amount,currency,external_reference,narration
+jrn_demo_0001,1,2026-04-02,110000,976.40,0.00,INR,set_demo_0001,Synthetic bank receipt
+jrn_demo_0001,2,2026-04-02,510000,20.00,0.00,INR,set_demo_0001,Synthetic gateway fee expense
+jrn_demo_0001,3,2026-04-02,140000,3.60,0.00,INR,set_demo_0001,Synthetic input GST
+jrn_demo_0001,4,2026-04-02,120000,0.00,1000.00,INR,set_demo_0001,Synthetic clearing credit

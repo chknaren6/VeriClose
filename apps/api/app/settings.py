@@ -25,6 +25,7 @@ class AppSettings(BaseSettings):
     database_path: Path = Path(".data/vericlose.duckdb")
     static_dir: Path = Path("apps/api/app/static")
     policy_path: Path = Path("config/policies/razorpay_inr_v1.yaml")
+    demo_fixture_dir: Path = Path("demo/seed-42/inputs")
     upload_max_bytes: int = 10 * 1024 * 1024
     demo_mode: bool = True
     deterministic_seed: int = 42
@@ -32,6 +33,10 @@ class AppSettings(BaseSettings):
     rule_version: str = "segment4-v1"
     policy_version: str = "razorpay_inr_v1@1.0.0"
     model_api_key: SecretStr | None = None
+    model_name: str = "gpt-5-mini"
+    model_base_url: str = "https://api.openai.com/v1"
+    model_timeout_seconds: float = 12.0
+    retention_hours: int = 24
 
     @property
     def model_enabled(self) -> bool:

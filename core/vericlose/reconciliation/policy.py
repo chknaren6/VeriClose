@@ -137,8 +137,10 @@ def load_policy(path: Path) -> ReconciliationPolicy:
     for name, raw in _mapping(root["account_roles"], "account_roles").items():
         role = _mapping(raw, f"account_roles.{name}")
         codes = role.get("account_codes")
-        if not isinstance(codes, list) or not codes or any(
-            not isinstance(code, str) or not code.strip() for code in codes
+        if (
+            not isinstance(codes, list)
+            or not codes
+            or any(not isinstance(code, str) or not code.strip() for code in codes)
         ):
             raise ValueError(f"account_roles.{name}.account_codes must be non-empty strings")
         roles[str(name)] = AccountRolePolicy(frozenset(codes), Direction(role["direction"]))
