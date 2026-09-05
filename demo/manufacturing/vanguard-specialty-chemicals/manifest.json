@@ -1,0 +1,60 @@
+{
+  "dataset_kind": "synthetic_manufacturing_demo",
+  "exception_profile": [
+    "refunds deducted in later settlements",
+    "duplicate ERP postings",
+    "one unbalanced ERP journal",
+    "one orphan bank credit"
+  ],
+  "files": {
+    "bank": {
+      "path": "inputs/bank.csv",
+      "sha256": "4f1ed36f87119752e8155d74aa1cfece9a3dd81af3796a99c9406183b7f29635",
+      "size_bytes": 1884
+    },
+    "erp_gl": {
+      "path": "inputs/erp_gl.csv",
+      "sha256": "9bfa706f97003d6e304b53d5fe661ce1ac128f8dfa09dea5c2d35ccd9f780546",
+      "size_bytes": 6021
+    },
+    "gateway": {
+      "path": "inputs/gateway.csv",
+      "sha256": "3787737be74d40f7b0306642357336c70db50768732adcc14cbf430b300b7aaf",
+      "size_bytes": 14100
+    }
+  },
+  "generator": {
+    "payments": 58,
+    "seed": 3042,
+    "settlements": 14
+  },
+  "legal_entity": {
+    "currency": "INR",
+    "legal_entity_id": "le_vanguard_chemicals_in",
+    "name": "Vanguard Specialty Chemicals Private Limited"
+  },
+  "row_counts": {
+    "bank": 15,
+    "erp_gl": 64,
+    "gateway": 102,
+    "total": 181
+  },
+  "scenario_counts": {
+    "clean_exact": 9,
+    "duplicate_erp_posting": 2,
+    "orphan_bank_credit": 1,
+    "refund_later_settlement": 2,
+    "unbalanced_erp_journal": 1
+  },
+  "schema_version": "1.0",
+  "synthetic_data_only": true,
+  "usage": {
+    "contains_hidden_truth": false,
+    "restore_demo_fixture_dir": "demo/manufacturing/vanguard-specialty-chemicals/inputs",
+    "upload_order": [
+      "gateway",
+      "bank",
+      "erp_gl"
+    ]
+  }
+}

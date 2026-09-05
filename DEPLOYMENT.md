@@ -86,8 +86,8 @@ Important variables:
 | `VERICLOSE_RULE_VERSION` | `segment4-v1` | Deterministic rule-set version. |
 | `VERICLOSE_POLICY_VERSION` | `razorpay_inr_v1@1.0.0` | Accounting policy version. |
 | `VERICLOSE_MODEL_API_KEY` | unset | Optional investigation provider credential. |
-| `VERICLOSE_MODEL_NAME` | `gpt-5-mini` | Optional bounded investigator model. |
-| `VERICLOSE_MODEL_TIMEOUT_SECONDS` | `12` | Model request timeout before deterministic fallback. |
+| `VERICLOSE_MODEL_NAME` | `gpt-5-nano` | Optional bounded investigator model. |
+| `VERICLOSE_MODEL_TIMEOUT_SECONDS` | `30` | Model request timeout before deterministic fallback. |
 | `VERICLOSE_RETENTION_HOURS` | `24` | Hosted-demo operator retention policy window. |
 
 Do not put secrets in the image, source tree, Compose file, frontend bundle, or demo data.

@@ -1,0 +1,58 @@
+{
+  "dataset_kind": "synthetic_manufacturing_demo",
+  "exception_profile": [
+    "partial settlement receipts",
+    "valid working-day timing differences",
+    "missing bank receipts"
+  ],
+  "files": {
+    "bank": {
+      "path": "inputs/bank.csv",
+      "sha256": "3a3663ebd9e48172dbc3e741b47eb8301c8e2a829de87e3dec12854ff77b671c",
+      "size_bytes": 1696
+    },
+    "erp_gl": {
+      "path": "inputs/erp_gl.csv",
+      "sha256": "3918267d18bb39af525e74b385b91755599b87ed3358606015efe6d6a3116d42",
+      "size_bytes": 5092
+    },
+    "gateway": {
+      "path": "inputs/gateway.csv",
+      "sha256": "7d2841187b98f5f25908ba4f51d1d89a54e950c086200dfdd61ea133016a4820",
+      "size_bytes": 14308
+    }
+  },
+  "generator": {
+    "payments": 62,
+    "seed": 2042,
+    "settlements": 14
+  },
+  "legal_entity": {
+    "currency": "INR",
+    "legal_entity_id": "le_nexus_tools_in",
+    "name": "Nexus Industrial Tools Private Limited"
+  },
+  "row_counts": {
+    "bank": 13,
+    "erp_gl": 56,
+    "gateway": 104,
+    "total": 173
+  },
+  "scenario_counts": {
+    "clean_exact": 7,
+    "missing_bank_credit": 3,
+    "partial_settlement": 2,
+    "working_day_shift": 2
+  },
+  "schema_version": "1.0",
+  "synthetic_data_only": true,
+  "usage": {
+    "contains_hidden_truth": false,
+    "restore_demo_fixture_dir": "demo/manufacturing/nexus-industrial-tools/inputs",
+    "upload_order": [
+      "gateway",
+      "bank",
+      "erp_gl"
+    ]
+  }
+}

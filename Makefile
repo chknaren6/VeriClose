@@ -10,7 +10,7 @@ SMOKE_OUTPUT ?=
 JUDGE_MODEL_ENV := $(if $(VERICLOSE_MODEL_API_KEY),-e VERICLOSE_MODEL_API_KEY) $(if $(VERICLOSE_MODEL_NAME),-e VERICLOSE_MODEL_NAME) $(if $(VERICLOSE_MODEL_BASE_URL),-e VERICLOSE_MODEL_BASE_URL) $(if $(VERICLOSE_MODEL_TIMEOUT_SECONDS),-e VERICLOSE_MODEL_TIMEOUT_SECONDS)
 export UV_CACHE_DIR := $(CURDIR)/.uv-cache
 
-.PHONY: setup test lint format typecheck build-web verify generate import-batch reconcile benchmark benchmark-submission examples review-pack review-analyze demo dev dev-api dev-web health image judge smoke smoke-local smoke-container
+.PHONY: setup test lint format typecheck build-web verify generate manufacturing-demos import-batch reconcile benchmark benchmark-submission examples review-pack review-analyze demo dev dev-api dev-web health image judge smoke smoke-local smoke-container
 
 SEED ?= 42
 PAYMENTS ?= 120
@@ -42,6 +42,9 @@ verify: lint test typecheck build-web
 
 generate:
 	$(PYTHON) python -m synthetic.generate --seed $(SEED) --payments $(PAYMENTS) --settlements $(SETTLEMENTS) --exception-rate $(EXCEPTION_RATE) --output $(GENERATED_OUTPUT)
+
+manufacturing-demos:
+	$(PYTHON) python -m scripts.generate_manufacturing_demos
 
 RUN_ID ?= import-seed-$(SEED)-v1
 IMPORT_DATABASE ?= .data/vericlose.duckdb

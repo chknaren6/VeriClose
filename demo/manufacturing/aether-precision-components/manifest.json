@@ -1,0 +1,56 @@
+{
+  "dataset_kind": "synthetic_manufacturing_demo",
+  "exception_profile": [
+    "fee and GST component mismatches",
+    "many gateway payments aggregated into one settlement"
+  ],
+  "files": {
+    "bank": {
+      "path": "inputs/bank.csv",
+      "sha256": "6d3287e6cb476e6c2b73e1adee40208486ffe0b62cb0bd5025b6fbde0ef1af22",
+      "size_bytes": 1745
+    },
+    "erp_gl": {
+      "path": "inputs/erp_gl.csv",
+      "sha256": "db35a5e516b7996de16c2a4df7cd44ed7a81283e2c92d7db0b88f94356d140e6",
+      "size_bytes": 5086
+    },
+    "gateway": {
+      "path": "inputs/gateway.csv",
+      "sha256": "7585d135d2a5572654f3da4c9a81236084ba2bf16368ad5e8dc87abcd2513c60",
+      "size_bytes": 14008
+    }
+  },
+  "generator": {
+    "payments": 60,
+    "seed": 1042,
+    "settlements": 14
+  },
+  "legal_entity": {
+    "currency": "INR",
+    "legal_entity_id": "le_aether_precision_in",
+    "name": "Aether Precision Components Private Limited"
+  },
+  "row_counts": {
+    "bank": 14,
+    "erp_gl": 56,
+    "gateway": 102,
+    "total": 172
+  },
+  "scenario_counts": {
+    "clean_exact": 8,
+    "incorrect_fee_or_tax": 3,
+    "many_payments_one_settlement": 3
+  },
+  "schema_version": "1.0",
+  "synthetic_data_only": true,
+  "usage": {
+    "contains_hidden_truth": false,
+    "restore_demo_fixture_dir": "demo/manufacturing/aether-precision-components/inputs",
+    "upload_order": [
+      "gateway",
+      "bank",
+      "erp_gl"
+    ]
+  }
+}

@@ -24,6 +24,10 @@ class OpenAIModelGateway:
         self._timeout_seconds = timeout_seconds
 
     def generate(self, request: ModelRequest) -> ModelResponse:
+        # gpt-5-nano is a reasoning model: default (medium) effort spends ~2500
+        # reasoning tokens before writing any output, so a small max_output_tokens
+        # budget returns status=incomplete with no message. Minimal effort keeps
+        # the advisory fast and leaves budget for the actual JSON answer.
         body = json.dumps(
             {
                 "model": self._model,
@@ -38,7 +42,8 @@ class OpenAIModelGateway:
                     }
                 },
                 "store": False,
-                "max_output_tokens": 1200,
+                "reasoning": {"effort": "minimal"},
+                "max_output_tokens": 5000,
             },
             separators=(",", ":"),
         ).encode()
@@ -60,14 +65,28 @@ class OpenAIModelGateway:
                 f"structured model request failed: {type(error).__name__}"
             ) from error
         latency_ms = max(0, round((monotonic() - started) * 1000))
-        try:
-            output_text = next(
-                part["text"]
-                for item in payload["output"]
-                if item.get("type") == "message"
-                for part in item.get("content", [])
-                if part.get("type") == "output_text"
+        status = payload.get("status")
+        if status is not None and status != "completed":
+            incomplete = payload.get("incomplete_details") or {}
+            reason = incomplete.get("reason") if isinstance(incomplete, dict) else None
+            raise ModelUnavailableError(
+                f"model response was {status}"
+                + (f" ({reason})" if reason else "")
+                + ": no advisory text was returned"
             )
+        try:
+            texts: list[str] = []
+            for item in payload.get("output", []):
+                if not isinstance(item, dict) or item.get("type") != "message":
+                    continue
+                for part in item.get("content", []):
+                    if isinstance(part, dict) and part.get("type") == "output_text":
+                        text = part.get("text")
+                        if isinstance(text, str) and text.strip():
+                            texts.append(text)
+            if not texts:
+                raise StopIteration("no output_text part")
+            output_text = "".join(texts)
             parsed = json.loads(output_text)
         except (KeyError, StopIteration, TypeError, json.JSONDecodeError) as error:
             raise ModelUnavailableError(

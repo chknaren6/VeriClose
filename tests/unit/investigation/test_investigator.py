@@ -111,6 +111,9 @@ def test_grounded_model_output_is_validated_and_persisted(tmp_path: Path) -> Non
     assert model.requests[0].context["deterministic_facts"]["proof_level"] == (
         case.decision.proof_level.value
     )
+    assert model.requests[0].prompt_version == "exception-investigator-v2"
+    assert "at most two short sentences" in model.requests[0].instructions
+    assert "lower confidence instead of guessing" in model.requests[0].instructions
     with unit_of_work() as repositories:
         assert repositories.investigations.list_for_case(case.run_id, case.case_id) == (result,)
 

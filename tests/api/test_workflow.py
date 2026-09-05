@@ -23,6 +23,9 @@ async def _client(tmp_path: Path) -> AsyncIterator[httpx2.AsyncClient]:
         static_dir=tmp_path / "missing-static",
         build_commit="segment6-test",
         demo_mode=True,
+        # Hermetic: never call the live advisory model from tests,
+        # even when a developer .env key is present.
+        model_api_key=None,
     )
     app = create_app(settings)
     async with app.router.lifespan_context(app):
@@ -219,12 +222,20 @@ async def test_demo_reset_restores_known_proved_and_exception_cases(tmp_path: Pa
         assert reset.status_code == 200, reset.text
         run = reset.json()
         assert run["state"] == "COMPLETED"
-        assert run["operational_summary"]["decision_count"] == 3
-        assert run["operational_summary"]["verified_count"] == 1
-        assert run["operational_summary"]["review_or_exception_count"] == 2
+        summary = run["operational_summary"]
+        assert summary["decision_count"] == 25
+        assert summary["verified_count"] == 15
+        assert summary["review_or_exception_count"] == 10
+        assert max(item["input_count"] for item in summary["stage_timings"]) == 315
 
         cases = (await client.get(f"/api/v1/runs/{run['run_id']}/cases")).json()
-        assert {item["proof_level"] for item in cases} == {"PROVED", "SUPPORTED"}
+        assert {item["proof_level"] for item in cases} == {
+            "PROVED",
+            "SUPPORTED",
+            "AMBIGUOUS",
+            "CONTRADICTED",
+            "INVALID_INPUT",
+        }
         assert {item["reason_code"] for item in cases if item["reason_code"]} >= {
             "MISSING_BANK_RECEIPT",
             "MISSING_ERP_POSTING",

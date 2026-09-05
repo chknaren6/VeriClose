@@ -1,3 +1,8 @@
+# Internal planning docs (local only, never pushed)
+PROJECT_PLAN.md
+TASKS.md
+BUILD_STEPS.md
+
 # Python
 .venv/
 __pycache__/
@@ -7,6 +12,7 @@ __pycache__/
 .uv-cache/
 .coverage
 htmlcov/
+.hypothesis/
 
 # JavaScript
 node_modules/
@@ -16,6 +22,9 @@ apps/web/dist/
 # Runtime data and generated artifacts
 .data/
 data/
+uploads/
+*.duckdb
+*.db
 evaluation/reports/*.json
 evaluation/reports/*.csv
 synthetic/output/
@@ -29,6 +38,11 @@ synthetic/output/
 .idea/
 .vscode/
 .DS_Store
+
+# Agent and tooling workspaces (local only)
+.opencode/
+.agents/
+.codex/
 
 # Logs and temporary files
 *.log

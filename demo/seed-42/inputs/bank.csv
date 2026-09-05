@@ -1,3 +1,27 @@
 bank_record_id,value_date,booking_date,credit_amount,debit_amount,utr,narration,currency,account_reference
-bnk_demo_0001,2026-04-02,2026-04-02,976.40,0.00,UTRDEMO00000001,Synthetic settlement set_demo_0001,INR,acct_demo_01
-bnk_demo_0002,2026-04-03,2026-04-03,1952.80,0.00,UTRDEMO00000002,Synthetic settlement set_demo_0002,INR,acct_demo_01
+bnk_0042_0001,2026-04-02,2026-04-02,3846.10,0.00,UTR004200000001,Synthetic settlement set_0042_0001,INR,acct_demo_01
+bnk_0042_0003,2026-04-04,2026-04-04,5212.91,0.00,UTR004200000003,Synthetic settlement set_0042_0003,INR,acct_demo_01
+bnk_0042_0004,2026-04-07,2026-04-07,5599.02,0.00,UTR004200000004,Synthetic settlement set_0042_0004,INR,acct_demo_01
+bnk_0042_0005,2026-04-06,2026-04-06,8262.59,0.00,UTR00420000000X,Synthetic settlement set_0042_0005,INR,acct_demo_01
+bnk_0042_0006,2026-04-07,2026-04-07,6132.64,0.00,UTR004200000006,Synthetic settlement set_0042_0006,INR,acct_demo_01
+bnk_0042_0007,2026-04-08,2026-04-08,4961.81,0.00,UTR004200000007,Synthetic settlement set_0042_0007,INR,acct_demo_01
+bnk_0042_0008,2026-04-09,2026-04-09,5249.71,0.00,UTR004200000008,Synthetic settlement set_0042_0008,INR,acct_demo_01
+bnk_0042_0009,2026-04-10,2026-04-10,3800.53,0.00,UTR004200000009,Synthetic settlement set_0042_0009,INR,acct_demo_01
+bnk_0042_0010,2026-04-11,2026-04-11,4056.94,0.00,UTR004200000010,Synthetic settlement set_0042_0010,INR,acct_demo_01
+bnk_0042_0011,2026-04-12,2026-04-12,4143.10,0.00,UTR004200000011,Synthetic settlement set_0042_0011,INR,acct_demo_01
+bnk_0042_0012,2026-04-13,2026-04-13,6175.64,0.00,UTR004200000012,Synthetic settlement set_0042_0012,INR,acct_demo_01
+bnk_0042_0013,2026-04-14,2026-04-14,4838.85,0.00,UTR004200000013,Synthetic settlement set_0042_0013,INR,acct_demo_01
+bnk_0042_0014,2026-04-15,2026-04-15,3958.14,0.00,UTR004200000014,Synthetic settlement set_0042_0014,INR,acct_demo_01
+bnk_0042_0015,2026-04-16,2026-04-16,5374.76,0.00,UTR004200000015,Synthetic settlement set_0042_0015,INR,acct_demo_01
+bnk_0042_0016,2026-04-17,2026-04-17,2568.07,0.00,UTR004200000016,Synthetic settlement set_0042_0016,INR,acct_demo_01
+bnk_0042_0017,2026-04-18,2026-04-18,4386.80,0.00,UTR004200000017,Synthetic settlement set_0042_0017,INR,acct_demo_01
+bnk_0042_0018,2026-04-19,2026-04-19,3433.47,0.00,UTR004200000018,Synthetic settlement set_0042_0018,INR,acct_demo_01
+bnk_0042_0019,2026-04-20,2026-04-20,4307.54,0.00,UTR004200000019,Synthetic settlement set_0042_0019,INR,acct_demo_01
+bnk_0042_0020,2026-04-21,2026-04-21,3955.80,0.00,UTR004200000020,Synthetic settlement set_0042_0020,INR,acct_demo_01
+bnk_0042_0021,2026-04-22,2026-04-22,6790.64,0.00,UTR004200000021,Synthetic settlement set_0042_0021,INR,acct_demo_01
+bnk_0042_0023,2026-04-24,2026-04-24,5550.72,0.00,UTR004200000023,Synthetic settlement set_0042_0023,INR,acct_demo_01
+bnk_0042_0024,2026-04-25,2026-04-25,5425.24,0.00,UTR004200000024,Synthetic settlement set_0042_0024,INR,acct_demo_01
+bnk_0042_0002_part_1,2026-04-03,2026-04-03,2244.80,0.00,UTR004200000002,Synthetic settlement set_0042_0002 tranche 1,INR,acct_demo_01
+bnk_0042_0002_part_2,2026-04-04,2026-04-04,2244.80,0.00,UTR004200000002,Synthetic settlement set_0042_0002 tranche 2,INR,acct_demo_01
+bnk_orphan_0042_01,2026-04-02,2026-04-02,734.21,0.00,ORPHAN00420001,Synthetic bank credit without gateway or ERP evidence,INR,acct_demo_01
+bnk_0042_0007_candidate,2026-04-08,2026-04-08,4961.81,0.00,ALTUTR004200000007,Synthetic equal-amount competing bank candidate,INR,acct_demo_01

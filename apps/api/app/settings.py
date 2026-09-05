@@ -33,9 +33,9 @@ class AppSettings(BaseSettings):
     rule_version: str = "segment4-v1"
     policy_version: str = "razorpay_inr_v1@1.0.0"
     model_api_key: SecretStr | None = None
-    model_name: str = "gpt-5-mini"
+    model_name: str = "gpt-5-nano"
     model_base_url: str = "https://api.openai.com/v1"
-    model_timeout_seconds: float = 12.0
+    model_timeout_seconds: float = 30.0
     retention_hours: int = 24
 
     @property

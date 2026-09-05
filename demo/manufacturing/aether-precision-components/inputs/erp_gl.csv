@@ -1,0 +1,57 @@
+journal_id,line_number,posting_date,account_code,debit_amount,credit_amount,currency,external_reference,narration
+jrn_1042_0001,1,2026-04-02,110000,4712.37,0.00,INR,set_1042_0001,Synthetic bank receipt
+jrn_1042_0001,2,2026-04-02,510000,120.88,0.00,INR,set_1042_0001,Synthetic gateway fee expense
+jrn_1042_0001,3,2026-04-02,140000,21.75,0.00,INR,set_1042_0001,Synthetic input GST
+jrn_1042_0001,4,2026-04-02,120000,0.00,4855.00,INR,set_1042_0001,Synthetic clearing credit
+jrn_1042_0002,1,2026-04-03,110000,5982.71,0.00,INR,set_1042_0002,Synthetic bank receipt
+jrn_1042_0002,2,2026-04-03,510000,111.27,0.00,INR,set_1042_0002,Synthetic gateway fee expense
+jrn_1042_0002,3,2026-04-03,140000,20.02,0.00,INR,set_1042_0002,Synthetic input GST
+jrn_1042_0002,4,2026-04-03,120000,0.00,6114.00,INR,set_1042_0002,Synthetic clearing credit
+jrn_1042_0003,1,2026-04-04,110000,6249.69,0.00,INR,set_1042_0003,Synthetic bank receipt
+jrn_1042_0003,2,2026-04-04,510000,162.98,0.00,INR,set_1042_0003,Synthetic gateway fee expense
+jrn_1042_0003,3,2026-04-04,140000,29.33,0.00,INR,set_1042_0003,Synthetic input GST
+jrn_1042_0003,4,2026-04-04,120000,0.00,6442.00,INR,set_1042_0003,Synthetic clearing credit
+jrn_1042_0004,1,2026-04-05,110000,5903.82,0.00,INR,set_1042_0004,Synthetic bank receipt
+jrn_1042_0004,2,2026-04-05,510000,152.70,0.00,INR,set_1042_0004,Synthetic gateway fee expense
+jrn_1042_0004,3,2026-04-05,140000,27.48,0.00,INR,set_1042_0004,Synthetic input GST
+jrn_1042_0004,4,2026-04-05,120000,0.00,6084.00,INR,set_1042_0004,Synthetic clearing credit
+jrn_1042_0005,1,2026-04-06,110000,2786.48,0.00,INR,set_1042_0005,Synthetic bank receipt
+jrn_1042_0005,2,2026-04-06,510000,52.99,0.00,INR,set_1042_0005,Synthetic gateway fee expense
+jrn_1042_0005,3,2026-04-06,140000,9.53,0.00,INR,set_1042_0005,Synthetic input GST
+jrn_1042_0005,4,2026-04-06,120000,0.00,2849.00,INR,set_1042_0005,Synthetic clearing credit
+jrn_1042_0006,1,2026-04-07,110000,3692.46,0.00,INR,set_1042_0006,Synthetic bank receipt
+jrn_1042_0006,2,2026-04-07,510000,86.90,0.00,INR,set_1042_0006,Synthetic gateway fee expense
+jrn_1042_0006,3,2026-04-07,140000,15.64,0.00,INR,set_1042_0006,Synthetic input GST
+jrn_1042_0006,4,2026-04-07,120000,0.00,3795.00,INR,set_1042_0006,Synthetic clearing credit
+jrn_1042_0007,1,2026-04-08,110000,3320.90,0.00,INR,set_1042_0007,Synthetic bank receipt
+jrn_1042_0007,2,2026-04-08,510000,89.07,0.00,INR,set_1042_0007,Synthetic gateway fee expense
+jrn_1042_0007,3,2026-04-08,140000,16.03,0.00,INR,set_1042_0007,Synthetic input GST
+jrn_1042_0007,4,2026-04-08,120000,0.00,3426.00,INR,set_1042_0007,Synthetic clearing credit
+jrn_1042_0008,1,2026-04-09,110000,5117.18,0.00,INR,set_1042_0008,Synthetic bank receipt
+jrn_1042_0008,2,2026-04-09,510000,97.31,0.00,INR,set_1042_0008,Synthetic gateway fee expense
+jrn_1042_0008,3,2026-04-09,140000,17.51,0.00,INR,set_1042_0008,Synthetic input GST
+jrn_1042_0008,4,2026-04-09,120000,0.00,5232.00,INR,set_1042_0008,Synthetic clearing credit
+jrn_1042_0009,1,2026-04-10,110000,4155.48,0.00,INR,set_1042_0009,Synthetic bank receipt
+jrn_1042_0009,2,2026-04-10,510000,87.73,0.00,INR,set_1042_0009,Synthetic gateway fee expense
+jrn_1042_0009,3,2026-04-10,140000,15.79,0.00,INR,set_1042_0009,Synthetic input GST
+jrn_1042_0009,4,2026-04-10,120000,0.00,4259.00,INR,set_1042_0009,Synthetic clearing credit
+jrn_1042_0010,1,2026-04-11,110000,4557.24,0.00,INR,set_1042_0010,Synthetic bank receipt
+jrn_1042_0010,2,2026-04-11,510000,90.48,0.00,INR,set_1042_0010,Synthetic gateway fee expense
+jrn_1042_0010,3,2026-04-11,140000,16.28,0.00,INR,set_1042_0010,Synthetic input GST
+jrn_1042_0010,4,2026-04-11,120000,0.00,4664.00,INR,set_1042_0010,Synthetic clearing credit
+jrn_1042_0011,1,2026-04-12,110000,2336.28,0.00,INR,set_1042_0011,Synthetic bank receipt
+jrn_1042_0011,2,2026-04-12,510000,46.38,0.00,INR,set_1042_0011,Synthetic gateway fee expense
+jrn_1042_0011,3,2026-04-12,140000,8.34,0.00,INR,set_1042_0011,Synthetic input GST
+jrn_1042_0011,4,2026-04-12,120000,0.00,2391.00,INR,set_1042_0011,Synthetic clearing credit
+jrn_1042_0012,1,2026-04-13,110000,3375.22,0.00,INR,set_1042_0012,Synthetic bank receipt
+jrn_1042_0012,2,2026-04-13,510000,83.72,0.00,INR,set_1042_0012,Synthetic gateway fee expense
+jrn_1042_0012,3,2026-04-13,140000,15.06,0.00,INR,set_1042_0012,Synthetic input GST
+jrn_1042_0012,4,2026-04-13,120000,0.00,3474.00,INR,set_1042_0012,Synthetic clearing credit
+jrn_1042_0013,1,2026-04-14,110000,4248.57,0.00,INR,set_1042_0013,Synthetic bank receipt
+jrn_1042_0013,2,2026-04-14,510000,82.57,0.00,INR,set_1042_0013,Synthetic gateway fee expense
+jrn_1042_0013,3,2026-04-14,140000,14.86,0.00,INR,set_1042_0013,Synthetic input GST
+jrn_1042_0013,4,2026-04-14,120000,0.00,4346.00,INR,set_1042_0013,Synthetic clearing credit
+jrn_1042_0014,1,2026-04-15,110000,2230.53,0.00,INR,set_1042_0014,Synthetic bank receipt
+jrn_1042_0014,2,2026-04-15,510000,58.88,0.00,INR,set_1042_0014,Synthetic gateway fee expense
+jrn_1042_0014,3,2026-04-15,140000,10.59,0.00,INR,set_1042_0014,Synthetic input GST
+jrn_1042_0014,4,2026-04-15,120000,0.00,2300.00,INR,set_1042_0014,Synthetic clearing credit

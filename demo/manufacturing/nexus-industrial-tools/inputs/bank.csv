@@ -1,0 +1,14 @@
+bank_record_id,value_date,booking_date,credit_amount,debit_amount,utr,narration,currency,account_reference
+bnk_2042_0003,2026-04-06,2026-04-06,5666.80,0.00,UTR204200000003,Synthetic settlement set_2042_0003,INR,acct_demo_01
+bnk_2042_0004,2026-04-07,2026-04-07,3902.97,0.00,UTR204200000004,Synthetic settlement set_2042_0004,INR,acct_demo_01
+bnk_2042_0008,2026-04-09,2026-04-09,4813.33,0.00,UTR204200000008,Synthetic settlement set_2042_0008,INR,acct_demo_01
+bnk_2042_0009,2026-04-10,2026-04-10,3559.05,0.00,UTR204200000009,Synthetic settlement set_2042_0009,INR,acct_demo_01
+bnk_2042_0010,2026-04-11,2026-04-11,5198.68,0.00,UTR204200000010,Synthetic settlement set_2042_0010,INR,acct_demo_01
+bnk_2042_0011,2026-04-12,2026-04-12,3850.24,0.00,UTR204200000011,Synthetic settlement set_2042_0011,INR,acct_demo_01
+bnk_2042_0012,2026-04-13,2026-04-13,4938.42,0.00,UTR204200000012,Synthetic settlement set_2042_0012,INR,acct_demo_01
+bnk_2042_0013,2026-04-14,2026-04-14,2218.67,0.00,UTR204200000013,Synthetic settlement set_2042_0013,INR,acct_demo_01
+bnk_2042_0014,2026-04-15,2026-04-15,5693.96,0.00,UTR204200000014,Synthetic settlement set_2042_0014,INR,acct_demo_01
+bnk_2042_0001_part_1,2026-04-02,2026-04-02,1925.39,0.00,UTR204200000001,Synthetic settlement set_2042_0001 tranche 1,INR,acct_demo_01
+bnk_2042_0001_part_2,2026-04-03,2026-04-03,1925.40,0.00,UTR204200000001,Synthetic settlement set_2042_0001 tranche 2,INR,acct_demo_01
+bnk_2042_0002_part_1,2026-04-03,2026-04-03,2564.44,0.00,UTR204200000002,Synthetic settlement set_2042_0002 tranche 1,INR,acct_demo_01
+bnk_2042_0002_part_2,2026-04-04,2026-04-04,2564.45,0.00,UTR204200000002,Synthetic settlement set_2042_0002 tranche 2,INR,acct_demo_01

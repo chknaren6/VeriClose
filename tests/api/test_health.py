@@ -19,6 +19,7 @@ async def build_test_client(tmp_path: Path) -> AsyncIterator[httpx2.AsyncClient]
         static_dir=tmp_path / "missing-static",
         build_commit="test-commit",
         demo_mode=True,
+        model_api_key=None,
     )
     app = create_app(settings)
     async with app.router.lifespan_context(app):
@@ -56,6 +57,7 @@ async def test_judge_readiness_fails_when_production_assets_are_missing(tmp_path
         data_dir=tmp_path / "data",
         database_path=tmp_path / "data" / "test.duckdb",
         static_dir=tmp_path / "missing-static",
+        model_api_key=None,
     )
     app = create_app(settings)
     async with app.router.lifespan_context(app):
@@ -100,6 +102,7 @@ def test_composition_rejects_a_policy_version_mismatch(tmp_path: Path) -> None:
         database_path=tmp_path / "data" / "test.duckdb",
         static_dir=tmp_path / "missing-static",
         policy_version="unexpected@9",
+        model_api_key=None,
     )
     with pytest.raises(ValueError, match="does not match"):
         build_container(settings)

@@ -1,0 +1,105 @@
+gateway_event_id,event_type,transaction_id,settlement_id,amount_minor,currency,event_at,status,reference,narration
+gwe_2042_000001,PAYMENT,pay_2042_000001,set_2042_0001,50400,INR,2026-04-01T10:00:00+00:00,captured,order_2042_000001,Synthetic captured payment
+gwe_2042_000002,PAYMENT,pay_2042_000002,set_2042_0001,115400,INR,2026-04-01T10:00:00+00:00,captured,order_2042_000002,Synthetic captured payment
+gwe_2042_000003,PAYMENT,pay_2042_000003,set_2042_0001,93300,INR,2026-04-01T10:00:00+00:00,captured,order_2042_000003,Synthetic captured payment
+gwe_2042_000004,PAYMENT,pay_2042_000004,set_2042_0001,50100,INR,2026-04-01T10:00:00+00:00,captured,order_2042_000004,Synthetic captured payment
+gwe_2042_000005,PAYMENT,pay_2042_000005,set_2042_0001,84900,INR,2026-04-01T10:00:00+00:00,captured,order_2042_000005,Synthetic captured payment
+gwe_fee_2042_0001,FEE,,set_2042_0001,7645,INR,2026-04-01T10:00:00+00:00,processed,set_2042_0001,Synthetic gateway fee
+gwe_tax_2042_0001,TAX,,set_2042_0001,1376,INR,2026-04-01T10:00:00+00:00,processed,set_2042_0001,Synthetic GST on gateway fee
+gwe_set_2042_0001,SETTLEMENT,,set_2042_0001,385079,INR,2026-04-01T10:00:00+00:00,settled,UTR204200000001,Synthetic net settlement
+gwe_2042_000006,PAYMENT,pay_2042_000006,set_2042_0002,109600,INR,2026-04-02T10:00:00+00:00,captured,order_2042_000006,Synthetic captured payment
+gwe_2042_000007,PAYMENT,pay_2042_000007,set_2042_0002,95100,INR,2026-04-02T10:00:00+00:00,captured,order_2042_000007,Synthetic captured payment
+gwe_2042_000008,PAYMENT,pay_2042_000008,set_2042_0002,40700,INR,2026-04-02T10:00:00+00:00,captured,order_2042_000008,Synthetic captured payment
+gwe_2042_000009,PAYMENT,pay_2042_000009,set_2042_0002,160400,INR,2026-04-02T10:00:00+00:00,captured,order_2042_000009,Synthetic captured payment
+gwe_2042_000010,PAYMENT,pay_2042_000010,set_2042_0002,122100,INR,2026-04-02T10:00:00+00:00,captured,order_2042_000010,Synthetic captured payment
+gwe_fee_2042_0002,FEE,,set_2042_0002,12722,INR,2026-04-02T10:00:00+00:00,processed,set_2042_0002,Synthetic gateway fee
+gwe_tax_2042_0002,TAX,,set_2042_0002,2289,INR,2026-04-02T10:00:00+00:00,processed,set_2042_0002,Synthetic GST on gateway fee
+gwe_set_2042_0002,SETTLEMENT,,set_2042_0002,512889,INR,2026-04-02T10:00:00+00:00,settled,UTR204200000002,Synthetic net settlement
+gwe_2042_000011,PAYMENT,pay_2042_000011,set_2042_0003,87800,INR,2026-04-03T10:00:00+00:00,captured,order_2042_000011,Synthetic captured payment
+gwe_2042_000012,PAYMENT,pay_2042_000012,set_2042_0003,194200,INR,2026-04-03T10:00:00+00:00,captured,order_2042_000012,Synthetic captured payment
+gwe_2042_000013,PAYMENT,pay_2042_000013,set_2042_0003,154500,INR,2026-04-03T10:00:00+00:00,captured,order_2042_000013,Synthetic captured payment
+gwe_2042_000014,PAYMENT,pay_2042_000014,set_2042_0003,87400,INR,2026-04-03T10:00:00+00:00,captured,order_2042_000014,Synthetic captured payment
+gwe_2042_000015,PAYMENT,pay_2042_000015,set_2042_0003,57600,INR,2026-04-03T10:00:00+00:00,captured,order_2042_000015,Synthetic captured payment
+gwe_fee_2042_0003,FEE,,set_2042_0003,12560,INR,2026-04-03T10:00:00+00:00,processed,set_2042_0003,Synthetic gateway fee
+gwe_tax_2042_0003,TAX,,set_2042_0003,2260,INR,2026-04-03T10:00:00+00:00,processed,set_2042_0003,Synthetic GST on gateway fee
+gwe_set_2042_0003,SETTLEMENT,,set_2042_0003,566680,INR,2026-04-03T10:00:00+00:00,settled,UTR204200000003,Synthetic net settlement
+gwe_2042_000016,PAYMENT,pay_2042_000016,set_2042_0004,124500,INR,2026-04-04T10:00:00+00:00,captured,order_2042_000016,Synthetic captured payment
+gwe_2042_000017,PAYMENT,pay_2042_000017,set_2042_0004,123000,INR,2026-04-04T10:00:00+00:00,captured,order_2042_000017,Synthetic captured payment
+gwe_2042_000018,PAYMENT,pay_2042_000018,set_2042_0004,39800,INR,2026-04-04T10:00:00+00:00,captured,order_2042_000018,Synthetic captured payment
+gwe_2042_000019,PAYMENT,pay_2042_000019,set_2042_0004,37500,INR,2026-04-04T10:00:00+00:00,captured,order_2042_000019,Synthetic captured payment
+gwe_2042_000020,PAYMENT,pay_2042_000020,set_2042_0004,77800,INR,2026-04-04T10:00:00+00:00,captured,order_2042_000020,Synthetic captured payment
+gwe_fee_2042_0004,FEE,,set_2042_0004,10427,INR,2026-04-04T10:00:00+00:00,processed,set_2042_0004,Synthetic gateway fee
+gwe_tax_2042_0004,TAX,,set_2042_0004,1876,INR,2026-04-04T10:00:00+00:00,processed,set_2042_0004,Synthetic GST on gateway fee
+gwe_set_2042_0004,SETTLEMENT,,set_2042_0004,390297,INR,2026-04-04T10:00:00+00:00,settled,UTR204200000004,Synthetic net settlement
+gwe_2042_000021,PAYMENT,pay_2042_000021,set_2042_0005,189200,INR,2026-04-05T10:00:00+00:00,captured,order_2042_000021,Synthetic captured payment
+gwe_2042_000022,PAYMENT,pay_2042_000022,set_2042_0005,11900,INR,2026-04-05T10:00:00+00:00,captured,order_2042_000022,Synthetic captured payment
+gwe_2042_000023,PAYMENT,pay_2042_000023,set_2042_0005,22700,INR,2026-04-05T10:00:00+00:00,captured,order_2042_000023,Synthetic captured payment
+gwe_2042_000024,PAYMENT,pay_2042_000024,set_2042_0005,153500,INR,2026-04-05T10:00:00+00:00,captured,order_2042_000024,Synthetic captured payment
+gwe_2042_000025,PAYMENT,pay_2042_000025,set_2042_0005,126300,INR,2026-04-05T10:00:00+00:00,captured,order_2042_000025,Synthetic captured payment
+gwe_fee_2042_0005,FEE,,set_2042_0005,9467,INR,2026-04-05T10:00:00+00:00,processed,set_2042_0005,Synthetic gateway fee
+gwe_tax_2042_0005,TAX,,set_2042_0005,1704,INR,2026-04-05T10:00:00+00:00,processed,set_2042_0005,Synthetic GST on gateway fee
+gwe_set_2042_0005,SETTLEMENT,,set_2042_0005,492429,INR,2026-04-05T10:00:00+00:00,settled,UTR204200000005,Synthetic net settlement
+gwe_2042_000026,PAYMENT,pay_2042_000026,set_2042_0006,59300,INR,2026-04-06T10:00:00+00:00,captured,order_2042_000026,Synthetic captured payment
+gwe_2042_000027,PAYMENT,pay_2042_000027,set_2042_0006,160100,INR,2026-04-06T10:00:00+00:00,captured,order_2042_000027,Synthetic captured payment
+gwe_2042_000028,PAYMENT,pay_2042_000028,set_2042_0006,52600,INR,2026-04-06T10:00:00+00:00,captured,order_2042_000028,Synthetic captured payment
+gwe_2042_000029,PAYMENT,pay_2042_000029,set_2042_0006,161500,INR,2026-04-06T10:00:00+00:00,captured,order_2042_000029,Synthetic captured payment
+gwe_2042_000030,PAYMENT,pay_2042_000030,set_2042_0006,29800,INR,2026-04-06T10:00:00+00:00,captured,order_2042_000030,Synthetic captured payment
+gwe_fee_2042_0006,FEE,,set_2042_0006,11953,INR,2026-04-06T10:00:00+00:00,processed,set_2042_0006,Synthetic gateway fee
+gwe_tax_2042_0006,TAX,,set_2042_0006,2151,INR,2026-04-06T10:00:00+00:00,processed,set_2042_0006,Synthetic GST on gateway fee
+gwe_set_2042_0006,SETTLEMENT,,set_2042_0006,449196,INR,2026-04-06T10:00:00+00:00,settled,UTR204200000006,Synthetic net settlement
+gwe_2042_000031,PAYMENT,pay_2042_000031,set_2042_0007,153900,INR,2026-04-07T10:00:00+00:00,captured,order_2042_000031,Synthetic captured payment
+gwe_2042_000032,PAYMENT,pay_2042_000032,set_2042_0007,60400,INR,2026-04-07T10:00:00+00:00,captured,order_2042_000032,Synthetic captured payment
+gwe_2042_000033,PAYMENT,pay_2042_000033,set_2042_0007,180500,INR,2026-04-07T10:00:00+00:00,captured,order_2042_000033,Synthetic captured payment
+gwe_2042_000034,PAYMENT,pay_2042_000034,set_2042_0007,121800,INR,2026-04-07T10:00:00+00:00,captured,order_2042_000034,Synthetic captured payment
+gwe_fee_2042_0007,FEE,,set_2042_0007,11778,INR,2026-04-07T10:00:00+00:00,processed,set_2042_0007,Synthetic gateway fee
+gwe_tax_2042_0007,TAX,,set_2042_0007,2120,INR,2026-04-07T10:00:00+00:00,processed,set_2042_0007,Synthetic GST on gateway fee
+gwe_set_2042_0007,SETTLEMENT,,set_2042_0007,502702,INR,2026-04-07T10:00:00+00:00,settled,UTR204200000007,Synthetic net settlement
+gwe_2042_000035,PAYMENT,pay_2042_000035,set_2042_0008,51700,INR,2026-04-08T10:00:00+00:00,captured,order_2042_000035,Synthetic captured payment
+gwe_2042_000036,PAYMENT,pay_2042_000036,set_2042_0008,148800,INR,2026-04-08T10:00:00+00:00,captured,order_2042_000036,Synthetic captured payment
+gwe_2042_000037,PAYMENT,pay_2042_000037,set_2042_0008,153400,INR,2026-04-08T10:00:00+00:00,captured,order_2042_000037,Synthetic captured payment
+gwe_2042_000038,PAYMENT,pay_2042_000038,set_2042_0008,140500,INR,2026-04-08T10:00:00+00:00,captured,order_2042_000038,Synthetic captured payment
+gwe_fee_2042_0008,FEE,,set_2042_0008,11074,INR,2026-04-08T10:00:00+00:00,processed,set_2042_0008,Synthetic gateway fee
+gwe_tax_2042_0008,TAX,,set_2042_0008,1993,INR,2026-04-08T10:00:00+00:00,processed,set_2042_0008,Synthetic GST on gateway fee
+gwe_set_2042_0008,SETTLEMENT,,set_2042_0008,481333,INR,2026-04-08T10:00:00+00:00,settled,UTR204200000008,Synthetic net settlement
+gwe_2042_000039,PAYMENT,pay_2042_000039,set_2042_0009,106100,INR,2026-04-09T10:00:00+00:00,captured,order_2042_000039,Synthetic captured payment
+gwe_2042_000040,PAYMENT,pay_2042_000040,set_2042_0009,58900,INR,2026-04-09T10:00:00+00:00,captured,order_2042_000040,Synthetic captured payment
+gwe_2042_000041,PAYMENT,pay_2042_000041,set_2042_0009,122900,INR,2026-04-09T10:00:00+00:00,captured,order_2042_000041,Synthetic captured payment
+gwe_2042_000042,PAYMENT,pay_2042_000042,set_2042_0009,78600,INR,2026-04-09T10:00:00+00:00,captured,order_2042_000042,Synthetic captured payment
+gwe_fee_2042_0009,FEE,,set_2042_0009,8979,INR,2026-04-09T10:00:00+00:00,processed,set_2042_0009,Synthetic gateway fee
+gwe_tax_2042_0009,TAX,,set_2042_0009,1616,INR,2026-04-09T10:00:00+00:00,processed,set_2042_0009,Synthetic GST on gateway fee
+gwe_set_2042_0009,SETTLEMENT,,set_2042_0009,355905,INR,2026-04-09T10:00:00+00:00,settled,UTR204200000009,Synthetic net settlement
+gwe_2042_000043,PAYMENT,pay_2042_000043,set_2042_0010,190800,INR,2026-04-10T10:00:00+00:00,captured,order_2042_000043,Synthetic captured payment
+gwe_2042_000044,PAYMENT,pay_2042_000044,set_2042_0010,120000,INR,2026-04-10T10:00:00+00:00,captured,order_2042_000044,Synthetic captured payment
+gwe_2042_000045,PAYMENT,pay_2042_000045,set_2042_0010,100000,INR,2026-04-10T10:00:00+00:00,captured,order_2042_000045,Synthetic captured payment
+gwe_2042_000046,PAYMENT,pay_2042_000046,set_2042_0010,125000,INR,2026-04-10T10:00:00+00:00,captured,order_2042_000046,Synthetic captured payment
+gwe_fee_2042_0010,FEE,,set_2042_0010,13502,INR,2026-04-10T10:00:00+00:00,processed,set_2042_0010,Synthetic gateway fee
+gwe_tax_2042_0010,TAX,,set_2042_0010,2430,INR,2026-04-10T10:00:00+00:00,processed,set_2042_0010,Synthetic GST on gateway fee
+gwe_set_2042_0010,SETTLEMENT,,set_2042_0010,519868,INR,2026-04-10T10:00:00+00:00,settled,UTR204200000010,Synthetic net settlement
+gwe_2042_000047,PAYMENT,pay_2042_000047,set_2042_0011,101400,INR,2026-04-11T10:00:00+00:00,captured,order_2042_000047,Synthetic captured payment
+gwe_2042_000048,PAYMENT,pay_2042_000048,set_2042_0011,29500,INR,2026-04-11T10:00:00+00:00,captured,order_2042_000048,Synthetic captured payment
+gwe_2042_000049,PAYMENT,pay_2042_000049,set_2042_0011,125200,INR,2026-04-11T10:00:00+00:00,captured,order_2042_000049,Synthetic captured payment
+gwe_2042_000050,PAYMENT,pay_2042_000050,set_2042_0011,140000,INR,2026-04-11T10:00:00+00:00,captured,order_2042_000050,Synthetic captured payment
+gwe_fee_2042_0011,FEE,,set_2042_0011,9387,INR,2026-04-11T10:00:00+00:00,processed,set_2042_0011,Synthetic gateway fee
+gwe_tax_2042_0011,TAX,,set_2042_0011,1689,INR,2026-04-11T10:00:00+00:00,processed,set_2042_0011,Synthetic GST on gateway fee
+gwe_set_2042_0011,SETTLEMENT,,set_2042_0011,385024,INR,2026-04-11T10:00:00+00:00,settled,UTR204200000011,Synthetic net settlement
+gwe_2042_000051,PAYMENT,pay_2042_000051,set_2042_0012,73600,INR,2026-04-12T10:00:00+00:00,captured,order_2042_000051,Synthetic captured payment
+gwe_2042_000052,PAYMENT,pay_2042_000052,set_2042_0012,115200,INR,2026-04-12T10:00:00+00:00,captured,order_2042_000052,Synthetic captured payment
+gwe_2042_000053,PAYMENT,pay_2042_000053,set_2042_0012,129700,INR,2026-04-12T10:00:00+00:00,captured,order_2042_000053,Synthetic captured payment
+gwe_2042_000054,PAYMENT,pay_2042_000054,set_2042_0012,190600,INR,2026-04-12T10:00:00+00:00,captured,order_2042_000054,Synthetic captured payment
+gwe_fee_2042_0012,FEE,,set_2042_0012,12931,INR,2026-04-12T10:00:00+00:00,processed,set_2042_0012,Synthetic gateway fee
+gwe_tax_2042_0012,TAX,,set_2042_0012,2327,INR,2026-04-12T10:00:00+00:00,processed,set_2042_0012,Synthetic GST on gateway fee
+gwe_set_2042_0012,SETTLEMENT,,set_2042_0012,493842,INR,2026-04-12T10:00:00+00:00,settled,UTR204200000012,Synthetic net settlement
+gwe_2042_000055,PAYMENT,pay_2042_000055,set_2042_0013,29000,INR,2026-04-13T10:00:00+00:00,captured,order_2042_000055,Synthetic captured payment
+gwe_2042_000056,PAYMENT,pay_2042_000056,set_2042_0013,67900,INR,2026-04-13T10:00:00+00:00,captured,order_2042_000056,Synthetic captured payment
+gwe_2042_000057,PAYMENT,pay_2042_000057,set_2042_0013,19500,INR,2026-04-13T10:00:00+00:00,captured,order_2042_000057,Synthetic captured payment
+gwe_2042_000058,PAYMENT,pay_2042_000058,set_2042_0013,111600,INR,2026-04-13T10:00:00+00:00,captured,order_2042_000058,Synthetic captured payment
+gwe_fee_2042_0013,FEE,,set_2042_0013,5198,INR,2026-04-13T10:00:00+00:00,processed,set_2042_0013,Synthetic gateway fee
+gwe_tax_2042_0013,TAX,,set_2042_0013,935,INR,2026-04-13T10:00:00+00:00,processed,set_2042_0013,Synthetic GST on gateway fee
+gwe_set_2042_0013,SETTLEMENT,,set_2042_0013,221867,INR,2026-04-13T10:00:00+00:00,settled,UTR204200000013,Synthetic net settlement
+gwe_2042_000059,PAYMENT,pay_2042_000059,set_2042_0014,175300,INR,2026-04-14T10:00:00+00:00,captured,order_2042_000059,Synthetic captured payment
+gwe_2042_000060,PAYMENT,pay_2042_000060,set_2042_0014,180300,INR,2026-04-14T10:00:00+00:00,captured,order_2042_000060,Synthetic captured payment
+gwe_2042_000061,PAYMENT,pay_2042_000061,set_2042_0014,70700,INR,2026-04-14T10:00:00+00:00,captured,order_2042_000061,Synthetic captured payment
+gwe_2042_000062,PAYMENT,pay_2042_000062,set_2042_0014,158200,INR,2026-04-14T10:00:00+00:00,captured,order_2042_000062,Synthetic captured payment
+gwe_fee_2042_0014,FEE,,set_2042_0014,12800,INR,2026-04-14T10:00:00+00:00,processed,set_2042_0014,Synthetic gateway fee
+gwe_tax_2042_0014,TAX,,set_2042_0014,2304,INR,2026-04-14T10:00:00+00:00,processed,set_2042_0014,Synthetic GST on gateway fee
+gwe_set_2042_0014,SETTLEMENT,,set_2042_0014,569396,INR,2026-04-14T10:00:00+00:00,settled,UTR204200000014,Synthetic net settlement
