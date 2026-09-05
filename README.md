@@ -203,9 +203,8 @@ sequenceDiagram
     API-->>UI: AI suggestion (with %) or Reviewer note (no %)
 ```
 
-What the model **may** do: explain in ≤3 short sentences, cite 1–4 refs, suggest exactly one next step, draft journal lines only for `JOURNAL_EXPORT` (≥2 lines, debits = credits).
 
-What it **cannot** do: change proof level, auto-clear, edit sources, post journals, touch the filesystem, message anyone, or invent rows/amounts. Narration and cell text are sent as `UNTRUSTED_SOURCE_DATA`, never instructions.
+What the model **cannot** do: change proof level, auto-clear, edit sources, post journals, touch the filesystem, message anyone, or invent rows/amounts. Narration and cell text are sent as `UNTRUSTED_SOURCE_DATA`, never instructions.
 
 ## Where it can fail (and what you see)
 
@@ -309,8 +308,21 @@ docker run --rm -v /app/data vericlose:dev \
 - `config`: versioned mappings + `razorpay_inr_v1` policy
 - `tests`: unit, integration, contract, adversarial, deployment
 
+## Build Challenges & Technical Obstacles
+1. Reasoning model returned empty with small token budget
+gpt-5-nano spends ~2,500 reasoning tokens before writing. Our initial max_output_tokens: 1200 always returned status: incomplete with 0 text — no advisory at all.
+Fix: max_output_tokens: 5000 + reasoning.effort: minimal + 30s timeout. Latency 19s → ~3-6s, leaves budget for the actual JSON answer. incomplete / timeout now falls back to a deterministic checks-note, proof unchanged. Code: core/vericlose/infrastructure/live_model.py.
+
+2. Model mangled 50-char evidence IDs ~80% of time
+Passing full IDs (...20260905... → truncated to ...60905...) failed strict validation, dropping valid advisories to ~30%.
+Fix: Prompt with short refs E01..E09, map to full IDs server-side deterministically. Enforce exact amount_minor match, 1-4 unique refs, balanced journals only for JOURNAL_EXPORT. One automatic retry with the exact validation error fed back. Lifts live valid advisories 30% → ~70%. Code: core/vericlose/investigation/service.py.
+
+3. Keeping AI strictly advisory-only
+Risk: model guessing could clear money.
+Fix: Architecture + tests. Pure domain/ (no FastAPI/DB/SDK imports), strict JSON-schema validation, model has no tools for edits, auto-clear, or posting — requires_human_approval: true always. Deterministic kernel owns arithmetic, proof level, and metrics. Full suite runs hermetically with no key, so tests never depend on network.
+
 Docs: [DEPLOYMENT.md](DEPLOYMENT.md) (judge runbook), [demo and submission guide](docs/DEMO_AND_SUBMISSION_GUIDE.md) (pitch + key setup), [docs/PRODUCT_WORKFLOW.md](docs/PRODUCT_WORKFLOW.md) (plain-language journey), [docs/FUTURE_OPPORTUNITIES.md](docs/FUTURE_OPPORTUNITIES.md) (out of MVP). Architecture decisions live in [docs/adr](docs/adr); accounting rules and vocabulary in [docs/domain](docs/domain).
 
 ## Data safety
 
-Synthetic data only. No real client data, credentials, or proprietary mappings. Never commit `.env`, local databases, uploads, or truth reports. Hosted demo always shows **“Synthetic data only.”**
+Synthetic data only. No real client data, credentials, or proprietary mappings. Hosted demo always shows **“Synthetic data only.”**
